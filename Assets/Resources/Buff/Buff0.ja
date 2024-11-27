@@ -1,0 +1,84 @@
+{
+  "Data": {
+    "$type": "SkillEditorDemo.BuffAsset, Assembly-CSharp",
+    "Nodes": [
+      {
+        "$type": "SkillEditorDemo.BuffNode, Assembly-CSharp",
+        "MaxLevel": 1,
+        "MaxDegree": 1,
+        "Time": {},
+        "Triggers": [
+          {
+            "TrigType": "Remove",
+            "Condition": {
+              "$type": "SkillEditorDemo.EntityAny, Assembly-CSharp",
+              "EntityList": [
+                {
+                  "$type": "SkillEditorDemo.EntityFilter, Assembly-CSharp",
+                  "EntityList": [
+                    {
+                      "$type": "SkillEditorDemo.GetAllEntity, Assembly-CSharp",
+                      "Position": {
+                        "x": 1159
+                      }
+                    }
+                  ],
+                  "Position": {
+                    "x": 989
+                  }
+                }
+              ],
+              "Position": {
+                "x": 759
+              }
+            },
+            "Actions": [
+              {
+                "$type": "SkillEditorDemo.EntityProperty, Assembly-CSharp",
+                "Entity": {
+                  "$type": "SkillEditorDemo.TakeOutEntity, Assembly-CSharp",
+                  "EntityList": [
+                    {
+                      "$type": "SkillEditorDemo.EntityListCache, Assembly-CSharp",
+                      "Position": {
+                        "x": 1159,
+                        "y": 99
+                      }
+                    }
+                  ],
+                  "Index": {},
+                  "Position": {
+                    "x": 989,
+                    "y": 99
+                  }
+                },
+                "Position": {
+                  "x": 759,
+                  "y": 99
+                }
+              }
+            ],
+            "CD": {},
+            "RemoveOnTrig": {},
+            "Position": {
+              "x": 430
+            }
+          }
+        ],
+        "ID": "asdasd"
+      },
+      {
+        "$type": "SkillEditorDemo.ConditionAction, Assembly-CSharp",
+        "Position": {
+          "y": 193
+        }
+      },
+      {
+        "$type": "TreeNode.Runtime.And, TreeNode.Runtime",
+        "Position": {
+          "y": 316
+        }
+      }
+    ]
+  }
+}
