@@ -5,8 +5,6 @@ namespace SkillEditorDemo
 {
     public enum BuffEntityType
     {
-        [LabelInfo("当前")]
-        Current,
         [LabelInfo("Buff携带者")]
         Carrier,
         [LabelInfo("创建者")]

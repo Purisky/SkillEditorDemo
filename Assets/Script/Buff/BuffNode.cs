@@ -5,12 +5,12 @@ using UnityEngine;
 namespace SkillEditorDemo
 {
     [NodeInfo(null, "Buff", 400, "Buff/Buff"), AssetFilter(true, typeof(BuffAsset))]
-    public class BuffNode : JsonNode
+    public class BuffNode : JsonNode, IUniqNode
     {
         [SerializeField, ShowInNode, LabelInfo("ID", 60)]
         public string ID { get; set; }
         [ShowInNode, LabelInfo("Name", 60)]
-        public string Name;
+        public string Name { get; set; }
         [ShowInNode, LabelInfo("竞争机制", 60), Group("Compete")]
         public CompeteType CompeteType;
         [ShowInNode, LabelInfo("源内竞争", 60), Group("Compete")]
@@ -21,7 +21,7 @@ namespace SkillEditorDemo
         public int MaxDegree = 1;
         [ShowInNode, LabelInfo("持续时间", 60), Group("level")]
         public NumValue Time;
-        [Child, LabelInfo("触发器组")]
+        [Child(true), LabelInfo("触发器组")]
         public List<Trigger> Triggers;
     }
 

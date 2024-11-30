@@ -14,9 +14,9 @@ namespace SkillEditorDemo
         public TrigType TrigType;
         [ShowInNode(ShowIf = nameof(ShowSeq)), LabelInfo(Hide = true), Group("Trig", Width = 40)]
         public TriggerSequence TriggerSequence;
-        [Child, LabelInfo("过滤条件"),TitlePort]
+        [Child, TitlePort]
         public Condition Condition;
-        [Child, LabelInfo("效果组"), Group("Trig", Width = 70)]
+        [Child(true), LabelInfo("效果组"), Group("Trig", Width = 70)]
         public List<BaseAction> Actions;
         [Child, LabelInfo("冷却时间")]
         public NumValue CD;
