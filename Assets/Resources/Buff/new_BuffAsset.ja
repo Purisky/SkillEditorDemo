@@ -1,0 +1,35 @@
+{
+  "Data": {
+    "$type": "SkillEditorDemo.BuffAsset, Assembly-CSharp",
+    "Nodes": [
+      {
+        "$type": "SkillEditorDemo.TriggerNode, Assembly-CSharp",
+        "CD": {
+          "Value": 3333.0
+        },
+        "RemoveOnTrig": {},
+        "Position": {
+          "x": 243,
+          "y": 82
+        }
+      },
+      {
+        "$type": "SkillEditorDemo.BuffNode, Assembly-CSharp",
+        "MaxLevel": 1,
+        "MaxDegree": 1,
+        "Time": {},
+        "Position": {
+          "x": 710,
+          "y": 145
+        }
+      },
+      {
+        "$type": "SkillEditorDemo.BuffValueGetter, Assembly-CSharp",
+        "Position": {
+          "x": 770,
+          "y": 392
+        }
+      }
+    ]
+  }
+}
