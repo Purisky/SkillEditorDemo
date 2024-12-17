@@ -28,6 +28,12 @@ namespace SkillEditorDemo
         SPAdd,
         [LabelInfo("护盾/溢出")]
         OverSP,
+        [LabelInfo("魔法/增加")]
+        ManaAdd,
+        [LabelInfo("魔法/消耗")]
+        ManaCost,
+        [LabelInfo("魔法/溢出")]
+        OverMana,
         [Obsolete]
         Count,
     }

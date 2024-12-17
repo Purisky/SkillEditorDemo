@@ -7,7 +7,7 @@ using UnityEngine;
 namespace SkillEditorDemo
 {
 
-    public partial class StatHandler
+    public class StatHandler
     {
         public readonly Unit Unit;
         readonly Dictionary<StatType, Stat> StatDic;
@@ -72,7 +72,13 @@ namespace SkillEditorDemo
                     break;
             }
         }
-
+        public float GetDmgMod(DmgType dmgType, bool ed = false) => GetStat(dmgType.StatType(ed), true).ValueWithParent;
+        public void Add(StatType type, ActionCache actionCache)
+        {
+            Stat stat = GetStat(type, true);
+            stat!.Add(actionCache);
+            stat.UpdateValue(true);
+        }
         public void Dispose()
         {
             foreach (var item in StatDic)
@@ -82,16 +88,4 @@ namespace SkillEditorDemo
         }
 
     }
-
-    public partial class StatHandler
-    {
-        public float GetDmgMod(DmgType dmgType, bool ed = false) => GetStat(dmgType.StatType(ed), true).ValueWithParent;
-        public void Add(StatType type, ActionCache actionCache)
-        {
-            Stat stat = GetStat(type, true);
-            stat!.Add(actionCache);
-            stat.UpdateValue(true);
-        }
-    }
-
 }
