@@ -2,6 +2,43 @@
   "Data": {
     "$type": "SkillEditorDemo.BuffAsset, Assembly-CSharp",
     "Nodes": [
+      {
+        "$type": "SkillEditorDemo.BuffNode, Assembly-CSharp",
+        "MaxLevel": 1,
+        "MaxDegree": {
+          "Value": 1.0
+        },
+        "Time": {
+          "Type": "Frame",
+          "Value": {}
+        },
+        "Triggers": [
+          {
+            "Actions": [
+              {
+                "$type": "SkillEditorDemo.Damage, Assembly-CSharp",
+                "UnitNode": {
+                  "$type": "SkillEditorDemo.GetBuffUnit, Assembly-CSharp",
+                  "Position": {
+                    "x": 989
+                  }
+                },
+                "Value": {},
+                "Position": {
+                  "x": 759
+                }
+              }
+            ],
+            "CD": {
+              "Value": {}
+            },
+            "RemoveOnTrig": {},
+            "Position": {
+              "x": 430
+            }
+          }
+        ]
+      }
     ]
   }
 }

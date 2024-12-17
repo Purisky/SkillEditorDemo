@@ -14,8 +14,8 @@ namespace SkillEditorDemo
         SPDmg,
         [LabelInfo("伤害/剩余")]
         LeftDmg,
-        [LabelInfo("伤害/真实伤害")]
-        RealDmg,
+        [LabelInfo("伤害/生命伤害")]
+        LifeDmg,
         [LabelInfo("伤害/溢出伤害")]
         OverDmg,
         [LabelInfo("治疗/总治疗")]

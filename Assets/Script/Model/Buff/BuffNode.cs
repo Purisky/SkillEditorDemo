@@ -18,11 +18,11 @@ namespace SkillEditorDemo
         [ShowInNode, LabelInfo("最大等级", 60), Group("level")]
         public int MaxLevel = 1;
         [ShowInNode, LabelInfo("最大层", 60), Group("level")]
-        public int MaxDegree = 1;
-        [ShowInNode, LabelInfo("持续时间", 60), Group("level")]
-        public FuncValue Time;
+        public FuncValue MaxDegree = new() {  Value = 1};
+        [ShowInNode, LabelInfo("持续时间", 60)]
+        public TimeValue Time;
         [Child(true), LabelInfo("触发器组")]
-        public List<TriggerNode> Triggers;
+        public List<TrigNode> Triggers;
     }
 
 }

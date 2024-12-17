@@ -8,18 +8,33 @@ namespace SkillEditorDemo
     {
         public int Index { get; set; }
         public readonly StatType StatType;
-        public readonly StatManager Manager;
-        public IStatCarrier Carrier=> Manager.Carrier;
+        public readonly StatHandler StatHandler;
+        public Unit Carrier=> StatHandler.Unit;
         public ModifyValue BaseValue;
         decimal ValueCache;
-        int CacheFrame;
+        int CacheTick;
         List<ActionCache>[] ValueList;
         public float Value => UpdateValue();
-        public StatType? ParentType => ParentDic.GetValueOrDefault(StatType, StatType.None);
+
+        public float ValueWithParent
+        {
+            get {
+                float value = Value;
+                if (ParentType == StatType.None)
+                {
+                    return value;
+                }
+                float parentValue = StatHandler.GetStat(ParentType, true).ValueWithParent;
+                return MultParent ? value * parentValue : value + parentValue;
+            }
+        }
+
+        public StatType ParentType;
+        public bool MultParent;
         public static float GetDefault(StatType type) => DefaultDic.GetValueOrDefault(type, 0);
         public static Stat Get(int id) => IIndex<Stat>.Get(id);
         static readonly Dictionary<StatType, float> DefaultDic = GetDefault();
-        static readonly Dictionary<StatType, StatType> ParentDic = GetParent();
+        static readonly Dictionary<StatType, (StatType type, bool mult)> ParentDic = GetParent();
         static Dictionary<StatType, float> GetDefault()
         {
             Dictionary<StatType, float> dic = new();
@@ -29,10 +44,9 @@ namespace SkillEditorDemo
             }
             return dic;
         }
-
-        static Dictionary<StatType, StatType> GetParent()
+        static Dictionary<StatType, (StatType,bool)> GetParent()
         {
-            Dictionary<StatType, StatType> dic = new();
+            Dictionary<StatType, (StatType type, bool mult)> dic = new();
             foreach (var item in EnumAttributeGetter.Get<StatType, StatParentAttribute>())
             {
 
@@ -47,24 +61,25 @@ namespace SkillEditorDemo
                         }
                         if (dic.ContainsKey(currentParent))
                         {
-                            currentParent = dic[currentParent];
+                            currentParent = dic[currentParent].type;
                         }
                         else
                         {
                             break;
                         }
                     }
-                    dic.Add(item.Key, item.Value.Type);
+                    dic.Add(item.Key, (item.Value.Type, item.Value.Mult));
                 }
             }
             return dic;
         }
-        public Stat(float baseValue, StatType type, StatManager manager)
+        public Stat(float baseValue, StatType type, StatHandler manager)
         {
             IIndex<Stat>.Add(this);
             StatType = type;
             ValueCache = (decimal)baseValue;
-            Manager = manager;
+            StatHandler = manager;
+            (ParentType, MultParent) = ParentDic.GetValueOrDefault(StatType, (StatType.None, false));
         }
         public void SetBase(ModifyValue value)
         {
@@ -77,11 +92,11 @@ namespace SkillEditorDemo
             ValueCache = BaseValue.Value;
         }
 
-        public float UpdateValue(bool ignoreFrame = false)
+        public float UpdateValue(bool ignoreTick = false)
         {
-            if (Time.CurrentFrame > CacheFrame || ignoreFrame)
+            if (Time.Tick > CacheTick || ignoreTick)
             {
-                CacheFrame = Time.CurrentFrame;
+                CacheTick = Time.Tick;
                 ValueCache = BaseValue.Base;
                 List<ActionCache> List;
                 for (int j = 0; j < 3; j++)
@@ -96,7 +111,7 @@ namespace SkillEditorDemo
         {
             if (List != null && List.Count > 0)
             {
-                decimal oldvalue = ValueCache;
+                decimal oldValue = ValueCache;
                 List<ActionCache > delete = new();
                 decimal multValue = 1 + BaseValue.Mult;
                 //Debug.Log($"Current:{Current}",false);
@@ -105,10 +120,7 @@ namespace SkillEditorDemo
                     BuffTrig trig = BuffTrig.Get(List[i].TrigIndex);
                     if (trig != null && trig.Buff != null && trig.Buff.Alive)
                     {
-                        decimal value =(decimal) (
-                                       //trig.IsActionRefValue(List[i].Item1.Item2) ? trig.GetValue(List[i].Item1.Item2) :
-                            List[i].Value);
-
+                        decimal value = (decimal)(trig.GetValue(List[i].ActionIndex));
                         switch ((StatModType)j)
                         {
                             case StatModType.BaseAdd:
@@ -141,14 +153,9 @@ namespace SkillEditorDemo
         {
             StatModify statMod = ActionNode.Get<StatModify>(action.ActionIndex);
             int index = (int)statMod.StatModType;
-            if (ValueList[index] == null)
-            {
-                ValueList[index] = new List<ActionCache>();
-            }
+            ValueList[index] ??= new List<ActionCache>();
             BuffTrig trig = BuffTrig.Get(action.TrigIndex);
-            ValueList[index].Add(new(trig.Index, action.ActionIndex,
-                //statMod.MainValue != null ? 0 : 
-                trig.GetValue(action.ActionIndex)));
+            ValueList[index].Add(new(trig.Index, action.ActionIndex));
             //JSON.Log(ValueList);
         }
         public void Dispose()
@@ -162,12 +169,12 @@ namespace SkillEditorDemo
         public readonly int TrigIndex;
         public readonly int ActionIndex;
 
-        public float Value;
-        public ActionCache(int trigIndex, int actionIndex,float value = 0)
+        //public float Value;
+        public ActionCache(int trigIndex, int actionIndex)
         {
             TrigIndex = trigIndex;
             ActionIndex = actionIndex;
-            Value = value;
+            //Value = value;
         }
 
     }

@@ -17,6 +17,7 @@ namespace TreeNode.Runtime
         public CalculateType CalculateType;
         [Child, LabelInfo(Hide = true)]
         public FuncValue Right;
+
         public override string GetText()
         {
             string left = Left == null ? "0" : Left.GetText();
@@ -32,6 +33,22 @@ namespace TreeNode.Runtime
                 _=>"?"
             };
             return $"({left}{calculateText}{right})";
+        }
+
+        public override float GetResult(TrigInfo info, CombatCache cache)
+        {
+            float left = Left.GetResult(info, cache);
+            float right = Right.GetResult(info, cache);
+            return CalculateType switch
+            {
+                CalculateType.Add => left + right,
+                CalculateType.Sub => left - right,
+                CalculateType.Mul => left * right,
+                CalculateType.Div => right == 0 ? 0 : left / right,
+                CalculateType.Mod => right == 0 ? 0 : left % right,
+                CalculateType.Random => Random.Range(left, right),
+                _ => 0
+            };
         }
     }
 
@@ -54,6 +71,11 @@ namespace TreeNode.Runtime
                 return _true;
             }
             return $"({Condition.GetText()}?{_true}:{_false})";
+        }
+        public override float GetResult(TrigInfo info, CombatCache cache)
+        {
+            bool condition = Condition.GetResult(info, cache);
+            return condition ? True.GetResult(info, cache) : False.GetResult(info, cache);
         }
     }
 

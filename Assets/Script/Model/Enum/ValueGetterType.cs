@@ -6,7 +6,7 @@ namespace SkillEditorDemo
     public enum BuffValueType
     {
         [LabelInfo("存值")]
-        TempData,
+        RuntimeData,
         [LabelInfo("当前等级")]
         Level,
         [LabelInfo("最大等级")]

@@ -1,9 +1,9 @@
 using Newtonsoft.Json;
-using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using TreeNode.Runtime;
 using TreeNode.Utility;
+using System.Linq;
 using UnityEngine;
 
 namespace SkillEditorDemo
@@ -21,14 +21,22 @@ namespace SkillEditorDemo
     {
         [Child(true), TitlePort]
         public Condition Condition;
-        [Child(true), LabelInfo(Text = "真", Width = 10)]
+        [Child, LabelInfo(Text = "真", Width = 10)]
         public ActionNode True;
-        [Child(true), LabelInfo(Text = "假", Width = 10)]
+        [Child, LabelInfo(Text = "假", Width = 10)]
         public ActionNode False;
 
         public override bool Handle(int trigCount, TrigInfo info, CombatCache cache)
         {
-            return true;
+            bool condition = Condition.GetResult(info, cache);
+            if (condition)
+            {
+                return True?.Handle(trigCount, info, cache) ?? true;
+            }
+            else
+            {
+                return False?.Handle(trigCount, info, cache) ?? true;
+            }
         }
     }
 
@@ -38,7 +46,7 @@ namespace SkillEditorDemo
     public class StatModify : ActionNode
     {
         [Child(true), TitlePort]
-        public UnitNode UnitNode;
+        public List<UnitNode> UnitNodes;
 
         [ShowInNode, LabelInfo(Hide = true), Group("Stat")]
         public StatType StatType;
@@ -57,6 +65,19 @@ namespace SkillEditorDemo
 
         public override bool Handle(int trigCount, TrigInfo info, CombatCache cache)
         {
+            List<Unit> units = UnitNodes.SelectMany(n=> n.GetUnits(info, cache)).ToList();
+            for (int i = 0; i < units.Count; i++)
+            {
+                if (isStat)
+                {
+                    units[i].StatHandler.Add(StatType,new ActionCache(info.TrigID,GrowID));
+                }
+                else
+                { 
+                    float value = Value.GetResult(info, cache);
+                    units[i].StatHandler.SetValue(StatType, value, ResModType);
+                }
+            }
             return true;
         }
         public float GetRuntimeValue(TrigInfo info, CombatCache cache)
@@ -74,23 +95,48 @@ namespace SkillEditorDemo
         [ShowInNode, LabelInfo("直接"), Group("Type")]
         public bool Direct;
         [ShowInNode, LabelInfo("闪避"), Group("Type")]
-        public bool Dodge;
+        public bool Dodge_able;
         [ShowInNode, LabelInfo("暴击"), Group("Type")]
-        public bool Crit;
+        public bool Crit_able;
         [Child, LabelInfo(Hide = true)]
         public FuncValue Value;
 
 
         public override bool Handle(int trigCount, TrigInfo info, CombatCache cache)
         {
+            Unit from = Unit.Get(info.SourceID);
+            cache.DmgType = DmgType;
+            cache.DirectDmg = Direct;
+            cache.Dodge_able = Dodge_able;
+            cache.Crit_able = Crit_able;
+            float dmgMod = from?.StatHandler.GetDmgMod(DmgType) ?? 1;
+            List<Unit> units =  UnitNode.GetUnits(info, cache);
+            for (int i = 0; i < units.Count; i++)
+            {
+                info.CurrentID = units[i].Index;
+                CombatCache clone = cache.Clone();
+                float dmgValue = Value.GetResult(info, clone);
+                clone[CombatCacheType.TotalDmg] = dmgValue * dmgMod;
+                TryMakeDmg(trigCount, units[i], clone, from);
+            }
+
+
             return true;
         }
+
+        public static void TryMakeDmg(int trigCount, Unit unit, CombatCache cache, Unit from)
+        {
+            if (!unit.HitCheck(trigCount, from, cache)) { return; }
+            if (!unit.Trig(trigCount, TrigType.Hit.ed(), cache, from)) { return; }
+            if (!unit.CritCheck(trigCount, from, cache)) { return; };
+            unit.TakeDmg(trigCount, cache, from);
+        }
     }
-    [NodeInfo(typeof(ActionNode), "存储临时数据", 160, "执行/存储临时数据"), AssetFilter(true, typeof(BuffAsset))]
-    public class TempData : ActionNode
+    [NodeInfo(typeof(ActionNode), "存储Buff数据", 160, "执行/存储Buff数据"), AssetFilter(true, typeof(BuffAsset))]
+    public class BuffRuntimeData : ActionNode
     {
         [ShowInNode, LabelInfo(Hide = true), Group("Value", Width = 50)]
-        public ValueModType ResModType;
+        public ValueModType ValueModType;
         [Child, LabelInfo(Hide = true), Group("Value")]
         public FuncValue Value;
         public override bool Handle(int trigCount, TrigInfo info, CombatCache cache)
@@ -160,15 +206,15 @@ namespace SkillEditorDemo
         }
     }
 
-    [NodeInfo(typeof(ActionNode), "终止触发", 180, "执行/终止触发"), AssetFilter(true, typeof(BuffAsset))]
-    public class StopTrig : ActionNode
+    [NodeInfo(typeof(ActionNode), "终止触发事件", 180, "执行/终止触发事件"), AssetFilter(true, typeof(BuffAsset))]
+    public class StopTrigEvent : ActionNode
     {
         [Child, TitlePort]
         public Condition Condition;
 
         public override bool Handle(int trigCount, TrigInfo info, CombatCache cache)
         {
-            return false;
+            return !Condition.GetResult(info, cache);
         }
     }
     [NodeInfo(typeof(ActionNode), "尝试移除Buff", 180, "执行/尝试移除Buff"), AssetFilter(true, typeof(BuffAsset))]
@@ -203,6 +249,19 @@ namespace SkillEditorDemo
 
         public override bool Handle(int trigCount, TrigInfo info, CombatCache cache)
         {
+            float value = Value.GetResult(info, cache);
+            switch (ModType)
+            {
+                case ValueModType.Set:
+                    cache[CacheType] = value;
+                    break;
+                case ValueModType.Add:
+                    cache[CacheType] += value;
+                    break;
+                case ValueModType.Multiply:
+                    cache[CacheType] *= value;
+                    break;
+            }
             return true;
         }
     }

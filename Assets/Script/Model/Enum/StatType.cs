@@ -36,7 +36,7 @@ namespace SkillEditorDemo
         public const int Type = 1 << 24;
     }
     public enum StatClass
-    { 
+    {
         None,
         HP,
         Mana,
@@ -159,7 +159,7 @@ namespace SkillEditorDemo
         DodgeIgnore = Dodge | 2,
         #endregion
         #region 范围
-        [LabelInfo("范围/总加成"),Dft(1)]
+        [LabelInfo("范围/总加成"), Dft(1)]
         Range = SC.Stat | (SC.Range << Stat.Offset),
         #endregion
         #region 数量
@@ -255,9 +255,11 @@ namespace SkillEditorDemo
     public class StatParentAttribute : Attribute
     {
         public ST Type;
-        public StatParentAttribute(ST type)
+        public bool Mult;
+        public StatParentAttribute(ST type, bool mult = true)
         {
             Type = type;
+            Mult = mult;
         }
     }
     public static partial class Extensions
@@ -271,5 +273,9 @@ namespace SkillEditorDemo
         /// </summary>
         public static ST CurResStatType(this SC sc) => (ST)((int)sc << Stat.Offset);
         public static ST MaxResStatType(this SC sc) => (ST)((int)SC.Stat | (int)sc.CurResStatType());
+
+        public static ST StatType(this DT dt, bool ed) => (ST)((int)(ed ? SC.DmgedMod : SC.DmgMod) | (int)dt);
+
+
     }
 }

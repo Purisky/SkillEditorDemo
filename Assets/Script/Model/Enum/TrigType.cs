@@ -52,7 +52,7 @@ namespace SkillEditorDemo
         Dodge,
         [LabelInfo("护盾增加")]
         SPAdd,
-        [LabelInfo("护盾破裂")]
+        [LabelInfo("护盾破裂"), NoSeq]
         SPBreak,
         [LabelInfo("伤害/命中伤害"), NoSeq]
         HitDmg,

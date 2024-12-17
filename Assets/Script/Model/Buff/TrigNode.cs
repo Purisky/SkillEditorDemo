@@ -5,8 +5,8 @@ using TreeNode.Runtime;
 using UnityEngine;
 namespace SkillEditorDemo
 {
-    [NodeInfo(typeof(TriggerNode), "触发器", 300, "Buff/触发器"), AssetFilter(true, typeof(BuffAsset)), PortColor("#7B68EE")]
-    public class TriggerNode : JsonNode , IGrowID<TriggerNode>
+    [NodeInfo(typeof(TrigNode), "触发器", 300, "Buff/触发器"), AssetFilter(true, typeof(BuffAsset)), PortColor("#7B68EE")]
+    public class TrigNode : JsonNode , IGrowID<TrigNode>
     {
         [ShowInNode(ShowIf = nameof(ShowPassive)), LabelInfo("被", 20), Group("Trig", Width = 45)]
         public bool Passive;
@@ -18,8 +18,8 @@ namespace SkillEditorDemo
         public Condition Condition;
         [Child(true), LabelInfo("效果组"), Group("Trig", Width = 70)]
         public List<ActionNode> Actions;
-        [Child, LabelInfo("冷却时间")]
-        public FuncValue CD;
+        [ ShowInNode, LabelInfo("冷却时间")]
+        public TimeValue CD;
         [Child, LabelInfo("触发移除")]
         public FuncValue RemoveOnTrig;
 
@@ -33,5 +33,19 @@ namespace SkillEditorDemo
 
         public static readonly HashSet<TrigType> NoPassive = EnumAttributeGetter.Get<TrigType, NoPassiveAttribute>().Keys.ToHashSet();
         public static readonly HashSet<TrigType> NoSeq = EnumAttributeGetter.Get<TrigType, NoSeqAttribute>().Keys.ToHashSet();
+        public bool CheckCondition(TrigInfo  info,CombatCache cache ) => Condition == null || Condition.GetResult(info, cache);
+        [JsonIgnore]
+        public TrigType CombinedTrigType
+        {
+            get {
+                TrigType type = TrigType;
+                if (Passive) { type = type.ed(); }
+                if (TriggerSequence == TriggerSequence.Aft)
+                { 
+                    type |= STrigType.Aft;
+                }
+                return type;
+            }
+        }
     }
 }

@@ -4,22 +4,18 @@ using UnityEngine;
 
 namespace SkillEditorDemo
 {
+    //todo gc optimize
     public class CombatCache
     {
-        public float[] Caches = new float[(int)CombatCacheType.Count];
+        const int Count = (int)CombatCacheType.Count;
+        public float[] Caches = new float[Count];
+        public DmgType DmgType;
         public bool DirectDmg;
-        public bool NeedCheckDodge;
-        public bool NeedCheckCrit;
+        public bool Dodge_able;
+        public bool Crit_able;
         public bool IsCrit;
-
-
-        public static TempData _ = new ();
-        public float this[CombatCacheType type]
-        {
-            get => Caches[(int)type];
-            set => Caches[(int)type] = value;
-        }
-
+        public static CombatCache _ = new ();
+        public ref float this[CombatCacheType type] => ref Caches[(int)type];
         public CombatCache Clone()
         {
             CombatCache cache = new ();
@@ -28,14 +24,10 @@ namespace SkillEditorDemo
                 cache.Caches[i] = Caches[i];
             }
             cache.DirectDmg = DirectDmg;
-            cache.NeedCheckDodge = NeedCheckDodge;
-            cache.NeedCheckCrit = NeedCheckCrit;
+            cache.Dodge_able = Dodge_able;
+            cache.Crit_able = Crit_able;
             cache.IsCrit = IsCrit;
             return cache;
         }
-
-
-
-
     }
 }
