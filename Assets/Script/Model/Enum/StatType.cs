@@ -1,5 +1,6 @@
 using System;
 using TreeNode.Runtime;
+using TreeNode.Utility;
 using UnityEngine;
 
 namespace SkillEditorDemo
@@ -163,13 +164,13 @@ namespace SkillEditorDemo
         Range = SC.Stat | (SC.Range << Stat.Offset),
         #endregion
         #region 数量
-        [Obsolete]
+        [HideEnum]
         Count = SC.Stat | (SC.Count << Stat.Offset),
         [LabelInfo("数量/额外投射物")]
         ProjectileCount = Count | 1,
         #endregion
         #region 时间
-        [Obsolete]
+        [HideEnum]
         Time = SC.Stat | (SC.Time << Stat.Offset),
         [LabelInfo("时间/增益时间"), Dft(1)]
         BuffTime = Time | 1,
@@ -177,7 +178,7 @@ namespace SkillEditorDemo
         DebuffTime = Time | 2,
         #endregion
         #region 大小
-        [Obsolete]
+        [HideEnum]
         Size = SC.Stat | (SC.Size << Stat.Offset),
 
         #endregion

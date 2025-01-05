@@ -1,3 +1,5 @@
+using TreeNode.Utility;
+
 namespace TreeNode.Runtime
 {
     public enum CalculateType

@@ -1,9 +1,10 @@
 using System.Collections.Generic;
+using TreeNode.Utility;
 using UnityEngine;
 
 namespace SkillEditorDemo
 {
-    public class BuffMgr:Singleton<BuffMgr>
+    public class BuffMgr : Singleton<BuffMgr>
     {
         public TimeWheel<int> PeriodicTrigs = new();
         public TimeWheel<int> TimeOutBuffs = new();
@@ -36,7 +37,7 @@ namespace SkillEditorDemo
             for (int i = 0; i < buffs.Count; i++)
             {
                 Buff buff = Buff.Get(buffs[i]);
-                if (buff != null&& buff.IsTimeOut())
+                if (buff != null && buff.IsTimeOut())
                 {
                     buff.CarrierUnit.BuffHandler.RemoveBuff(buffs[i], true);
                 }

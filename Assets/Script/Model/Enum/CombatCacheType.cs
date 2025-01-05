@@ -1,5 +1,6 @@
 using System;
 using TreeNode.Runtime;
+using TreeNode.Utility;
 using UnityEngine;
 
 namespace SkillEditorDemo
@@ -34,7 +35,7 @@ namespace SkillEditorDemo
         ManaCost,
         [LabelInfo("魔法/溢出")]
         OverMana,
-        [Obsolete]
+        [HideEnum]
         Count,
     }
 }

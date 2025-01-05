@@ -14,7 +14,7 @@ namespace SkillEditorDemo
         [JsonIgnore]
         public int GrowID { get; set; }
         public static T Get<T>(int id) where T : ActionNode => (T)IGrowID < ActionNode >.Get(id);
-        public abstract bool Handle(int trigCount, TrigInfo info, CombatCache cache);
+        public abstract bool Handle(int trigCount, ObjInfo info, CombatCache cache);
     }
     [NodeInfo(typeof(ActionNode), "分支执行", 100, "执行/分支执行")]
     public class ConditionAction : ActionNode
@@ -26,7 +26,7 @@ namespace SkillEditorDemo
         [Child, LabelInfo(Text = "假", Width = 10)]
         public ActionNode False;
 
-        public override bool Handle(int trigCount, TrigInfo info, CombatCache cache)
+        public override bool Handle(int trigCount, ObjInfo info, CombatCache cache)
         {
             bool condition = Condition.GetResult(info, cache);
             if (condition)
@@ -48,27 +48,39 @@ namespace SkillEditorDemo
         [Child(true), TitlePort]
         public List<UnitNode> UnitNodes;
 
-        [ShowInNode, LabelInfo(Hide = true), Group("Stat")]
+        [ShowInNode, LabelInfo(Hide = true), Group("Stat"),Dropdown(nameof(GetStatTypes))]
         public StatType StatType;
-        [ShowInNode(ShowIf = nameof(isStat)), LabelInfo(Hide = true), Group("Stat")]
+        [ShowInNode(ShowIf = nameof(ShowStat)), LabelInfo(Hide = true), Group("Stat")]
         public StatModType StatModType;
-        [ShowInNode(ShowIf = nameof(isRes)), LabelInfo(Hide = true), Group("Stat")]
+        [ShowInNode(ShowIf = nameof(ShowRes)), LabelInfo(Hide = true), Group("Stat")]
         public ValueModType ResModType;
         [Child, LabelInfo(Hide = true)]
         public FuncValue Value;
 
         [JsonIgnore]
-        bool isStat => StatType != StatType.None && StatType.IsStat();
+        bool ShowStat => StatType != StatType.None && StatType.IsStat();
         [JsonIgnore]
-        bool isRes => StatType != StatType.None && !StatType.IsStat();
+        bool ShowRes => StatType != StatType.None && !StatType.IsStat();
 
 
-        public override bool Handle(int trigCount, TrigInfo info, CombatCache cache)
+        static List<StatType> GetStatTypes(Type type)
         {
+            //Debug.Log(type);
+            if (type == typeof(BuffAsset))
+            {
+                return statTypes;
+            }
+            return valueTypes;
+        }
+        static readonly List<StatType> statTypes = Enum.GetValues(typeof(StatType)).Cast<StatType>().ToList();
+        static readonly List<StatType> valueTypes = statTypes.Where(s => !s.IsStat()).ToList();
+        public override bool Handle(int trigCount, ObjInfo info, CombatCache cache)
+        {
+            if (ShowStat && info.TrigID == -1) { return true; }
             List<Unit> units = UnitNodes.SelectMany(n=> n.GetUnits(info, cache)).ToList();
             for (int i = 0; i < units.Count; i++)
             {
-                if (isStat)
+                if (ShowStat)
                 {
                     units[i].StatHandler.Add(StatType,new ActionCache(info.TrigID,GrowID));
                 }
@@ -80,9 +92,9 @@ namespace SkillEditorDemo
             }
             return true;
         }
-        public float GetRuntimeValue(TrigInfo info, CombatCache cache)
+        public float GetRuntimeValue(ObjInfo info, CombatCache cache)
         {
-            return Value.Value;
+            return Value.GetResult(info, cache);
         }
     }
     [NodeInfo(typeof(ActionNode), "伤害", 200, "执行/伤害")]
@@ -90,7 +102,7 @@ namespace SkillEditorDemo
     {
         [Child(true), TitlePort]
         public UnitNode UnitNode;
-        [ShowInNode, LabelInfo(Hide = true)]
+        [ShowInNode, LabelInfo(Hide = true),Dropdown(nameof(DmgTypes))]
         public DmgType DmgType;
         [ShowInNode, LabelInfo("直接"), Group("Type")]
         public bool Direct;
@@ -102,7 +114,17 @@ namespace SkillEditorDemo
         public FuncValue Value;
 
 
-        public override bool Handle(int trigCount, TrigInfo info, CombatCache cache)
+        static readonly List<DmgType> DmgTypes = new()
+        {
+            DmgType.Physic,
+            DmgType.Fire,
+            DmgType.Frost,
+            DmgType.Lightning,
+        };
+
+
+
+        public override bool Handle(int trigCount, ObjInfo info, CombatCache cache)
         {
             Unit from = Unit.Get(info.SourceID);
             cache.DmgType = DmgType;
@@ -139,7 +161,7 @@ namespace SkillEditorDemo
         public ValueModType ValueModType;
         [Child, LabelInfo(Hide = true), Group("Value")]
         public FuncValue Value;
-        public override bool Handle(int trigCount, TrigInfo info, CombatCache cache)
+        public override bool Handle(int trigCount, ObjInfo info, CombatCache cache)
         {
             return true;
         }
@@ -169,7 +191,7 @@ namespace SkillEditorDemo
 
 
 
-        public override bool Handle(int trigCount, TrigInfo info, CombatCache cache)
+        public override bool Handle(int trigCount, ObjInfo info, CombatCache cache)
         {
             return true;
         }
@@ -200,7 +222,7 @@ namespace SkillEditorDemo
         //public NumValue Param3;
         static DropdownList<string> Buffs => UniqNodeManager<BuffNode, BuffAsset>.Dropdowns;
 
-        public override bool Handle(int trigCount, TrigInfo info, CombatCache cache)
+        public override bool Handle(int trigCount, ObjInfo info, CombatCache cache)
         {
             return true;
         }
@@ -212,7 +234,7 @@ namespace SkillEditorDemo
         [Child, TitlePort]
         public Condition Condition;
 
-        public override bool Handle(int trigCount, TrigInfo info, CombatCache cache)
+        public override bool Handle(int trigCount, ObjInfo info, CombatCache cache)
         {
             return !Condition.GetResult(info, cache);
         }
@@ -231,7 +253,7 @@ namespace SkillEditorDemo
         static DropdownList<string> Buffs => UniqNodeManager<BuffNode, BuffAsset>.Dropdowns;
 
 
-        public override bool Handle(int trigCount, TrigInfo info, CombatCache cache)
+        public override bool Handle(int trigCount, ObjInfo info, CombatCache cache)
         {
             return true;
         }
@@ -247,7 +269,7 @@ namespace SkillEditorDemo
         public FuncValue Value;
 
 
-        public override bool Handle(int trigCount, TrigInfo info, CombatCache cache)
+        public override bool Handle(int trigCount, ObjInfo info, CombatCache cache)
         {
             float value = Value.GetResult(info, cache);
             switch (ModType)
@@ -265,6 +287,21 @@ namespace SkillEditorDemo
             return true;
         }
     }
+    [NodeInfo(typeof(ActionNode), "创建实体", 180, "执行/创建实体"), AssetFilter(true, typeof(BuffAsset))]
+    public class CreateEntity : ActionNode
+    {
+        [Child(true), TitlePort]
+        public EntityNode EntityNode;
+
+
+
+        public override bool Handle(int trigCount, ObjInfo info, CombatCache cache)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+
 
 
 }

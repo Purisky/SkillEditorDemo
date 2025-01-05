@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using TreeNode.Utility;
 using UnityEngine;
 
 namespace SkillEditorDemo
@@ -6,11 +7,11 @@ namespace SkillEditorDemo
 
     public class TimeWheels : Singleton<TimeWheels>
     {
-        readonly List<IMoveNext> List = new ();
-        public static void Add(IMoveNext moveNext) => Instance.List.Add(moveNext);
-        public static void MoveNext()=> Instance.List.ForEach(n => n.MoveNext());
+        readonly List<IStepNext> List = new ();
+        public static void Add(IStepNext stepNext) => Inst.List.Add(stepNext);
+        public static void StepNext()=> Inst.List.ForEach(n => n.StepNext());
     }
-    public class TimeWheel<T> : IMoveNext where T : struct
+    public class TimeWheel<T> : IStepNext where T : struct
     {
         public const int WheelLength = 60;
         int CurrentTick;
@@ -44,10 +45,10 @@ namespace SkillEditorDemo
         {
             Wheel[wheelSection.Pos].Remove(wheelSection);
         }
-        public void MoveNext()
+        public void StepNext()
         {
             CurrentTick++;
-            output = new List<T>();
+            output.Clear();
             List<WheelSection<T>> delete = new ();
             List<WheelSection<T>> current = Wheel[CurrentTick % WheelLength];
             foreach (var item in current)
@@ -68,9 +69,9 @@ namespace SkillEditorDemo
             }
         }
     }
-    public interface IMoveNext
+    public interface IStepNext
     {
-        void MoveNext();
+        void StepNext();
     }
     public class WheelSection<T>where T : struct
     {

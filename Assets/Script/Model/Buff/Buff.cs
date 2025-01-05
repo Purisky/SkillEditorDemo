@@ -21,7 +21,7 @@ namespace SkillEditorDemo
         public float[] CreateParam;
         public bool Disposed;
         public int TotalTick;
-        public TrigInfo TrigInfo;
+        public ObjInfo TrigInfo;
         public Dictionary<TrigType, BuffTrig[]> Lifecycle;
         public Dictionary<int, float> ValueCache;
         public Dictionary<string, float> ParamValues;
@@ -30,9 +30,9 @@ namespace SkillEditorDemo
         public int SourceID => TrigInfo.SourceID;
         public bool Alive => !Disposed;
         public Unit CarrierUnit => Unit.Get(TrigInfo.CurrentID);
-        public Unit CreatorUnit => Unit.Get(TrigInfo.CreatorID);
+        public Unit CreatorUnit => Unit.Get(TrigInfo.BuffCreatorID);
         public Unit SourceUnit => Unit.Get(SourceID);
-        public Buff(string Id, int level, int degree, TrigInfo trigInfo, float[] createParam)
+        public Buff(string Id, int level, int degree, ObjInfo trigInfo, float[] createParam)
         {
             ID = Id;
             IIndex<Buff>.Add(this);
@@ -97,7 +97,7 @@ namespace SkillEditorDemo
         public void Refresh()
         {
             FreshTick = Time.Tick;
-            BuffMgr.Instance.TimeOutBuffs.Add(TotalTick, Index);
+            BuffMgr.Inst.TimeOutBuffs.Add(TotalTick, Index);
         }
 
         public void SetLevel(int level)
@@ -142,7 +142,7 @@ namespace SkillEditorDemo
                 int left = FreshTick + TotalTick - Time.Tick;
                 if (left > 0)
                 {
-                    BuffMgr.Instance.TimeOutBuffs.Add(left, Index);
+                    BuffMgr.Inst.TimeOutBuffs.Add(left, Index);
                 }
                 else
                 { 

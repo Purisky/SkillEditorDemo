@@ -120,10 +120,10 @@ namespace SkillEditorDemo
                 }
                 else
                 {
-                    TrigInfo trigInfo = new() { 
-                        CarrierID = Unit.Index,
+                    ObjInfo trigInfo = new() { 
+                        BuffCarrierID = Unit.Index,
                         SourceID = sourceId,
-                        CreatorID = creatorId,
+                        BuffCreatorID = creatorId,
                     };
                     buff = new Buff(buffDataID, level, degree, trigInfo, createParams);
                     AddBuff(buff);
@@ -187,7 +187,7 @@ namespace SkillEditorDemo
 
         void internalAddBuff(Buff buff)
         {
-            buff.TrigInfo.CarrierID = Unit.Index;
+            buff.TrigInfo.BuffCarrierID = Unit.Index;
             int sourceId = buff.SourceID;
             if (buff.BuffData.CompeteType != CompeteType.Indie)
             {
@@ -214,7 +214,7 @@ namespace SkillEditorDemo
             }
             else if (trig.TrigNode.TrigType >= TrigType.ByTime_1)
             {
-                BuffMgr.Instance.PeriodicTrigs.Add(trig.TrigTickDelay, trig.Index);
+                BuffMgr.Inst.PeriodicTrigs.Add(trig.TrigTickDelay, trig.Index);
             }
         }
 

@@ -2,6 +2,7 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 using TreeNode.Runtime;
+using TreeNode.Utility;
 using UnityEngine;
 namespace SkillEditorDemo
 {
@@ -33,7 +34,7 @@ namespace SkillEditorDemo
 
         public static readonly HashSet<TrigType> NoPassive = EnumAttributeGetter.Get<TrigType, NoPassiveAttribute>().Keys.ToHashSet();
         public static readonly HashSet<TrigType> NoSeq = EnumAttributeGetter.Get<TrigType, NoSeqAttribute>().Keys.ToHashSet();
-        public bool CheckCondition(TrigInfo  info,CombatCache cache ) => Condition == null || Condition.GetResult(info, cache);
+        public bool CheckCondition(ObjInfo  info,CombatCache cache ) => Condition == null || Condition.GetResult(info, cache);
         [JsonIgnore]
         public TrigType CombinedTrigType
         {

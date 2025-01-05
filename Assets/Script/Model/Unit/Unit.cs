@@ -99,7 +99,13 @@ namespace SkillEditorDemo
             static float CountCritDmg(float critDmg, float resist) => Math.Max(1, critDmg - resist);
         }
 
+        public void Update()
+        {
+            HP?.Update();
+            SP?.Update();
+            Mana?.Update();
 
+        }
 
 
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using TreeNode.Runtime;
+using TreeNode.Utility;
 using UnityEngine;
 
 namespace SkillEditorDemo
@@ -13,7 +14,7 @@ namespace SkillEditorDemo
         {
             return "单位";
         }
-        public abstract List<Unit> GetUnits(TrigInfo info,CombatCache cache);
+        public abstract List<Unit> GetUnits(ObjInfo info,CombatCache cache);
 
 
     }
@@ -22,7 +23,7 @@ namespace SkillEditorDemo
     {
         public override string GetText() => "当前单位";
 
-        public override List<Unit> GetUnits(TrigInfo info, CombatCache cache)
+        public override List<Unit> GetUnits(ObjInfo info, CombatCache cache)
         {
             throw new NotImplementedException();
         }
@@ -34,7 +35,7 @@ namespace SkillEditorDemo
         public BuffUnitType BuffUnitType;
         public override string GetText() => $"Buff.{BuffUnitType.GetLabel()}";
 
-        public override List<Unit> GetUnits(TrigInfo info, CombatCache cache)
+        public override List<Unit> GetUnits(ObjInfo info, CombatCache cache)
         {
             throw new NotImplementedException();
         }
@@ -44,7 +45,7 @@ namespace SkillEditorDemo
     {
         public override string GetText() => $"所有单位";
 
-        public override List<Unit> GetUnits(TrigInfo info, CombatCache cache)
+        public override List<Unit> GetUnits(ObjInfo info, CombatCache cache)
         {
             throw new NotImplementedException();
         }
@@ -67,7 +68,7 @@ namespace SkillEditorDemo
             return $"([{unitText}]=>{Condition.GetText()})";
         }
 
-        public override List<Unit> GetUnits(TrigInfo info, CombatCache cache)
+        public override List<Unit> GetUnits(ObjInfo info, CombatCache cache)
         {
             throw new NotImplementedException();
         }
@@ -94,7 +95,7 @@ namespace SkillEditorDemo
             return $"([{unitText}].排序)";
         }
 
-        public override List<Unit> GetUnits(TrigInfo info, CombatCache cache)
+        public override List<Unit> GetUnits(ObjInfo info, CombatCache cache)
         {
             throw new NotImplementedException();
         }
@@ -116,7 +117,7 @@ namespace SkillEditorDemo
             return $"([{unitText}].[{Index.GetText()}])";
         }
 
-        public override List<Unit> GetUnits(TrigInfo info, CombatCache cache)
+        public override List<Unit> GetUnits(ObjInfo info, CombatCache cache)
         {
             throw new NotImplementedException();
         }
@@ -126,7 +127,7 @@ namespace SkillEditorDemo
     {
         public override string GetText()=> $"当前单位列表";
 
-        public override List<Unit> GetUnits(TrigInfo info, CombatCache cache)
+        public override List<Unit> GetUnits(ObjInfo info, CombatCache cache)
         {
             throw new NotImplementedException();
         }
@@ -137,7 +138,7 @@ namespace SkillEditorDemo
     {
         public override string GetText() => $"单位迭代器";
 
-        public override List<Unit> GetUnits(TrigInfo info, CombatCache cache)
+        public override List<Unit> GetUnits(ObjInfo info, CombatCache cache)
         {
             throw new NotImplementedException();
         }
@@ -147,7 +148,7 @@ namespace SkillEditorDemo
     {
         public override string GetText() => $"碰撞单位";
 
-        public override List<Unit> GetUnits(TrigInfo info, CombatCache cache)
+        public override List<Unit> GetUnits(ObjInfo info, CombatCache cache)
         {
             throw new NotImplementedException();
         }
@@ -157,7 +158,7 @@ namespace SkillEditorDemo
 
     public static class UnitNodeExtensions
     { 
-        public static Unit GetUnit(this UnitNode node, TrigInfo info, CombatCache cache)
+        public static Unit GetUnit(this UnitNode node, ObjInfo info, CombatCache cache)
         {
             return node.GetUnits(info, cache)[0];
         }

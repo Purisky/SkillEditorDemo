@@ -3,24 +3,33 @@ using UnityEngine;
 
 namespace SkillEditorDemo
 {
-    public struct TrigInfo
+    public struct ObjInfo
     {
         #region Unit
         public int CurrentID;
-        public int CarrierID;
-        public int CreatorID;
         public int SourceID;
-        public int TriggerID;
         #endregion
 
+
+
+        #region Buff
+        public int BuffCarrierID;
+        public int BuffCreatorID;
+        public int TriggerID;//Unit
         public int BuffID;
         public int TrigID;
+        #endregion
 
-        public readonly static TrigInfo Empty = new()
+
+
+
+
+
+        public readonly static ObjInfo Empty = new()
         {
             CurrentID = -1,
-            CarrierID = -1,
-            CreatorID = -1,
+            BuffCarrierID = -1,
+            BuffCreatorID = -1,
             SourceID = -1,
             TriggerID = -1,
             BuffID = -1,

@@ -1,5 +1,6 @@
 using System;
 using TreeNode.Runtime;
+using TreeNode.Utility;
 using UnityEngine;
 
 namespace SkillEditorDemo
@@ -35,9 +36,11 @@ namespace SkillEditorDemo
         ByTime_3,
         [LabelInfo("周期/0.25秒"), NoPassive, NoSeq]
         ByTime_4,
+        [LabelInfo("周期"), NoPassive, NoSeq]
+        ByTime_5,
 
-        [LabelInfo("添加Buff")]
-        BuffAdd,
+
+
         [LabelInfo("盒子命中"), NoSeq]
         Hit,
         [LabelInfo("击杀")]
@@ -66,6 +69,10 @@ namespace SkillEditorDemo
         ManaCost,
         [LabelInfo("魔力增加(非自然回复)")]
         ManaAdd,
+
+
+
+
     }
 
 

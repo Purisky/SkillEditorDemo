@@ -1,0 +1,49 @@
+{
+  "Data": {
+    "$type": "SkillEditorDemo.SkillAsset, Assembly-CSharp",
+    "Nodes": [
+      {
+        "$type": "SkillEditorDemo.SkillNode, Assembly-CSharp",
+        "Position": {
+          "x": 301,
+          "y": 178
+        }
+      },
+      {
+        "$type": "SkillEditorDemo.StatModify, Assembly-CSharp",
+        "StatType": "HP",
+        "Value": {},
+        "Position": {
+          "x": 808,
+          "y": 178
+        }
+      },
+      {
+        "$type": "SkillEditorDemo.NewProjectile, Assembly-CSharp",
+        "Time": {
+          "Value": {}
+        },
+        "Speed": {},
+        "Radius": {},
+        "Position": {
+          "x": 300,
+          "y": 270
+        }
+      },
+      {
+        "$type": "SkillEditorDemo.NewHitBox, Assembly-CSharp",
+        "Position": {
+          "x": 847,
+          "y": 340
+        }
+      },
+      {
+        "$type": "SkillEditorDemo.CircleShape, Assembly-CSharp",
+        "Position": {
+          "x": 1156,
+          "y": 360
+        }
+      }
+    ]
+  }
+}

@@ -9,7 +9,6 @@
           "Value": 1.0
         },
         "Time": {
-          "Type": "Frame",
           "Value": {}
         },
         "Triggers": [
@@ -38,6 +37,14 @@
             }
           }
         ]
+      },
+      {
+        "$type": "SkillEditorDemo.StatModify, Assembly-CSharp",
+        "Value": {},
+        "Position": {
+          "x": 611,
+          "y": 267
+        }
       }
     ]
   }

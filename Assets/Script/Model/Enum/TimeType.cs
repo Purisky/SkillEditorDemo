@@ -1,4 +1,5 @@
 using TreeNode.Runtime;
+using TreeNode.Utility;
 using UnityEngine;
 
 namespace SkillEditorDemo
@@ -7,7 +8,7 @@ namespace SkillEditorDemo
     {
         [LabelInfo("秒")]
         Second,
-        [LabelInfo("游戏刻")]
+        [LabelInfo("帧")]
         GameTick,
     }
 }

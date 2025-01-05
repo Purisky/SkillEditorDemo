@@ -12,7 +12,7 @@ namespace SkillEditorDemo
         public Buff Buff;
         public int LastTrigTick = int.MinValue;
         public List<ActionNode> Actions=>TrigNode.Actions;
-        TrigInfo TrigInfo;
+        ObjInfo TrigInfo;
         public CombatCache LastCombatCache;
         public int TrigTickDelay;
         public int CurrentTrigCount;
@@ -61,7 +61,7 @@ namespace SkillEditorDemo
         }
 
 
-        bool internalTrig(int trigCount, TrigInfo info,CombatCache cache)
+        bool internalTrig(int trigCount, ObjInfo info,CombatCache cache)
         {
             bool trigContinue = true;
             for (int i = 0; i < Actions.Count; i++)
