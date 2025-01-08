@@ -1,11 +1,6 @@
 using Newtonsoft.Json;
-using SkillEditorDemo;
 using SkillEditorDemo.Utility;
-using System.Collections.Generic;
-using System.Linq;
-using TreeNode.Runtime;
 using TreeNode.Utility;
-using UnityEngine;
 
 namespace SkillEditorDemo.Model
 {
@@ -48,7 +43,7 @@ namespace SkillEditorDemo.Model
                 CalculateType.Mul => left * right,
                 CalculateType.Div => right == 0 ? 0 : left / right,
                 CalculateType.Mod => right == 0 ? 0 : left % right,
-                CalculateType.Random => Random.Range(left, right),
+                CalculateType.Random =>  FixRandom.Range(left, right),
                 _ => 0
             };
         }

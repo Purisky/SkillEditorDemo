@@ -1,15 +1,13 @@
 using System;
-using TreeNode.Runtime;
 using TreeNode.Utility;
-using UnityEngine;
 
 namespace SkillEditorDemo.Model
 {
-    using ST = StatType;
-    using SC = StatClass;
-    using DT = DmgType;
     using Dft = DefaultValueAttribute;
+    using DT = DmgType;
     using Parent = StatParentAttribute;
+    using SC = StatClass;
+    using ST = StatType;
 
 
     public enum StatModType

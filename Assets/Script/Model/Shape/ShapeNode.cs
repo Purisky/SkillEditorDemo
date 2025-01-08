@@ -1,7 +1,5 @@
-using System.Collections.Generic;
 using TreeNode.Runtime;
 using TreeNode.Utility;
-using UnityEngine;
 
 namespace SkillEditorDemo.Model
 {

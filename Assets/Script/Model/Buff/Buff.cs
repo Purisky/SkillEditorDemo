@@ -1,7 +1,7 @@
 using SkillEditorDemo.Utility;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
 
 namespace SkillEditorDemo.Model
 {
@@ -102,7 +102,7 @@ namespace SkillEditorDemo.Model
         {
             if (level == CurrentLevel) { return; }
             int oldLevel = CurrentLevel;
-            CurrentLevel = BuffData.MaxLevel > 0 ? Mathf.Min(BuffData.MaxLevel, level) : level;
+            CurrentLevel = BuffData.MaxLevel > 0 ? (int)MathF.Min(BuffData.MaxLevel, level) : level;
         }
         public void AddLevel(int level)
         {
@@ -115,7 +115,7 @@ namespace SkillEditorDemo.Model
             int maxDegree = (int)BuffData.MaxDegree.GetResult(TrigInfo);
             if (maxDegree > 0)
             {
-                CurrentDegree = degree == -1 ? maxDegree: Mathf.Min(maxDegree, degree);
+                CurrentDegree = degree == -1 ? maxDegree: (int)MathF.Min(maxDegree, degree);
             }
             else {
                 if (degree == -1) { return; }

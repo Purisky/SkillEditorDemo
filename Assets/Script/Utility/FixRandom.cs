@@ -1,11 +1,16 @@
-using UnityEngine;
+using System;
 
 namespace SkillEditorDemo.Utility
 {
     public class FixRandom
     {
-        public static float Get01() => Random.value;
+        static Random random = new();
 
-        public static int Range(int min, int max) => Random.Range(min, max);
+        public static float Get01() => (float)random.NextDouble();
+
+        public static int Range(int min, int max) => random.Next(min, max);
+
+        public static float Range(float min, float max) => min + (max - min) * Get01();
+
     }
 }

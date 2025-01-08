@@ -1,4 +1,4 @@
-using UnityEngine;
+using System;
 
 namespace SkillEditorDemo.Model
 {
@@ -32,14 +32,14 @@ namespace SkillEditorDemo.Model
         public override bool TrigCost(int trigCount, int value, CombatCache cache, Unit from)
         {
             if (value <= 0) { return true; }
-            cache[CombatCacheType.LifeDmg] = Mathf.Min(value, Value);
+            cache[CombatCacheType.LifeDmg] = MathF.Min(value, Value);
             if(!Unit.Trig(trigCount, TrigType.HPDmg.ed(), cache, from)) { return false; }
             int newValue = Value - (int)cache[CombatCacheType.LifeDmg];
             if (newValue <= 0)
             {
                 cache[CombatCacheType.OverDmg] = -newValue;
             }
-            Value = Mathf.Max(newValue, 0);
+            Value = (int)MathF.Max(newValue, 0);
             if(!Unit.Trig(trigCount, Aft | TrigType.HPDmg.ed(), cache, from)) { return false; }
             return true;
         }

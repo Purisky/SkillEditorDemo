@@ -1,4 +1,4 @@
-using UnityEngine;
+using System;
 
 namespace SkillEditorDemo.Model
 {
@@ -18,8 +18,8 @@ namespace SkillEditorDemo.Model
             if (!Unit.Trig(trigCount, TrigType.ManaAdd.ed(), cache, from)) { return false; }
             int newValue = (int)(Value + cache[CombatCacheType.ManaAdd]);
             int max = MaxValue;
-            cache[CombatCacheType.OverMana] = Mathf.Max(0, newValue - max);
-            Value = Mathf.Min(max, newValue);
+            cache[CombatCacheType.OverMana] = MathF.Max(0, newValue - max);
+            Value = (int)MathF.Min(max, newValue);
             if (!Unit.Trig(trigCount, Aft | TrigType.ManaAdd.ed(), cache, from)) { return false; }
             return true;
         }

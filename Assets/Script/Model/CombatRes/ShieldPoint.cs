@@ -1,4 +1,4 @@
-using UnityEngine;
+using System;
 
 namespace SkillEditorDemo.Model
 {
@@ -19,8 +19,8 @@ namespace SkillEditorDemo.Model
             if (!Unit.Trig(trigCount, TrigType.SPAdd.ed(), cache, from)) { return false; }
             int newValue = (int)(Value + cache[CombatCacheType.SPAdd]);
             int max = MaxValue;
-            cache[CombatCacheType.OverSP] =Mathf.Max(0, newValue - max);
-            Value = Mathf.Min(max, newValue);
+            cache[CombatCacheType.OverSP] =MathF.Max(0, newValue - max);
+            Value = (int)MathF.Min(max, newValue);
             if (!Unit.Trig(trigCount, Aft | TrigType.SPAdd.ed(), cache, from)) { return false; }
             return true;
         }
@@ -29,11 +29,11 @@ namespace SkillEditorDemo.Model
         {
             if (value <= 0 || Value <= 0) { return true; }
             Reset();
-            cache[CombatCacheType.SPDmg] = Mathf.Min(value, Value);
-            cache[CombatCacheType.LeftDmg] = Mathf.Max(value - Value, 0);
+            cache[CombatCacheType.SPDmg] = MathF.Min(value, Value);
+            cache[CombatCacheType.LeftDmg] = MathF.Max(value - Value, 0);
             if (!Unit.Trig(trigCount, TrigType.SPDmg.ed(), cache, from)) { return false; }
-            Value = Mathf.Max(Value - (int)cache[CombatCacheType.SPDmg], 0);
-            cache[CombatCacheType.SPDmg] = Mathf.Min(cache[CombatCacheType.SPDmg], Value);
+            Value = (int)MathF.Max(Value - (int)cache[CombatCacheType.SPDmg], 0);
+            cache[CombatCacheType.SPDmg] = MathF.Min(cache[CombatCacheType.SPDmg], Value);
             if (!Unit.Trig(trigCount, Aft | TrigType.SPDmg.ed(), cache, from)) { return false; }
             if (Value == 0)
             {

@@ -1,4 +1,4 @@
-using UnityEngine;
+using System;
 
 namespace SkillEditorDemo.Model
 {
@@ -34,7 +34,7 @@ namespace SkillEditorDemo.Model
             if (updateTick >= Time.GameTickPerSec + delay)
             {
                 updateTick = delay;
-                Unit.StatHandler[ValueType] = Mathf.Min(Value+ UpdateValue, MaxValue);
+                Unit.StatHandler[ValueType] = MathF.Min(Value+ UpdateValue, MaxValue);
             }
         }
         public void Reset() => updateTick = 0;

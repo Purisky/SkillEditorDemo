@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace SkillEditorDemo.Utility
 {
     public static partial class Extensions

@@ -1,6 +1,5 @@
 using SkillEditorDemo.Utility;
 using System;
-using UnityEngine;
 
 namespace SkillEditorDemo.Model
 {
@@ -38,7 +37,7 @@ namespace SkillEditorDemo.Model
                 if (!Trig(trigCount, TrigType.Dmg.ed(), cache, from)) { return; }
                 {
                     //Def
-                    float def = Mathf.Max(StatHandler[StatType.Def] - from?.StatHandler[StatType.DefIgnore] ?? 0, 0);
+                    float def = MathF.Max(StatHandler[StatType.Def] - from?.StatHandler[StatType.DefIgnore] ?? 0, 0);
                     float defMod = 100 / (100 + def);
                     cache[CombatCacheType.DefDmg] = cache[CombatCacheType.TotalDmg] * (1 - defMod);
                     cache[CombatCacheType.LeftDmg] = cache[CombatCacheType.TotalDmg] * defMod;

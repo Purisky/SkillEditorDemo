@@ -1,5 +1,4 @@
 using SkillEditorDemo.Utility;
-using UnityEngine;
 
 namespace SkillEditorDemo.Model
 {
