@@ -33,8 +33,8 @@ namespace SkillEditorDemo
         [ShowInNode, LabelInfo("角度")]
         public NumValue Angle;
     }
-    [NodeInfo(typeof(ShapeNode), "网格", 200, "形状/网格")]
-    public class MeshShape : ShapeNode
-    {
-    }
+    //[NodeInfo(typeof(ShapeNode), "网格", 200, "形状/网格")]
+    //public class MeshShape : ShapeNode
+    //{
+    //}
 }

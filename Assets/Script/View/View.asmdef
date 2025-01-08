@@ -1,0 +1,19 @@
+{
+    "name": "View",
+    "rootNamespace": "Utility.View",
+    "references": [
+        "GUID:6d520efc4128be94485c253f88331fa1",
+        "GUID:e4fae3f52701d184983ffc7f17355ab9",
+        "GUID:5aa57a3ff641069429c6484cc6b35f20",
+        "GUID:85a0c186e27a1ee47bb9f292e19ce154"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
