@@ -1,10 +1,11 @@
 using Newtonsoft.Json;
+using SkillEditorDemo.Utility;
 using System.Collections.Generic;
 using System.Linq;
 using TreeNode.Runtime;
 using TreeNode.Utility;
 
-namespace SkillEditorDemo
+namespace SkillEditorDemo.Model
 {
     [PortColor("#40E0D0")]
     public abstract class Condition : JsonNode, IGrowID<FuncNode>

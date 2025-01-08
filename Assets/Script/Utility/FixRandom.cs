@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace SkillEditorDemo
+namespace SkillEditorDemo.Utility
 {
     public class FixRandom
     {

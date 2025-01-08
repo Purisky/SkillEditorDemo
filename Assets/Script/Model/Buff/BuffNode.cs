@@ -1,8 +1,9 @@
+using SkillEditorDemo.Utility;
 using System.Collections.Generic;
 using TreeNode.Runtime;
 using TreeNode.Utility;
 using UnityEngine;
-namespace SkillEditorDemo
+namespace SkillEditorDemo.Model
 {
     [NodeInfo(null, "Buff", 400, "Buff/Buff"), AssetFilter(true, typeof(BuffAsset))]
     public class BuffNode : JsonNode, IUniqNode, IData<BuffNode>

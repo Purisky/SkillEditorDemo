@@ -1,12 +1,13 @@
 using Newtonsoft.Json;
 using SkillEditorDemo;
+using SkillEditorDemo.Utility;
 using System.Collections.Generic;
 using System.Linq;
 using TreeNode.Runtime;
 using TreeNode.Utility;
 using UnityEngine;
 
-namespace TreeNode.Runtime
+namespace SkillEditorDemo.Model
 {
 
     [NodeInfo(typeof(FuncNode), "二元运算", 100, "计算/二元运算"), PortColor("#00ff00")]

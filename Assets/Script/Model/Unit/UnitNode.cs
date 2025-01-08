@@ -1,3 +1,4 @@
+using SkillEditorDemo.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -5,7 +6,7 @@ using TreeNode.Runtime;
 using TreeNode.Utility;
 using UnityEngine;
 
-namespace SkillEditorDemo
+namespace SkillEditorDemo.Model
 {
     [PortColor("#ECDFB0")]
     public abstract class UnitNode : JsonNode

@@ -1,14 +1,8 @@
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Runtime.Serialization;
-using UnityEngine;
-using static UnityEditor.Experimental.AssetDatabaseExperimental.AssetDatabaseCounters;
 
-namespace SkillEditorDemo
+namespace SkillEditorDemo.Utility
 {
     /// <summary>
     /// 共轭字典

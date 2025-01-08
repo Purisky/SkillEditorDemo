@@ -1,11 +1,9 @@
-using System;
+using SkillEditorDemo.Utility;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using UnityEngine;
-using static UnityEngine.Analytics.IAnalytic;
 
-namespace SkillEditorDemo
+namespace SkillEditorDemo.Model
 {
     public class Buff : IIndexData<Buff, BuffNode>
     {

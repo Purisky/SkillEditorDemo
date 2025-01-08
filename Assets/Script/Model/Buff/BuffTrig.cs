@@ -1,8 +1,7 @@
-using System;
+using SkillEditorDemo.Utility;
 using System.Collections.Generic;
-using UnityEngine;
 
-namespace SkillEditorDemo
+namespace SkillEditorDemo.Model
 {
     public class BuffTrig : IIndex<BuffTrig>,IGrowID
     {

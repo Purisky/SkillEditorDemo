@@ -3,7 +3,7 @@ using TreeNode.Runtime;
 using TreeNode.Utility;
 using UnityEngine;
 
-namespace SkillEditorDemo
+namespace SkillEditorDemo.Model
 {
     [PortColor("#383961")]
     public class ShapeNode : JsonNode

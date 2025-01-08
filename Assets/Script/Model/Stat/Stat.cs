@@ -1,8 +1,9 @@
+using SkillEditorDemo.Utility;
 using System;
 using System.Collections.Generic;
 using TreeNode.Runtime;
 
-namespace SkillEditorDemo
+namespace SkillEditorDemo.Model
 {
     public partial class Stat : IIndex<Stat>
     {

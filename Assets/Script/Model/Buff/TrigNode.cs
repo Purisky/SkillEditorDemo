@@ -1,10 +1,10 @@
 using Newtonsoft.Json;
+using SkillEditorDemo.Utility;
 using System.Collections.Generic;
 using System.Linq;
 using TreeNode.Runtime;
 using TreeNode.Utility;
-using UnityEngine;
-namespace SkillEditorDemo
+namespace SkillEditorDemo.Model
 {
     [NodeInfo(typeof(TrigNode), "触发器", 300, "Buff/触发器"), AssetFilter(true, typeof(BuffAsset)), PortColor("#7B68EE")]
     public class TrigNode : JsonNode , IGrowID<TrigNode>

@@ -1,8 +1,9 @@
+using SkillEditorDemo.Utility;
 using TreeNode.Runtime;
 using TreeNode.Utility;
 using UnityEngine;
 
-namespace SkillEditorDemo
+namespace SkillEditorDemo.Model
 {
     [NodeInfo(null, "技能", 400, "技能/技能"), AssetFilter(true, typeof(SkillAsset))]
     public class SkillNode : JsonNode, IUniqNode, IData<SkillNode>

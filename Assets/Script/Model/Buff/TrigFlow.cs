@@ -1,7 +1,6 @@
 using System;
-using UnityEngine;
 
-namespace SkillEditorDemo
+namespace SkillEditorDemo.Model
 {
     public class TrigFlow : IDisposable
     {

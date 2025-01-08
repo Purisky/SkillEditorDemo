@@ -1,8 +1,4 @@
-using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using UnityEngine;
-
-namespace SkillEditorDemo
+namespace SkillEditorDemo.Model
 {
     //todo gc optimize
     public class CombatCache

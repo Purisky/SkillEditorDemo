@@ -1,6 +1,6 @@
 using TreeNode.Utility;
 
-namespace TreeNode.Runtime
+namespace SkillEditorDemo.Model
 {
     public enum CalculateType
     {

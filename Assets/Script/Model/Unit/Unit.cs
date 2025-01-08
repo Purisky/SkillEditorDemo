@@ -1,7 +1,8 @@
+using SkillEditorDemo.Utility;
 using System;
 using UnityEngine;
 
-namespace SkillEditorDemo
+namespace SkillEditorDemo.Model
 {
     public class Unit : IIndexData<Unit, UnitData>
     {

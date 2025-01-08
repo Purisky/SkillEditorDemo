@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using TreeNode.Utility;
 using UnityEngine;
 
-namespace SkillEditorDemo
+namespace SkillEditorDemo.Model
 {
     public class BuffMgr : Singleton<BuffMgr>
     {

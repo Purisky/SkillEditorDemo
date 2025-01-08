@@ -1,12 +1,12 @@
 using Newtonsoft.Json;
+using SkillEditorDemo.Utility;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using TreeNode.Runtime;
 using TreeNode.Utility;
-using System.Linq;
-using UnityEngine;
 
-namespace SkillEditorDemo
+namespace SkillEditorDemo.Model
 {
     [PortColor("#E8AC29")]
     public abstract class ActionNode : JsonNode, IGrowID<ActionNode>

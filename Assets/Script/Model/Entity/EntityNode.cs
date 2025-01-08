@@ -4,7 +4,7 @@ using TreeNode.Runtime;
 using TreeNode.Utility;
 using UnityEngine;
 
-namespace SkillEditorDemo
+namespace SkillEditorDemo.Model
 {
     [PortColor("#F0A58A")]
     public class EntityNode : JsonNode

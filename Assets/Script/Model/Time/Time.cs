@@ -1,7 +1,7 @@
 using TreeNode.Utility;
 using UnityEngine;
 
-namespace SkillEditorDemo
+namespace SkillEditorDemo.Model
 {
     public class Time : Singleton<Time>
     {

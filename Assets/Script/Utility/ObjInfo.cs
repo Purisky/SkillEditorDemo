@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace SkillEditorDemo
+namespace SkillEditorDemo.Utility
 {
     public struct ObjInfo
     {

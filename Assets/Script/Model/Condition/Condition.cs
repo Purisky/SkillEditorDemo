@@ -1,3 +1,4 @@
+using SkillEditorDemo.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -5,7 +6,7 @@ using TreeNode.Runtime;
 using TreeNode.Utility;
 using UnityEngine;
 
-namespace SkillEditorDemo
+namespace SkillEditorDemo.Model
 {
     [NodeInfo(typeof(Condition), "单位存在", 100, "条件/单位存在")]
     public class UnitAny : Condition

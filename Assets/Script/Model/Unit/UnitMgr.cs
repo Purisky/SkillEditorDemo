@@ -1,9 +1,10 @@
 using NUnit.Framework;
+using SkillEditorDemo.Utility;
 using System.Collections.Generic;
 using TreeNode.Utility;
 using UnityEngine;
 
-namespace SkillEditorDemo
+namespace SkillEditorDemo.Model
 {
     public class UnitMgr : Singleton<UnitMgr>
     {

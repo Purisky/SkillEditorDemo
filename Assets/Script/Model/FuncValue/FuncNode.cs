@@ -1,10 +1,11 @@
 using Newtonsoft.Json;
+using SkillEditorDemo.Utility;
 using System.Collections.Generic;
 using TreeNode.Runtime;
 using TreeNode.Utility;
 using UnityEngine;
 
-namespace SkillEditorDemo
+namespace SkillEditorDemo.Model
 {
     [PortColor("#7CFC00")]
     public abstract class FuncNode : NumNode, IGrowID<FuncNode>

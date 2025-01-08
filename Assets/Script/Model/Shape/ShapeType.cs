@@ -1,7 +1,7 @@
 using TreeNode.Utility;
 using UnityEngine;
 
-namespace SkillEditorDemo
+namespace SkillEditorDemo.Model
 {
     public enum ShapeType
     {

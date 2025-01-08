@@ -4,7 +4,7 @@ using System.Threading;
 using Unity.Properties;
 using UnityEngine;
 
-namespace SkillEditorDemo
+namespace SkillEditorDemo.Model
 {
 
     public class StatHandler
