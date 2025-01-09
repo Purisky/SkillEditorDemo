@@ -1,14 +1,15 @@
+using Leopotam.EcsLite;
 using SkillEditorDemo.Utility;
 using System;
 
 namespace SkillEditorDemo.Model
 {
-    public class Unit : IIndexData<Unit, UnitData>
+    public class Unit
     {
         protected const TrigType Aft = STrigType.Aft;
-        public int Index { get; set; }
-        public string ID { get; set; }
-        public static Unit Get(int id) => IIndex<Unit>.Get(id);
+        public int Index;
+        public string ID;
+        public static Unit Get(int entity) => entity.Get<UnitComp>().Unit;
         public UnitData Data => IData<UnitData>.Get(ID);
         public StatHandler StatHandler;
         public BuffHandler BuffHandler;

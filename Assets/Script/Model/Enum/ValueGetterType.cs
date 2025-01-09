@@ -35,8 +35,8 @@ namespace SkillEditorDemo.Model
     {
         [LabelInfo("全局")]
         Global,
-        [LabelInfo("实体")]
-        Entity,
+        [LabelInfo("单位")]
+        Unit,
         [LabelInfo("Buff")]
         Buff,
         [LabelInfo("技能")]

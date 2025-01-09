@@ -3,13 +3,6 @@ using TreeNode.Utility;
 
 namespace SkillEditorDemo.Model
 {
-
-    public class TimeWheels : Singleton<TimeWheels>
-    {
-        readonly List<IStepNext> List = new ();
-        public static void Add(IStepNext stepNext) => Inst.List.Add(stepNext);
-        public static void StepNext()=> Inst.List.ForEach(n => n.StepNext());
-    }
     public class TimeWheel<T> : IStepNext where T : struct
     {
         public const int WheelLength = 60;
@@ -25,7 +18,6 @@ namespace SkillEditorDemo.Model
             {
                 Wheel[i] = new ();
             }
-            TimeWheels.Add(this);
         }
         public WheelSection<T> Add(int delay, T index)
         {

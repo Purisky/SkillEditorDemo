@@ -1,6 +1,6 @@
 namespace SkillEditorDemo.Utility
 {
-    public struct ObjInfo
+    public struct TrigInfo
     {
         #region Unit
         public int CurrentID;
@@ -22,7 +22,7 @@ namespace SkillEditorDemo.Utility
 
 
 
-        public readonly static ObjInfo Empty = new()
+        public readonly static TrigInfo Empty = new()
         {
             CurrentID = -1,
             BuffCarrierID = -1,

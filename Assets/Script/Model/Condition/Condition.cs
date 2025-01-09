@@ -12,7 +12,7 @@ namespace SkillEditorDemo.Model
         [Child(true), TitlePort]
         public List<UnitNode> UnitList;
 
-        public override bool GetResult(ObjInfo info, CombatCache cache)
+        public override bool GetResult(TrigInfo info, CombatCache cache)
         {
             if (UnitList == null || UnitList.Count == 0) { return false; }
             for (int i = 0; i < UnitList.Count; i++)
@@ -44,7 +44,7 @@ namespace SkillEditorDemo.Model
         public string ID;
         static DropdownList<string> Buffs => UniqNodeManager<BuffNode, BuffAsset>.Dropdowns;
 
-        public override bool GetResult(ObjInfo info, CombatCache cache)
+        public override bool GetResult(TrigInfo info, CombatCache cache)
         {
             if (UnitNode == null) { return false; }
             List<Unit> units = UnitNode.GetUnits(info, cache);
@@ -67,7 +67,7 @@ namespace SkillEditorDemo.Model
         [ShowInNode, LabelInfo(Hide = true), Group("Type_")]
         public CritType CritType;
 
-        public override bool GetResult(ObjInfo info, CombatCache cache)
+        public override bool GetResult(TrigInfo info, CombatCache cache)
         {
             if ((Type != DmgType.Any) && cache.DmgType != Type) { return false; }
             if (DirectType != DmgDirectType.Any && (DirectType == DmgDirectType.Direct) != cache.DirectDmg) { return false; }

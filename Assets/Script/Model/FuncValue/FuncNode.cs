@@ -10,7 +10,7 @@ namespace SkillEditorDemo.Model
     {
         [JsonIgnore] public int GrowID { get; set; }
         public static T Get<T>(int id) where T : FuncNode => (T)IGrowID<FuncNode>.Get(id);
-        public abstract float GetResult(ObjInfo info, CombatCache cache);
+        public abstract float GetResult(TrigInfo info, CombatCache cache);
     }
     public class FuncValue : NumValue<FuncNode>
     {
@@ -24,13 +24,13 @@ namespace SkillEditorDemo.Model
             }
         }
         [JsonIgnore] FuncNode funcNode;
-        public float GetResult(ObjInfo info, CombatCache cache)
+        public float GetResult(TrigInfo info, CombatCache cache)
         { 
             return FuncNode.GetResult(info, cache);
         }
-        public float GetResult(ObjInfo info) => GetResult(info, CombatCache._);
-        public float GetResult(CombatCache cache) => GetResult(ObjInfo.Empty, cache);
-        public float GetResult() => GetResult(ObjInfo.Empty);
+        public float GetResult(TrigInfo info) => GetResult(info, CombatCache._);
+        public float GetResult(CombatCache cache) => GetResult(TrigInfo.Empty, cache);
+        public float GetResult() => GetResult(TrigInfo.Empty);
     }
 
     public class ConstValue : FuncNode
@@ -40,7 +40,7 @@ namespace SkillEditorDemo.Model
         {
             return $"{Value}";
         }
-        public override float GetResult(ObjInfo info, CombatCache cache)
+        public override float GetResult(TrigInfo info, CombatCache cache)
         {
             return Value;
         }
@@ -53,7 +53,7 @@ namespace SkillEditorDemo.Model
         [Child,LabelInfo(Hide =true), Group("type")]
         public FuncValue Value;
 
-        public readonly int GetTick(ObjInfo info, CombatCache cache)
+        public readonly int GetTick(TrigInfo info, CombatCache cache)
         {
             float value = Value.GetResult(info, cache);
             return Type== TimeType.GameTick ? (int)value : (int)(value * Time.GameTickPerSec);
@@ -75,7 +75,7 @@ namespace SkillEditorDemo.Model
             return $"Buff.{Type.GetLabel()}";
         }
 
-        public override float GetResult(ObjInfo info, CombatCache cache)
+        public override float GetResult(TrigInfo info, CombatCache cache)
         {
             throw new System.NotImplementedException();
         }
@@ -91,7 +91,7 @@ namespace SkillEditorDemo.Model
             return $"战斗数值缓存.{Type.GetLabel()}";
         }
 
-        public override float GetResult(ObjInfo info, CombatCache cache)
+        public override float GetResult(TrigInfo info, CombatCache cache)
         {
             return cache[Type];
         }
@@ -110,7 +110,7 @@ namespace SkillEditorDemo.Model
             return $"{UnitNode?.GetText()??"Null"}.{Type.GetLabel().Replace("/","_")}";
         }
 
-        public override float GetResult(ObjInfo info, CombatCache cache)
+        public override float GetResult(TrigInfo info, CombatCache cache)
         {
             Unit unit = UnitNode.GetUnit(info, cache);
             return unit?.StatHandler[Type]??0;
@@ -124,7 +124,7 @@ namespace SkillEditorDemo.Model
             return "技能";
         }
 
-        public override float GetResult(ObjInfo info, CombatCache cache)
+        public override float GetResult(TrigInfo info, CombatCache cache)
         {
             throw new System.NotImplementedException();
         }

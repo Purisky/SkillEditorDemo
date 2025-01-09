@@ -32,7 +32,7 @@ namespace SkillEditorDemo.Model
             return $"({left}{calculateText}{right})";
         }
 
-        public override float GetResult(ObjInfo info, CombatCache cache)
+        public override float GetResult(TrigInfo info, CombatCache cache)
         {
             float left = Left.GetResult(info, cache);
             float right = Right.GetResult(info, cache);
@@ -69,7 +69,7 @@ namespace SkillEditorDemo.Model
             }
             return $"({Condition.GetText()}?{_true}:{_false})";
         }
-        public override float GetResult(ObjInfo info, CombatCache cache)
+        public override float GetResult(TrigInfo info, CombatCache cache)
         {
             bool condition = Condition.GetResult(info, cache);
             return condition ? True.GetResult(info, cache) : False.GetResult(info, cache);

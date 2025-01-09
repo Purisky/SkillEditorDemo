@@ -12,10 +12,10 @@ namespace SkillEditorDemo.Model
     {
         [JsonIgnore] public int GrowID { get; set; }
         public static T Get<T>(int id) where T : Condition => (T)IGrowID<Condition>.Get(id);
-        public abstract bool GetResult(ObjInfo info, CombatCache cache);
-        public bool GetResult(ObjInfo info) => GetResult(info, CombatCache._);
-        public bool GetResult(CombatCache cache) => GetResult(ObjInfo.Empty, cache);
-        public bool GetResult() => GetResult(ObjInfo.Empty);
+        public abstract bool GetResult(TrigInfo info, CombatCache cache);
+        public bool GetResult(TrigInfo info) => GetResult(info, CombatCache._);
+        public bool GetResult(CombatCache cache) => GetResult(TrigInfo.Empty, cache);
+        public bool GetResult() => GetResult(TrigInfo.Empty);
         public abstract string GetText();
     }
     [NodeInfo(typeof(Condition), "比较", 100, "条件/比较"), PortColor("#0000ff")]
@@ -46,7 +46,7 @@ namespace SkillEditorDemo.Model
             };
             return $"({left}{compareText}{right})";
         }
-        public override bool GetResult(ObjInfo info, CombatCache cache)
+        public override bool GetResult(TrigInfo info, CombatCache cache)
         {
             float left = Left.GetResult(info, cache);
             float right = Right.GetResult(info, cache);
@@ -72,7 +72,7 @@ namespace SkillEditorDemo.Model
             if (Conditions.Count == 0) { return "true"; }
             return $"({string.Join("&", Conditions.Select(n => n.GetText()))})";
         }
-        public override bool GetResult(ObjInfo info, CombatCache cache)
+        public override bool GetResult(TrigInfo info, CombatCache cache)
         {
             if (Conditions == null || Conditions.Count == 0) { return true; }
             for (int i = 0; i < Conditions.Count; i++)
@@ -94,7 +94,7 @@ namespace SkillEditorDemo.Model
             return $"({string.Join("|", Conditions.Select(n => n.GetText()))})";
         }
 
-        public override bool GetResult(ObjInfo info, CombatCache cache)
+        public override bool GetResult(TrigInfo info, CombatCache cache)
         {
             if (Conditions == null || Conditions.Count == 0) { return true; }
             for (int i = 0; i < Conditions.Count; i++)
@@ -116,7 +116,7 @@ namespace SkillEditorDemo.Model
             return $"(!{Condition.GetText()})";
         }
 
-        public override bool GetResult(ObjInfo info, CombatCache cache)
+        public override bool GetResult(TrigInfo info, CombatCache cache)
         {
             return !Condition.GetResult(info, cache);
         }

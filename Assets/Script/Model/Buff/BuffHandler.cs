@@ -120,7 +120,7 @@ namespace SkillEditorDemo.Model
                 }
                 else
                 {
-                    ObjInfo trigInfo = new() { 
+                    TrigInfo trigInfo = new() { 
                         BuffCarrierID = Unit.Index,
                         SourceID = sourceId,
                         BuffCreatorID = creatorId,
@@ -214,7 +214,7 @@ namespace SkillEditorDemo.Model
             }
             else if (trig.TrigNode.TrigType >= TrigType.ByTime_1)
             {
-                BuffMgr.Inst.PeriodicTrigs.Add(trig.TrigTickDelay, trig.Index);
+                BuffPeriodicSystem.TimeWheel.Add(trig.TrigTickDelay, trig.Index);
             }
         }
 

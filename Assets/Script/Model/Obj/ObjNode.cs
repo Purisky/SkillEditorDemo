@@ -5,11 +5,11 @@ using TreeNode.Utility;
 namespace SkillEditorDemo.Model
 {
     [PortColor("#F0A58A")]
-    public class EntityNode : JsonNode
+    public class ObjNode : JsonNode
     {
     }
-    [NodeInfo(typeof(EntityNode), "投射物", 200, "实体/投射物")]
-    public class NewProjectile : EntityNode
+    [NodeInfo(typeof(ObjNode), "投射物", 200, "对象/投射物")]
+    public class NewProjectile : ObjNode
     {
         [ShowInNode,LabelInfo("持续时间")]
         public TimeValue Time;
@@ -35,8 +35,8 @@ namespace SkillEditorDemo.Model
             return items;
         }
     }
-    [NodeInfo(typeof(EntityNode), "伤害盒子", 200, "实体/伤害盒子")]
-    public class NewHitBox : EntityNode
+    [NodeInfo(typeof(ObjNode), "伤害盒子", 200, "对象/伤害盒子")]
+    public class NewHitBox : ObjNode
     {
         [Child(true)]
         public ShapeNode Shape;
