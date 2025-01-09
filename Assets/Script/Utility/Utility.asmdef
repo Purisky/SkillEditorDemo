@@ -1,7 +1,9 @@
 {
     "name": "Utility",
     "rootNamespace": "SkillEditorDemo.Utility",
-    "references": [],
+    "references": [
+        "GUID:6d520efc4128be94485c253f88331fa1"
+    ],
     "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
