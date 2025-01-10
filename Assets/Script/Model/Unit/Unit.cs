@@ -9,7 +9,7 @@ namespace SkillEditorDemo.Model
         protected const TrigType Aft = STrigType.Aft;
         public int Index;
         public string ID;
-        public static Unit Get(int entity) => entity.Get<UnitComp>().Unit;
+        public static Unit Get(int entity) => entity.Get<UnitCmp>().Unit;
         public UnitData Data => IData<UnitData>.Get(ID);
         public StatHandler StatHandler;
         public BuffHandler BuffHandler;

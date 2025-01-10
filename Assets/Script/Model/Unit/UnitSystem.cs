@@ -5,23 +5,19 @@ namespace SkillEditorDemo.Model
     public class UnitCombatResSystem : IEcsRunSystem, IEcsInitSystem
     {
         EcsFilter Filter;
-        EcsPool<UnitComp> Pool;
-        EcsPool<UnitDeadComp> DeadPool;
         public void Init(IEcsSystems systems)
         {
-            Filter = systems.GetWorld().Filter<UnitComp>().Exc<UnitDeadComp>().End();
-            Pool = systems.GetWorld().GetPool<UnitComp>();
-            DeadPool = systems.GetWorld().GetPool<UnitDeadComp>();
+            Filter = systems.GetWorld().Filter<UnitCmp>().Exc<UnitDeadComp>().End();
         }
         public void Run(IEcsSystems systems)
         {
             foreach (int entity in Filter)
             {
-                Unit unit = Pool.Get(entity).Unit;
+                Unit unit = Unit.Get(entity);
                 unit.Update();
                 if (unit.HP.Value <= 0)
                 {
-                    DeadPool.Add(entity);
+                    entity.Add<UnitDeadComp>();
                 }
             }
         }
@@ -29,11 +25,9 @@ namespace SkillEditorDemo.Model
     public class UnitDeadSystem : IEcsRunSystem, IEcsInitSystem
     {
         EcsFilter Filter;
-        EcsPool<UnitComp> Pool;
         public void Init(IEcsSystems systems)
         {
             Filter = systems.GetWorld().Filter<UnitDeadComp>().End();
-            Pool = systems.GetWorld().GetPool<UnitComp>();
         }
 
         public void Run(IEcsSystems systems)
@@ -45,7 +39,7 @@ namespace SkillEditorDemo.Model
         }
         void ReleaseDeadUnit(int entity)
         {
-            Unit unit = Pool.Get(entity).Unit;
+            Unit unit = Unit.Get(entity);
 
         }
 

@@ -8,14 +8,24 @@ namespace SkillEditorDemo.Model
     /// </summary>
     public class AISystem : IEcsInitSystem, IEcsRunSystem
     {
+        EcsFilter Filter;
+
         public void Init(IEcsSystems systems)
         {
-            throw new System.NotImplementedException();
+            Filter = systems.GetWorld().Filter<UnitCmp>().Inc<AICmp>().End();
         }
 
         public void Run(IEcsSystems systems)
         {
-            throw new System.NotImplementedException();
+            foreach (int entity in Filter)
+            {
+                ref AICmp ai = ref entity.Get<AICmp>();
+
+                Unit unit = Unit.Get(entity);
+
+
+            }
+
         }
     }
 }
