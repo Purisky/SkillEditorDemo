@@ -1,9 +1,9 @@
 {
   "Data": {
-    "$type": "SkillEditorDemo.BuffAsset, Assembly-CSharp",
+    "$type": "SkillEditorDemo.Model.BuffAsset,Model",
     "Nodes": [
       {
-        "$type": "SkillEditorDemo.BuffNode, Assembly-CSharp",
+        "$type": "SkillEditorDemo.Model.BuffNode, Model",
         "MaxLevel": 1,
         "MaxDegree": {
           "Value": 1.0
@@ -15,9 +15,9 @@
           {
             "Actions": [
               {
-                "$type": "SkillEditorDemo.Damage, Assembly-CSharp",
+                "$type": "SkillEditorDemo.Model.Damage,Model",
                 "UnitNode": {
-                  "$type": "SkillEditorDemo.GetBuffUnit, Assembly-CSharp",
+                  "$type": "SkillEditorDemo.Model.GetBuffUnit,Model",
                   "Position": {
                     "x": 989
                   }
@@ -39,7 +39,7 @@
         ]
       },
       {
-        "$type": "SkillEditorDemo.StatModify, Assembly-CSharp",
+        "$type": "SkillEditorDemo.Model.StatModify,Model",
         "Value": {},
         "Position": {
           "x": 611,

@@ -2,14 +2,22 @@ using Leopotam.EcsLite;
 using SkillEditorDemo.Utility;
 namespace SkillEditorDemo.Model
 {
-    public struct ProjectileComp
+    public struct ProjectileCmp
     {
-        public float Time;
-        public float Speed;
-        public bool TrigOnTimeout;
-        public float Radius;
-        public string DisplayPath;
+        public TrigInfo TrigInfo;
+        public CombatCache Cache;
+        public NewProjectile ProjectileNode;
+
+
     }
+    public struct HitboxCmp
+    {
+        public TrigInfo TrigInfo;
+
+
+
+    }
+
 
 
 }

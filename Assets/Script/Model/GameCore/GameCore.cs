@@ -14,7 +14,7 @@ namespace SkillEditorDemo.Model
             Systems.Add(new GameTickStartSystem());
             Systems.Add(new InputSystem());
             Systems.Add(new AISystem());
-            Systems.Add(new PhysicSystem());
+            //Systems.Add(new PhysicSystem());
             Systems.Add(new CollisionHandlerSystem());
             Systems.Add(new UnitCombatResSystem());
             Systems.Add(new BuffPeriodicSystem());

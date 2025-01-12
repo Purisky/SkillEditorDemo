@@ -1,62 +1,48 @@
 using Leopotam.EcsLite;
 using SkillEditorDemo.Utility;
 using System;
+using System.Numerics;
 using TreeNode.Utility;
 
 namespace SkillEditorDemo.Model
 {
-    /// <summary>
-    /// 碰撞检测
-    /// </summary>
-    public class PhysicSystem : IEcsRunSystem, IEcsInitSystem
-    {
-
-
-        public void Init(IEcsSystems systems)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void Run(IEcsSystems systems)
-        {
-            throw new System.NotImplementedException();
-        }
-    }
-
     public class VelocitySystem : IEcsRunSystem, IEcsInitSystem
     {
         EcsFilter Filter;
 
-
+        
         public void Init(IEcsSystems systems)
         {
             Filter = systems.GetWorld().Filter<TransformCmp>().Inc<VelocityCmp>().End();
         }
+
+
+
         public void Run(IEcsSystems systems)
         {
             foreach (var entity in Filter)
             {
-
-
-
-
+                ref TransformCmp transform = ref entity.Get<TransformCmp>();
+                ref VelocityCmp velocity = ref entity.Get<VelocityCmp>();
+                transform.Pos += velocity.Pos * Time.GameTickDuration;
+                transform.Rot += velocity.Rot * Time.GameTickDuration;
+                velocity.TickLife--;
+                if (velocity.TickLife <= 0)
+                {
+                    EcsPool<VelocityCmp>.Pool.Del(entity);
+                }
+                ref ColliderCmp collider = ref entity.Get<ColliderCmp>();
+                collider.Shape.SetDirty(ref transform);
+                Events.OnTransformChange?.Invoke(entity);
             }
         }
+
+
+
+
+
     }
 
-
-
-    public class CollisionDetectionSystem : IEcsRunSystem, IEcsInitSystem
-    {
-        public void Init(IEcsSystems systems)
-        {
-        }
-
-        public void Run(IEcsSystems systems)
-        {
-            throw new System.NotImplementedException();
-        }
-    }
 
 
 }
