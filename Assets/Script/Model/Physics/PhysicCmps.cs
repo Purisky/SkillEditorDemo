@@ -7,12 +7,22 @@ namespace SkillEditorDemo.Model
     {
         public Vector2 Pos;
         public Angle Rot;
+
+
+
+        public static TransformCmp operator +(TransformCmp a, TransformCmp b)
+        {
+            return new TransformCmp()
+            {
+                Pos = a.Pos + b.Pos,
+                Rot = a.Rot + b.Rot
+            };
+        }
     }
 
     public struct VelocityCmp
     {
-        public int TickLife;
-        public Vector2 Pos;//per sec
+        public Vector2 Speed;//per sec
         public Angle Rot;//per sec
     }
 

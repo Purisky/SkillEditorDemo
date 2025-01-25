@@ -1,6 +1,6 @@
 {
   "Data": {
-    "$type": "SkillEditorDemo.Model.BuffAsset,Model",
+    "$type": "SkillEditorDemo.Model.BuffAsset, Model",
     "Nodes": [
       {
         "$type": "SkillEditorDemo.Model.BuffNode, Model",
@@ -15,9 +15,9 @@
           {
             "Actions": [
               {
-                "$type": "SkillEditorDemo.Model.Damage,Model",
+                "$type": "SkillEditorDemo.Model.Damage, Model",
                 "UnitNode": {
-                  "$type": "SkillEditorDemo.Model.GetBuffUnit,Model",
+                  "$type": "SkillEditorDemo.Model.GetBuffUnit, Model",
                   "Position": {
                     "x": 989
                   }
@@ -25,6 +25,42 @@
                 "Value": {},
                 "Position": {
                   "x": 759
+                }
+              },
+              {
+                "$type": "SkillEditorDemo.Model.CreateObjsInCircle, Model",
+                "ObjNode": {
+                  "$type": "SkillEditorDemo.Model.NewProjectile, Model",
+                  "Time": {
+                    "Value": {}
+                  },
+                  "Speed": {},
+                  "Radius": {},
+                  "Position": {
+                    "x": 989,
+                    "y": 125
+                  }
+                },
+                "Origin": {
+                  "$type": "SkillEditorDemo.Model.GetUnitTransform, Model",
+                  "UnitNode": {
+                    "$type": "SkillEditorDemo.Model.GetBuffUnit, Model",
+                    "Position": {
+                      "x": 1219,
+                      "y": 347
+                    }
+                  },
+                  "Position": {
+                    "x": 989,
+                    "y": 347
+                  }
+                },
+                "Count": {},
+                "Angle": {},
+                "Radius": {},
+                "Position": {
+                  "x": 759,
+                  "y": 125
                 }
               }
             ],
@@ -37,14 +73,6 @@
             }
           }
         ]
-      },
-      {
-        "$type": "SkillEditorDemo.Model.StatModify,Model",
-        "Value": {},
-        "Position": {
-          "x": 611,
-          "y": 267
-        }
       }
     ]
   }

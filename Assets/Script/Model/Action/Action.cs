@@ -1,8 +1,10 @@
+using Leopotam.EcsLite;
 using Newtonsoft.Json;
 using SkillEditorDemo.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using TreeNode.Runtime;
 using TreeNode.Utility;
 
@@ -14,6 +16,13 @@ namespace SkillEditorDemo.Model
         [JsonIgnore]
         public int GrowID { get; set; }
         public static T Get<T>(int id) where T : ActionNode => (T)IGrowID < ActionNode >.Get(id);
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="trigCount"></param>
+        /// <param name="info"></param>
+        /// <param name="cache"></param>
+        /// <returns>exit trigger event if return false</returns>
         public abstract bool Handle(int trigCount, TrigInfo info, CombatCache cache);
     }
     [NodeInfo(typeof(ActionNode), "分支执行", 100, "执行/分支执行")]
@@ -287,17 +296,44 @@ namespace SkillEditorDemo.Model
             return true;
         }
     }
-    [NodeInfo(typeof(ActionNode), "创建对象", 180, "执行/创建对象"), AssetFilter(true, typeof(BuffAsset))]
-    public class CreateObj : ActionNode
+    [NodeInfo(typeof(ActionNode), "按圆创建对象", 180, "执行/按圆创建对象")]
+    public class CreateObjsInCircle : ActionNode
     {
         [Child(true), TitlePort]
         public ObjNode ObjNode;
+        [Child(true), LabelInfo("起始位置")]
+        public TransformNode Origin;
+        [ShowInNode, LabelInfo("数量")]
+        public FuncValue Count;
+        [ShowInNode, LabelInfo("使用角度")]
+        public bool ByAngle;
+        [ShowInNode(ShowIf =nameof(ByAngle)), LabelInfo("角度")]
+        public FuncValue Angle;
+        [ShowInNode, LabelInfo("放射距离")]
+        public FuncValue Radius;
+
 
 
 
         public override bool Handle(int trigCount, TrigInfo info, CombatCache cache)
         {
-            throw new NotImplementedException();
+            int count =(int)Count.GetResult(info, cache);
+            TransformCmp origin = Origin.GetResult(info, cache);
+            float radius = Radius.GetResult(info, cache);
+            float angle = ByAngle? Angle.GetResult(info, cache) : 360f / count;
+            for (int i = 0; i < count; i++)
+            {
+                Angle currentAngle = origin.Rot + (ByAngle?(i - count / 2f + 0.5f):i) * angle;
+                TransformCmp transformCmp = new ()
+                {
+                    Pos = origin.Pos + currentAngle.GetVector() * radius,
+                    Rot = currentAngle
+                };
+                int entity  = EcsWorld.Inst.NewEntity();
+                entity.Add(transformCmp);
+                ObjNode.Create(entity, info, cache.Clone());
+            }
+            return true;
         }
     }
 

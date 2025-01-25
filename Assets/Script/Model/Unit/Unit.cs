@@ -22,7 +22,7 @@ namespace SkillEditorDemo.Model
 
         public bool Dead;
         public int DeadTick = -1;
-
+        public int Faction;
 
         public void TakeDmg(int trigCount, CombatCache cache, Unit from)
         {

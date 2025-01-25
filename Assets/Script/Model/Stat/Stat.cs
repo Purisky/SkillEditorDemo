@@ -165,17 +165,15 @@ namespace SkillEditorDemo.Model
         }
     }
 
-    public struct ActionCache
+    public readonly struct ActionCache
     { 
         public readonly int TrigIndex;
         public readonly int ActionIndex;
 
-        //public float Value;
         public ActionCache(int trigIndex, int actionIndex)
         {
             TrigIndex = trigIndex;
             ActionIndex = actionIndex;
-            //Value = value;
         }
 
     }

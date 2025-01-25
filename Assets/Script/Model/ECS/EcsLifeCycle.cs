@@ -5,10 +5,6 @@ namespace SkillEditorDemo.Model
     {
         public void Init(IEcsSystems systems)
         {
-            
-
-
-
         }
 
         public void Run(IEcsSystems systems)
@@ -16,13 +12,10 @@ namespace SkillEditorDemo.Model
             Time.StepNext();
         }
     }
-
     public class GameTickEndSystem : IEcsRunSystem
     {
         public void Run(IEcsSystems systems)
         {
         }
     }
-
-
 }

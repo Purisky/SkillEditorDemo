@@ -17,7 +17,9 @@ namespace SkillEditorDemo.Utility
         public int TrigID;
         #endregion
 
-
+        #region Skill
+        public int SkillID;
+        #endregion
 
 
 

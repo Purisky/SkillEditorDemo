@@ -12,14 +12,18 @@ namespace SkillEditorDemo.Model
             World = new();
             Systems = new(World);
             Systems.Add(new GameTickStartSystem());
-            Systems.Add(new InputSystem());
+            Systems.Add(new CreateSystem());
+
             Systems.Add(new AISystem());
-            //Systems.Add(new PhysicSystem());
+
+            Systems.Add(new VelocitySystem());
+            Systems.Add(new CollisionDetectionSystem());
             Systems.Add(new CollisionHandlerSystem());
             Systems.Add(new UnitCombatResSystem());
             Systems.Add(new BuffPeriodicSystem());
             Systems.Add(new BuffTimeOutSystem());
-            Systems.Add(new UnitDeadSystem());
+
+            Systems.Add(new ReleaseSystem());
             Systems.Add(new GameTickEndSystem());
             Systems.Init();
         }
@@ -31,12 +35,5 @@ namespace SkillEditorDemo.Model
             if (Time.Pause) { return; }
             Systems.Run();
         }
-
-
-
-
-
-
-
     }
 }

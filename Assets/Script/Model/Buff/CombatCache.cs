@@ -1,3 +1,5 @@
+using System.Numerics;
+
 namespace SkillEditorDemo.Model
 {
     //todo gc optimize
@@ -10,6 +12,7 @@ namespace SkillEditorDemo.Model
         public bool Dodge_able;
         public bool Crit_able;
         public bool IsCrit;
+        public TransformCmp HitInfo;
         public static CombatCache _ = new ();
         public ref float this[CombatCacheType type] => ref Caches[(int)type];
         public CombatCache Clone()

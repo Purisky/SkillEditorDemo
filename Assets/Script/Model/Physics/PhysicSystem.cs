@@ -24,16 +24,11 @@ namespace SkillEditorDemo.Model
             {
                 ref TransformCmp transform = ref entity.Get<TransformCmp>();
                 ref VelocityCmp velocity = ref entity.Get<VelocityCmp>();
-                transform.Pos += velocity.Pos * Time.GameTickDuration;
+                transform.Pos += velocity.Speed * Time.GameTickDuration;
                 transform.Rot += velocity.Rot * Time.GameTickDuration;
-                velocity.TickLife--;
-                if (velocity.TickLife <= 0)
-                {
-                    EcsPool<VelocityCmp>.Pool.Del(entity);
-                }
                 ref ColliderCmp collider = ref entity.Get<ColliderCmp>();
                 collider.Shape.SetDirty(ref transform);
-                Events.OnTransformChange?.Invoke(entity);
+                Events.OnChange.Transform?.Invoke(entity);
             }
         }
 

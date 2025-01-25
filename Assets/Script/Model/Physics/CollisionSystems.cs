@@ -1,8 +1,6 @@
 using Leopotam.EcsLite;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using TreeNode.Utility;
 
 namespace SkillEditorDemo.Model
 {
@@ -27,7 +25,7 @@ namespace SkillEditorDemo.Model
 
         void UpdateQuadtree()
         {
-            foreach (int  entity in Filter)
+            foreach (int entity in Filter)
             {
                 ref ColliderCmp collider = ref entity.Get<ColliderCmp>();
                 Quadtree.Update(ref collider.Shape);
@@ -36,7 +34,7 @@ namespace SkillEditorDemo.Model
 
         void RawDetection()
         {
-            List<IAABB> returnObjects = new ();
+            List<IAABB> returnObjects = new();
             foreach (int entity in Filter)
             {
                 ref ColliderCmp collider = ref entity.Get<ColliderCmp>();
@@ -71,7 +69,7 @@ namespace SkillEditorDemo.Model
                 {
                     if (circleA.IsColliderTo(in transformA, in colliderB.Shape, in transformB))
                     {
-                        CollisionHandlerSystem.Collisions.Add(new(colliderA,colliderB));
+                        CollisionHandlerSystem.Collisions.Add(new(colliderA, colliderB));
                     }
                 }
                 else if (colliderB.Shape is Circle circleB)
@@ -124,22 +122,32 @@ namespace SkillEditorDemo.Model
         }
 
         void HitboxHitUnit(int _hitbox, int _unit)
-        { 
+        {
             Unit unit = Unit.Get(_unit);
-
+            ref HitboxCmp hitbox = ref _hitbox.Get<HitboxCmp>();
 
 
 
         }
         void ProjectileHitUnit(int _projectile, int _unit)
         {
-
+            Unit unit = Unit.Get(_unit);
+            ref ProjectileCmp projectile = ref _projectile.Get<ProjectileCmp>();
 
 
         }
         void ProjectileHitTerrain(int _projectile, int _terrain)
         {
-
+            ref ProjectileCmp projectile = ref _projectile.Get<ProjectileCmp>();
+            projectile.TrigInfo.CurrentID = -1;
+            if (projectile.ProjectileNode.TrigOnHitTerrain)
+            {
+                for (int i = 0; i < projectile.ProjectileNode.Actions.Count; i++)
+                {
+                    ActionNode actionNode = projectile.ProjectileNode.Actions[i];
+                    actionNode.Handle(5, projectile.TrigInfo, projectile.Cache);
+                }
+            }
         }
 
 

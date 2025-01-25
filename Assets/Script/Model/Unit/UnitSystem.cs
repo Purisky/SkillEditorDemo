@@ -7,7 +7,7 @@ namespace SkillEditorDemo.Model
         EcsFilter Filter;
         public void Init(IEcsSystems systems)
         {
-            Filter = systems.GetWorld().Filter<UnitCmp>().Exc<UnitDeadCmp>().End();
+            Filter = systems.GetWorld().Filter<UnitCmp>().Exc<ReleaseCmp>().End();
         }
         public void Run(IEcsSystems systems)
         {
@@ -17,35 +17,9 @@ namespace SkillEditorDemo.Model
                 unit.Update();
                 if (unit.HP.Value <= 0)
                 {
-                    entity.Add<UnitDeadCmp>();
+                    entity.Add<ReleaseCmp>();
                 }
             }
         }
     }
-    public class UnitDeadSystem : IEcsRunSystem, IEcsInitSystem
-    {
-        EcsFilter Filter;
-        public void Init(IEcsSystems systems)
-        {
-            Filter = systems.GetWorld().Filter<UnitDeadCmp>().End();
-        }
-
-        public void Run(IEcsSystems systems)
-        {
-            foreach (int entity in Filter)
-            {
-                ReleaseDeadUnit(entity);
-            }
-        }
-        void ReleaseDeadUnit(int entity)
-        {
-            Unit unit = Unit.Get(entity);
-
-        }
-
-
-
-    }
-
-
 }
