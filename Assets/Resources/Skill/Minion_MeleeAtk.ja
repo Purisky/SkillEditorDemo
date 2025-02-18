@@ -1,0 +1,103 @@
+{
+  "Data": {
+    "$type": "SkillEditorDemo.Model.SkillAsset, Model",
+    "Nodes": [
+      {
+        "$type": "SkillEditorDemo.Model.SkillNode, Model",
+        "Time": {
+          "Value": {
+            "Value": 2.0
+          }
+        },
+        "ChargeCount": {
+          "Value": 1.0
+        },
+        "Actions": [
+          {
+            "$type": "SkillEditorDemo.Model.CreateObjsInCircle, Model",
+            "ObjNode": {
+              "$type": "SkillEditorDemo.Model.NewHitbox, Model",
+              "Shape": {
+                "$type": "SkillEditorDemo.Model.SectorShape, Model",
+                "Radius": {
+                  "Value": 1.0
+                },
+                "Angle": {
+                  "Value": 90.0
+                },
+                "Position": {
+                  "x": 879
+                }
+              },
+              "Actions": [
+                {
+                  "$type": "SkillEditorDemo.Model.Damage, Model",
+                  "UnitNode": {
+                    "$type": "SkillEditorDemo.Model.LastUnit, Model",
+                    "Position": {
+                      "x": 1109,
+                      "y": 103
+                    }
+                  },
+                  "DmgType": "Physic",
+                  "Direct": true,
+                  "Dodge_able": true,
+                  "Crit_able": true,
+                  "Value": {
+                    "Node": {
+                      "$type": "SkillEditorDemo.Model.StatGetter, Model",
+                      "UnitNode": {
+                        "$type": "SkillEditorDemo.Model.SourceUnit, Model",
+                        "Position": {
+                          "x": 1279,
+                          "y": 158
+                        }
+                      },
+                      "Type": "Atk",
+                      "Position": {
+                        "x": 1109,
+                        "y": 158
+                      }
+                    }
+                  },
+                  "Position": {
+                    "x": 879,
+                    "y": 103
+                  }
+                }
+              ],
+              "DisplayPath": "Cube 1",
+              "Position": {
+                "x": 639
+              }
+            },
+            "Origin": {
+              "$type": "SkillEditorDemo.Model.GetUnitTransform, Model",
+              "UnitNode": {
+                "$type": "SkillEditorDemo.Model.SourceUnit, Model",
+                "Position": {
+                  "x": 879,
+                  "y": 229
+                }
+              },
+              "Position": {
+                "x": 639,
+                "y": 229
+              }
+            },
+            "Count": {
+              "Value": 1.0
+            },
+            "Angle": {},
+            "Radius": {},
+            "Position": {
+              "x": 430
+            }
+          }
+        ],
+        "ID": "Minion_MeleeAtk",
+        "Name": "小怪/近战攻击"
+      }
+    ]
+  }
+}

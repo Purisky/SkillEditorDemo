@@ -1,4 +1,5 @@
 using SkillEditorDemo.Utility;
+using System.Collections.Generic;
 using TreeNode.Runtime;
 using TreeNode.Utility;
 
@@ -11,5 +12,15 @@ namespace SkillEditorDemo.Model
         public string ID { get; set; }
         [ShowInNode, LabelInfo("Name", 60)]
         public string Name { get; set; }
+        [ShowInNode, LabelInfo("冷却时间", 60)]
+        public TimeValue Time;
+        [ShowInNode, LabelInfo("最大充能", 60)]
+        public FuncValue ChargeCount = 1;
+        [ShowInNode, LabelInfo("监听类型", 60),Group("Condition")]
+        public SkillWatchType SkillWatchType;
+        [Child, LabelInfo("条件过滤", 60), Group("Condition")]
+        public Condition Condition;
+        [Child(true), LabelInfo("效果组")]
+        public List<ActionNode> Actions;
     }
 }

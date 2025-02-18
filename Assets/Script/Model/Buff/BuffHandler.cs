@@ -1,3 +1,4 @@
+using Leopotam.EcsLite;
 using SkillEditorDemo.Utility;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ namespace SkillEditorDemo.Model
     public class BuffHandler
     {
         public readonly Unit Unit;
-        public Dictionary<string, Dictionary<int, int>> UniqBuffs;
+        public Dictionary<string, Dictionary<EcsPackedEntity, int>> UniqBuffs;
         public Dictionary<TrigType, List<BuffTrig>> TrigDic;
         public HashSet<Buff> Buffs;
 
@@ -63,13 +64,13 @@ namespace SkillEditorDemo.Model
             {
                 for (int i = 0; i < arr.Count; i++)
                 {
-                    if (!arr[i].Trig(trigCount, cache, from != null ? from.Index : -1)) { return false; }
+                    if (!arr[i].Trig(trigCount, cache, from != null ? from.Entity : EcsPackedEntity.Empty)) { return false; }
                 }
             }
             return true;
         }
 
-        public bool Compete(BuffNode buffData, int sourceID)
+        public bool Compete(BuffNode buffData, EcsPackedEntity sourceID)
         {
             if (buffData.CompeteType == CompeteType.Indie)
             {
@@ -81,12 +82,12 @@ namespace SkillEditorDemo.Model
                 {
                     case CompeteType.None:
                     case CompeteType.Eternal:
-                        return !IsBuffExist(buffData.ID, buffData.CompeteInSource ? sourceID : -1);
+                        return !IsBuffExist(buffData.ID, buffData.CompeteInSource ? sourceID : EcsPackedEntity.Empty);
                 }
             }
             return true;
         }
-        public Buff AddBuff(string buffDataID, int sourceId, int creatorId, int level, int degree, params float[] createParams)
+        public Buff AddBuff(string buffDataID, EcsPackedEntity sourceId, EcsPackedEntity creatorId, int level, int degree, params float[] createParams)
         {
             BuffNode buffData = IData<BuffNode>.Get(buffDataID);
             if (buffData == null)
@@ -96,7 +97,7 @@ namespace SkillEditorDemo.Model
             Buff buff = null;
             if (Compete(buffData, sourceId))
             {
-                if (TryGetBuffsByID(buffDataID, buffData.CompeteInSource ? sourceId : -1, out buff))
+                if (TryGetBuffsByID(buffDataID, buffData.CompeteInSource ? sourceId : EcsPackedEntity.Empty, out buff))
                 {
                     switch (buffData.CompeteType)
                     {
@@ -121,7 +122,7 @@ namespace SkillEditorDemo.Model
                 else
                 {
                     TrigInfo trigInfo = new() { 
-                        BuffCarrierID = Unit.Index,
+                        BuffCarrierID = Unit.Entity,
                         SourceID = sourceId,
                         BuffCreatorID = creatorId,
                     };
@@ -134,28 +135,28 @@ namespace SkillEditorDemo.Model
 
         public Buff InitAdd(string buffDataID, int level, int degree, params float[] createParams)
         {
-            return AddBuff(buffDataID, Unit.Index, Unit.Index, level, degree, createParams);
+            return AddBuff(buffDataID, Unit.Entity, Unit.Entity, level, degree, createParams);
         }
 
-        public bool IsBuffExist(string buffID, int sourceId = -1)
+        public bool IsBuffExist(string buffID, EcsPackedEntity sourceId)
         {
             foreach (Buff buff in Buffs)
             {
-                if (buff.ID == buffID && (sourceId == -1 || sourceId == buff.SourceID))
+                if (buff.ID == buffID && (sourceId == EcsPackedEntity.Empty || sourceId == buff.SourceID))
                 {
                     return true;
                 }
             }
             return false;
         }
-        public List<int> GetBuffsByID(string buffID, int sourceId = -1)
+        public List<int> GetBuffsByID(string buffID, EcsPackedEntity sourceId)
         {
             BuffNode node = IData<BuffNode>.Get(buffID);
             bool uniq = node.CompeteType != CompeteType.Indie;
             List<int> buffs = new ();
             foreach (Buff buff in Buffs)
             {
-                if (buff.ID == buffID && (sourceId == -1 || sourceId == buff.SourceID))
+                if (buff.ID == buffID && (sourceId == EcsPackedEntity.Empty || sourceId == buff.SourceID))
                 {
                     buffs.Add(buff.Index);
                     if (uniq)
@@ -167,7 +168,7 @@ namespace SkillEditorDemo.Model
             return buffs;
         }
 
-        public bool TryGetBuffsByID(string buffID, int sourceId, out Buff buff)
+        public bool TryGetBuffsByID(string buffID, EcsPackedEntity sourceId, out Buff buff)
         {
             List<int> ids = GetBuffsByID(buffID, sourceId);
             buff = null;
@@ -187,8 +188,8 @@ namespace SkillEditorDemo.Model
 
         void internalAddBuff(Buff buff)
         {
-            buff.TrigInfo.BuffCarrierID = Unit.Index;
-            int sourceId = buff.SourceID;
+            buff.TrigInfo.BuffCarrierID = Unit.Entity;
+            EcsPackedEntity sourceId = buff.SourceID;
             if (buff.BuffData.CompeteType != CompeteType.Indie)
             {
                 UniqBuffs[buff.BuffData.ID].Add(sourceId, buff.Index);
@@ -254,7 +255,7 @@ namespace SkillEditorDemo.Model
             bool uniq = buff.BuffData.CompeteType != CompeteType.Indie;
             if (uniq)
             {
-                Dictionary<int, int> buffById = UniqBuffs[buff.BuffData.ID];
+                Dictionary<EcsPackedEntity, int> buffById = UniqBuffs[buff.BuffData.ID];
                 buffById.Remove(buff.SourceID);
             }
             Buffs.Remove(buff);

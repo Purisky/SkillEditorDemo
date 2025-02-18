@@ -7,9 +7,17 @@ namespace SkillEditorDemo.Model
     public class Unit
     {
         protected const TrigType Aft = STrigType.Aft;
-        public int Index;
+        public EcsPackedEntity Entity;
         public string ID;
         public static Unit Get(int entity) => entity.Get<UnitCmp>().Unit;
+        public static Unit Get(EcsPackedEntity entity)
+        {
+            if (entity.Unpack(EcsWorld.Inst, out int entity_))
+            {
+                return Get(entity_);
+            }
+            return null;
+        }
         public UnitData Data => IData<UnitData>.Get(ID);
         public StatHandler StatHandler;
         public BuffHandler BuffHandler;

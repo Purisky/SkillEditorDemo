@@ -43,20 +43,28 @@ namespace SkillEditorDemo.Model
             }
         }
 
-
+        static void RemoveCollider(int entity)
+        {
+            ref ColliderCmp collider = ref entity.Get<ColliderCmp>();
+            CollisionDetectionSystem.Quadtree.Remove(collider.Shape);
+        }
         void ReleaseUnit(int entity)
         {
-
+            RemoveCollider(entity);
+            Events.OnDestroy.Unit?.Invoke(entity);
+            EcsWorld.Inst.DelEntity(entity);
         }
         void ReleaseProjectile(int entity)
         {
-
+            RemoveCollider(entity);
+            Events.OnDestroy.Projectile?.Invoke(entity);
+            EcsWorld.Inst.DelEntity(entity);
         }
         void ReleaseHitbox(int entity)
         {
-
-
-
+            RemoveCollider(entity);
+            Events.OnDestroy.Hitbox?.Invoke(entity);
+            EcsWorld.Inst.DelEntity(entity);
         }
 
     }

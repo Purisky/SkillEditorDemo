@@ -8,8 +8,11 @@ namespace SkillEditorDemo.Model
     }
 
     public struct UnitCreateCmp
-    { 
-        
+    {
+        public string ID;
+        public int Faction;
+        public bool IsPlayer;
+
     }
     public struct ProjectileCreateCmp
     {

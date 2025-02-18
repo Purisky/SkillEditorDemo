@@ -19,6 +19,7 @@ namespace SkillEditorDemo.Model
             Systems.Add(new VelocitySystem());
             Systems.Add(new CollisionDetectionSystem());
             Systems.Add(new CollisionHandlerSystem());
+            Systems.Add(new AfterCollisionSystem());
             Systems.Add(new UnitCombatResSystem());
             Systems.Add(new BuffPeriodicSystem());
             Systems.Add(new BuffTimeOutSystem());

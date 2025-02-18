@@ -23,6 +23,11 @@ namespace Leopotam.EcsLite
                 return (23 * 31 + Id) * 31 + Gen;
             }
         }
+        public static readonly EcsPackedEntity Empty = new() { Id = -1, Gen = -1 };
+
+        public static bool operator ==(in EcsPackedEntity a, in EcsPackedEntity b) => a.Id == b.Id && a.Gen == b.Gen;
+        public static bool operator !=(in EcsPackedEntity a, in EcsPackedEntity b) => a.Id != b.Id || a.Gen != b.Gen;
+        public override bool Equals(object obj) => obj is EcsPackedEntity other && Id == other.Id && Gen == other.Gen;
     }
 
     public struct EcsPackedEntityWithWorld

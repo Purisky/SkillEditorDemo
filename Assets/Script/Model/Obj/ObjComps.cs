@@ -10,8 +10,6 @@ namespace SkillEditorDemo.Model
         public CombatCache Cache;
         public int GrowID;
         public readonly NewProjectile ProjectileNode => ObjNode.Get<NewProjectile>(GrowID);
-        public TransformCmp TransformCmp;
-
     }
     public struct HitboxCmp
     {
@@ -19,7 +17,6 @@ namespace SkillEditorDemo.Model
         public CombatCache Cache;
         public int GrowID;
         public readonly NewHitbox HitboxNode => ObjNode.Get<NewHitbox>(GrowID);
-        public TransformCmp TransformCmp;
     }
 
 

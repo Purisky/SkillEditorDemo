@@ -9,9 +9,11 @@ namespace SkillEditorDemo.View
         void Start()
         {
             Utility.Debug.Init(Debug.Log, Debug.LogError);
+            DataMgr.Inst.Init();
             Model.GameCore.Inst.Init();
             Systems = new EcsSystems(Model.GameCore.Inst.World);
             Systems.Add(new InputSystem());
+            Systems.Add(new RenderSystem());
             Systems.Init();
         }
 

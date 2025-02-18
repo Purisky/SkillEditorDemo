@@ -6,14 +6,6 @@ using UnityEditorInternal;
 using UnityEngine;
 namespace SkillEditorDemo.Editor
 {
-    [InitializeOnLoad]
-    public class Debug
-    {
-        static Debug()
-        {
-            Utility.Debug.Init(UnityEngine.Debug.Log, UnityEngine.Debug.LogError);
-        }
-    }
     internal static class LogRedirection
     {
         private static readonly Regex LogRegex = new Regex(@" \(at (.+)\:(\d+)\)");

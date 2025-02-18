@@ -9,10 +9,13 @@ namespace SkillEditorDemo.Model
         EcsFilter Filter;
         public static Quadtree Quadtree;
         static HashSet<Collision> RawCollisions;
+
+
         public void Init(IEcsSystems systems)
         {
             Quadtree = new Quadtree(0, new() { Center = new(0, 0), Size = new(100, 100) });
             Filter = systems.GetWorld().Filter<ColliderCmp>().End();
+
             RawCollisions = new();
         }
 
@@ -82,6 +85,10 @@ namespace SkillEditorDemo.Model
             }
         }
 
+
+
+
+
         bool IsColliding(AABB a, AABB b)
         {
             return (a.Center.X - a.Size.X / 2 < b.Center.X + b.Size.X / 2 &&
@@ -125,21 +132,21 @@ namespace SkillEditorDemo.Model
         {
             Unit unit = Unit.Get(_unit);
             ref HitboxCmp hitbox = ref _hitbox.Get<HitboxCmp>();
-
-
-
+            hitbox.TrigInfo.TriggerID = unit.Entity;
+            hitbox.HitboxNode.Hit(hitbox.TrigInfo, hitbox.Cache);
         }
         void ProjectileHitUnit(int _projectile, int _unit)
         {
             Unit unit = Unit.Get(_unit);
             ref ProjectileCmp projectile = ref _projectile.Get<ProjectileCmp>();
-
-
+            projectile.TrigInfo.TriggerID = unit.Entity;
+            projectile.ProjectileNode.Hit(projectile.TrigInfo, projectile.Cache);
+            _projectile.Add<ReleaseCmp>();
         }
         void ProjectileHitTerrain(int _projectile, int _terrain)
         {
             ref ProjectileCmp projectile = ref _projectile.Get<ProjectileCmp>();
-            projectile.TrigInfo.CurrentID = -1;
+            projectile.TrigInfo.TriggerID = EcsPackedEntity.Empty;
             if (projectile.ProjectileNode.TrigOnHitTerrain)
             {
                 for (int i = 0; i < projectile.ProjectileNode.Actions.Count; i++)
@@ -151,5 +158,45 @@ namespace SkillEditorDemo.Model
         }
 
 
+    }
+
+
+
+    public class AfterCollisionSystem : IEcsRunSystem, IEcsInitSystem
+    {
+        EcsFilter Hitboxes;
+        EcsFilter Projectiles;
+        public void Init(IEcsSystems systems)
+        {
+            Hitboxes = systems.GetWorld().Filter<HitboxCmp>().Exc<ReleaseCmp>().End();
+            Projectiles = systems.GetWorld().Filter<ProjectileCmp>().Exc<ReleaseCmp>().End();
+        }
+
+        public void Run(IEcsSystems systems)
+        {
+            ReleaseProjectiles();
+            ReleaseHitboxes();
+        }
+        void ReleaseProjectiles()
+        {
+            foreach (int entity in Projectiles)
+            {
+                ref ProjectileCmp projectile = ref entity.Get<ProjectileCmp>();
+                projectile.Life--;
+                if (projectile.Life <= 0)
+                {
+                    entity.Add<ReleaseCmp>();
+                }
+            }
+        }
+
+
+        void ReleaseHitboxes()
+        {
+            foreach (int entity in Hitboxes)
+            {
+                entity.Add<ReleaseCmp>();
+            }
+        }
     }
 }

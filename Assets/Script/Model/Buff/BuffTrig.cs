@@ -1,3 +1,4 @@
+using Leopotam.EcsLite;
 using SkillEditorDemo.Utility;
 using System.Collections.Generic;
 
@@ -48,7 +49,7 @@ namespace SkillEditorDemo.Model
         {
             return ActionNode.Get<StatModify>(actionId).GetRuntimeValue(TrigInfo, LastCombatCache);
         }
-        public bool Trig(int trigCount, CombatCache cache, int from)
+        public bool Trig(int trigCount, CombatCache cache, EcsPackedEntity from)
         {
             LastCombatCache = cache;
             TrigInfo.TriggerID = from;

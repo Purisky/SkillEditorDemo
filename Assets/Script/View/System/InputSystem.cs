@@ -9,8 +9,8 @@ namespace SkillEditorDemo.View
 {
     public class InputSystem : IEcsInitSystem, IEcsRunSystem
     {
-        public InputAction MoveAction;
-        public InputAction LookAction;
+        public InputAction MoveAction;//{wasd}
+        public InputAction LookAction;//{mouse}
         public InputAction[] Skills;//{lm,rm,space,q,e,r}
 
         EcsFilter InputFilter;

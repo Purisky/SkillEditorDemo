@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Numerics;
+using SkillEditorDemo.Model;
 
 namespace SkillEditorDemo.View
 {
@@ -14,4 +15,13 @@ namespace SkillEditorDemo.View
             return new UnityEngine.Vector2(nVec2.X, nVec2.Y);
         }
     }
+
+    public static class TransformExtensions
+    {
+        public static void SetTransform(this Transform transform, TransformCmp cmp)
+        {
+            transform.SetPositionAndRotation(new UnityEngine.Vector3(cmp.Pos.X, 0, cmp.Pos.Y), UnityEngine.Quaternion.Euler(0, cmp.Rot, 0));
+        }
+    }
+
 }

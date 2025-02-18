@@ -144,7 +144,7 @@ namespace SkillEditorDemo.Model
             List<Unit> units =  UnitNode.GetUnits(info, cache);
             for (int i = 0; i < units.Count; i++)
             {
-                info.CurrentID = units[i].Index;
+                info.CurrentID = units[i].Entity;
                 CombatCache clone = cache.Clone();
                 float dmgValue = Value.GetResult(info, clone);
                 clone[CombatCacheType.TotalDmg] = dmgValue * dmgMod;

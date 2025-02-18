@@ -33,7 +33,7 @@ namespace SkillEditorDemo.Model
         public override Vector2 GetResult(TrigInfo info, CombatCache cache)
         {
             Unit unit = UnitNode.GetUnits(info, cache)[0];
-            return unit.Index.Get<TransformCmp>().Pos;
+            return unit.Entity.Get<TransformCmp>().Pos;
         }
     }
 

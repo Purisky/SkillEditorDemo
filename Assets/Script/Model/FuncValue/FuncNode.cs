@@ -31,6 +31,9 @@ namespace SkillEditorDemo.Model
         public float GetResult(TrigInfo info) => GetResult(info, CombatCache._);
         public float GetResult(CombatCache cache) => GetResult(TrigInfo.Empty, cache);
         public float GetResult() => GetResult(TrigInfo.Empty);
+
+        public static implicit operator FuncValue(float value) => new () { Value = value };
+
     }
 
     public class ConstValue : FuncNode
@@ -48,7 +51,7 @@ namespace SkillEditorDemo.Model
     
     public struct TimeValue
     {
-        [ShowInNode,Group("type",Width = 40),LabelInfo(Hide =true)]
+        [ShowInNode,Group("type",Width = 60),LabelInfo(Hide =true)]
         public TimeType Type;
         [Child,LabelInfo(Hide =true), Group("type")]
         public FuncValue Value;
@@ -58,6 +61,9 @@ namespace SkillEditorDemo.Model
             float value = Value.GetResult(info, cache);
             return Type== TimeType.GameTick ? (int)value : (int)(value * Time.GameTickPerSec);
         }
+
+        public static implicit operator TimeValue(float value) => new() { Type = TimeType.Second, Value = value };
+
     }
 
 
@@ -80,7 +86,7 @@ namespace SkillEditorDemo.Model
             throw new System.NotImplementedException();
         }
     }
-    [NodeInfo(typeof(FuncNode), "战斗数值缓存", 100, "取值/战斗数值缓存")]
+    [NodeInfo(typeof(FuncNode), "战斗数值缓存", 120, "取值/战斗数值缓存")]
     public class CombatCacheGetter : FuncNode
     {
         [ShowInNode, LabelInfo(Hide = true)]

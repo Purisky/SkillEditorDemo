@@ -1,3 +1,4 @@
+using Newtonsoft.Json;
 using SkillEditorDemo.Utility;
 using System.Collections.Generic;
 using TreeNode.Runtime;
@@ -9,7 +10,7 @@ namespace SkillEditorDemo.Model
     {
         [ShowInNode, LabelInfo("ID", 60)]
         public string ID { get; set; }
-        [ShowInNode, LabelInfo("Name", 60)]
+        [ShowInNode, LabelInfo("Name", 60), JsonProperty]
         public string Name { get; set; }
         [ShowInNode, LabelInfo("竞争机制", 60), Group("Compete")]
         public CompeteType CompeteType;

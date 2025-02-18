@@ -4,7 +4,7 @@ namespace SkillEditorDemo.Model
 {
     public class UnitCombatResSystem : IEcsRunSystem, IEcsInitSystem
     {
-        EcsFilter Filter;
+        public static EcsFilter Filter;
         public void Init(IEcsSystems systems)
         {
             Filter = systems.GetWorld().Filter<UnitCmp>().Exc<ReleaseCmp>().End();

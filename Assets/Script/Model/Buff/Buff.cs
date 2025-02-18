@@ -1,3 +1,4 @@
+using Leopotam.EcsLite;
 using SkillEditorDemo.Utility;
 using System;
 using System.Collections.Generic;
@@ -25,11 +26,10 @@ namespace SkillEditorDemo.Model
         public Dictionary<string, float> ParamValues;
         public BuffNode BuffData=> IData<BuffNode>.Get(ID);
         public static Buff Get(int id) => IIndex<Buff>.Get(id);
-        public int SourceID => TrigInfo.SourceID;
+        public EcsPackedEntity SourceID => TrigInfo.SourceID;
         public bool Alive => !Disposed;
-        public Unit CarrierUnit => Unit.Get(TrigInfo.CurrentID);
+        public Unit CarrierUnit => Unit.Get(TrigInfo.BuffCarrierID);
         public Unit CreatorUnit => Unit.Get(TrigInfo.BuffCreatorID);
-        public Unit SourceUnit => Unit.Get(SourceID);
         public Buff(string Id, int level, int degree, TrigInfo trigInfo, float[] createParam)
         {
             ID = Id;
@@ -87,7 +87,7 @@ namespace SkillEditorDemo.Model
             {
                 for (int i = 0; i < trigs.Length; i++)
                 {
-                    trigs[i].Trig(5, CombatCache._, CreatorUnit.Index);
+                    trigs[i].Trig(5, CombatCache._, CreatorUnit.Entity);
                 }
             }
         }

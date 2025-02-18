@@ -31,14 +31,15 @@
         }
       },
       {
-        "$type": "SkillEditorDemo.Model.NewHitBox, Model",
+        "$type": "SkillEditorDemo.Model.NewHitbox, Model",
         "Position": {
-          "x": 847,
-          "y": 340
+          "x": 880,
+          "y": 399
         }
       },
       {
         "$type": "SkillEditorDemo.Model.CircleShape, Model",
+        "Radius": {},
         "Position": {
           "x": 1156,
           "y": 360

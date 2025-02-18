@@ -45,7 +45,7 @@ namespace SkillEditorDemo.Model
         }
         void CreateUnit(int entity)
         {
-            
+
         }
         void CreateProjectile(int entity)
         {
@@ -54,9 +54,10 @@ namespace SkillEditorDemo.Model
             projectileCmp.Life = projectile.ProjectileNode.Time.GetTick(projectile.TrigInfo, projectile.Cache);
             float radius = projectile.ProjectileNode.Radius.GetResult(projectile.TrigInfo, projectile.Cache);
             Unit unit = Unit.Get(projectile.TrigInfo.SourceID);
-            ColliderCmp collider = new(new Circle() { Radius = radius, Entity = entity,Dirty = true }, unit.Faction, ColliderType.Projectile) ;
+            ColliderCmp collider = new(new Circle() { Radius = radius, Entity = entity, Dirty = true }, unit.Faction, ColliderType.Projectile);
             entity.Add(collider);
             entity.Add(projectileCmp);
+            projectileCmp.TrigInfo.ColliderID = EcsWorld.Inst.PackEntity(entity);
             float speed = projectile.ProjectileNode.Speed.GetResult(projectile.TrigInfo, projectile.Cache);
             ref TransformCmp transform = ref entity.Get<TransformCmp>();
             VelocityCmp velocity = new()
@@ -64,14 +65,28 @@ namespace SkillEditorDemo.Model
                 Speed = speed * transform.Rot,
             };
             entity.Add(velocity);
-
+            Events.OnCreate.Projectile?.Invoke(entity);
 
 
         }
+
         void CreateHitbox(int entity)
         {
+            ref HitboxCreateCmp create = ref entity.Get<HitboxCreateCmp>();
+            HitboxCmp hitboxCmp = create.HitboxCmp;
+            Unit unit = Unit.Get(create.TrigInfo.SourceID);
+            IAABB aABB = create.HitboxNode.Shape.GetShape(create.TrigInfo, create.Cache);
+            aABB.Entity = entity;
+            ColliderCmp collider = new(aABB, unit.Faction, ColliderType.Hitbox);
+            entity.Add(collider);
+            entity.Add(hitboxCmp);
+            hitboxCmp.TrigInfo.ColliderID =  EcsWorld.Inst.PackEntity(entity);
+            Events.OnCreate.Hitbox?.Invoke(entity);
 
         }
+
+
+
 
 
     }

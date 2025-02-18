@@ -44,7 +44,7 @@ namespace SkillEditorDemo.Model
         public override TransformCmp GetResult(TrigInfo info, CombatCache cache)
         {
             Unit unit = UnitNode.GetUnits(info, cache)[0];
-            return unit.Index.Get<TransformCmp>();
+            return unit.Entity.Get<TransformCmp>();
         }
     }
     [NodeInfo(typeof(TransformNode), "获取命中变换", 150, "变换/命中变换")]
