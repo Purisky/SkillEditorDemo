@@ -14,9 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Radius: 0.8
   Stats:
-  - Type: 16777472
-    Value: 50
-  - Type: 16779008
+  - Type: MaxHP
+    Value: 200
+  - Type: HP
+    Value: 200
+  - Type: Atk
     Value: 1
-  - Type: 16779520
+  - Type: Def
     Value: 1
+  Buffs: []
+  Skills: []

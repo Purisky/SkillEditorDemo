@@ -14,7 +14,7 @@ namespace SkillEditorDemo.Model
         public ModifyValue BaseValue;
         decimal ValueCache;
         int CacheTick;
-        List<ActionCache>[] ValueList;
+        List<ActionCache>[] ValueList = new List<ActionCache>[3];
         public float Value => UpdateValue();
 
         public float ValueWithParent

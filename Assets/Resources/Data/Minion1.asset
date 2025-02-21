@@ -14,7 +14,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Radius: 0.4
   Stats:
-  - Type: 16777472
-    Value: 15
-  - Type: 16779008
-    Value: 3
+  - Type: MaxHP
+    Value: 80
+  - Type: HP
+    Value: 80
+  - Type: Atk
+    Value: 5
+  Buffs: []
+  Skills:
+  - ID: Minion_MeleeAtk
+    Level: 1

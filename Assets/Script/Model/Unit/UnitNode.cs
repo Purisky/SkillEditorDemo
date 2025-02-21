@@ -54,7 +54,7 @@ namespace SkillEditorDemo.Model
         public override List<Unit> GetUnits(TrigInfo info, CombatCache cache)
         {
             List<Unit> list = new();
-            foreach (var entity in UnitCombatResSystem.Filter)//todo 
+            foreach (var entity in UnitSystem.Filter)//todo 
             {
                 list.Add(Unit.Get(entity));
             }

@@ -33,19 +33,22 @@ namespace SkillEditorDemo.Utility
         public EcsPackedEntity[] CacheList;
         #endregion
 
-
-
-
-        public readonly static TrigInfo Empty = new()
+        public TrigInfo(EcsPackedEntity source)
         {
-            CurrentID = EcsPackedEntity.Empty,
-            BuffCarrierID = EcsPackedEntity.Empty,
-            BuffCreatorID = EcsPackedEntity.Empty,
-            SourceID = EcsPackedEntity.Empty,
-            TriggerID = EcsPackedEntity.Empty,
-            BuffID = -1,
-            TrigID = -1,
-        };
+            SourceID = source;
+            CurrentID = EcsPackedEntity.Empty;
+            TriggerID = EcsPackedEntity.Empty;
+            BuffCarrierID = EcsPackedEntity.Empty;
+            BuffCreatorID = EcsPackedEntity.Empty;
+            ColliderID = EcsPackedEntity.Empty;
+            EnumeratorID = EcsPackedEntity.Empty;
+            CacheList = null;
+            BuffID = -1;
+            TrigID = -1;
+            SkillID = -1;
+        }
+
+        public readonly static TrigInfo Empty = new(EcsPackedEntity.Empty);
 
     }
 }

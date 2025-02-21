@@ -2,6 +2,7 @@ using SkillEditorDemo.Model;
 using SkillEditorDemo.Utility;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using TreeNode.Utility;
 using UnityEngine;
 using Debug = SkillEditorDemo.Utility.Debug;
@@ -19,6 +20,7 @@ namespace SkillEditorDemo.View
         }
         protected override GameObject New()
         {
+            if (Obj == null) { return null; }
             GameObject @object = GameObject.Instantiate(Obj);
             if (Parent != null)
             {
@@ -58,12 +60,25 @@ namespace SkillEditorDemo.View
                 pools[id] = null;
                 return null;
             }
-            pool = new(prefab,null ,(go) => go.transform.localScale = Vector3.one, (go) => go.transform.localScale = Vector3.zero);
+            pool = new(prefab, null, (go) => go.transform.localScale = Vector3.one, (go) => go.transform.localScale = Vector3.zero);
             pools[id] = pool;
             return pool;
         }
 
-
+        public static void Release(string id, GameObject go, int delay_ms = 0)
+        {
+            GoPool pool = Inst.GetPool(id);
+            if (pool == null) { return; }
+            if (delay_ms >= 0)
+            {
+                Task.Delay(delay_ms).ContinueWith(
+                   (_) => MainThread.Post(() => pool.Release(go)));
+            }
+            else
+            {
+                pool.Release(go);
+            }
+        }
 
     }
 }

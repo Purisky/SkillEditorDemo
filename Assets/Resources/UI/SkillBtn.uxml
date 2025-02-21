@@ -1,0 +1,12 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <engine:VisualElement name="BG" style="flex-grow: 1; border-top-left-radius: 10px; border-top-right-radius: 10px; border-bottom-right-radius: 10px; border-bottom-left-radius: 10px; background-color: rgba(146, 146, 146, 0.88); overflow: hidden; margin-top: 10px; margin-right: 10px; margin-bottom: 10px; margin-left: 10px;">
+        <engine:VisualElement style="flex-grow: 1; position: absolute; width: 100%; height: 100%;">
+            <engine:Label text="Label" name="Name" style="-unity-text-align: middle-center; -unity-font-style: bold; font-size: 19px; align-items: center; align-self: auto; align-content: auto; height: 100%; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; width: 100%;" />
+            <engine:Label text="Label" name="Key" style="position: absolute; left: 0;" />
+            <engine:Label text="Label" name="Count" style="position: absolute; right: 0; bottom: 0;" />
+        </engine:VisualElement>
+        <engine:VisualElement name="Disable" style="flex-grow: 1; background-color: rgba(0, 0, 0, 0.55);">
+            <engine:Label text="Label" name="Time" style="-unity-text-align: middle-center; margin-top: 0; margin-right: 0; margin-bottom: 0; margin-left: 0; padding-top: 0; padding-right: 0; padding-bottom: 0; padding-left: 0; width: 100%; height: 100%; font-size: 19px; color: rgb(255, 0, 0); align-self: stretch; justify-content: flex-start; align-content: auto;" />
+        </engine:VisualElement>
+    </engine:VisualElement>
+</engine:UXML>

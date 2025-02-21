@@ -1,0 +1,10 @@
+<engine:UXML xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:engine="UnityEngine.UIElements" xmlns:editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <engine:VisualElement style="position: absolute; bottom: 0; flex-direction: row; justify-content: space-around; flex-shrink: 0; align-self: center;">
+        <SkillEditorDemo.View.SkillBtn key-text="LM" name="LM" style="width: 100px; height: 100px;" />
+        <SkillEditorDemo.View.SkillBtn key-text="RM" name="RM" style="width: 100px; height: 100px;" />
+        <SkillEditorDemo.View.SkillBtn key-text="Space" name="Space" style="width: 100px; height: 100px;" />
+        <SkillEditorDemo.View.SkillBtn key-text="Q" name="Q" style="width: 100px; height: 100px;" />
+        <SkillEditorDemo.View.SkillBtn key-text="E" name="E" style="width: 100px; height: 100px;" />
+        <SkillEditorDemo.View.SkillBtn key-text="R" name="R" style="width: 100px; height: 100px;" />
+    </engine:VisualElement>
+</engine:UXML>

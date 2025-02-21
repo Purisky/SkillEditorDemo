@@ -25,7 +25,7 @@ namespace SkillEditorDemo.Model
                 ref TransformCmp transform = ref entity.Get<TransformCmp>();
                 ref VelocityCmp velocity = ref entity.Get<VelocityCmp>();
                 transform.Pos += velocity.Speed * Time.GameTickDuration;
-                transform.Rot += velocity.Rot * Time.GameTickDuration;
+                transform.Rot = velocity.Rot;
                 ref ColliderCmp collider = ref entity.Get<ColliderCmp>();
                 collider.Shape.SetDirty(ref transform);
                 Events.OnChange.Transform?.Invoke(entity);

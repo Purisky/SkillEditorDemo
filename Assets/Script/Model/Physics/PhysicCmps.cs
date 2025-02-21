@@ -23,7 +23,7 @@ namespace SkillEditorDemo.Model
     public struct VelocityCmp
     {
         public Vector2 Speed;//per sec
-        public Angle Rot;//per sec
+        public Angle Rot;
     }
 
     public struct Collision : IEqualityComparer<Collision>

@@ -5,6 +5,7 @@ using System;
 using TreeNode.Utility;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Debug = SkillEditorDemo.Utility.Debug;
 namespace SkillEditorDemo.View
 {
     public class InputSystem : IEcsInitSystem, IEcsRunSystem
@@ -25,29 +26,30 @@ namespace SkillEditorDemo.View
                 Skills[i] = UnityEngine.InputSystem.InputSystem.actions.FindAction($"Skill{i}");
             }
             InputFilter = systems.GetWorld().Filter<TransformCmp>().Inc<UnitCmp>().Inc<InputCmp>().End();
-            
 
         }
         public void Run(IEcsSystems systems)
         {
             foreach (int entity in InputFilter)
             {
+                //Debug.Log(entity);
                 UpdateMove_Look(entity);
                 UpdateSkills(entity);
+                break;
             }
         }
         void UpdateMove_Look(int entity)
         { 
             ref TransformCmp transform = ref entity.Get<TransformCmp>();
             Vector2 move = MoveAction.ReadValue<Vector2>();
+            ref VelocityCmp velocity = ref entity.GetAdd<VelocityCmp>();
             if (move.x == 0 && move.y == 0)
             {
-                entity.Del<VelocityCmp>();
+                velocity.Speed = System.Numerics.Vector2.Zero;
             }
             else
             {
                 Unit unit = Unit.Get(entity);
-                ref VelocityCmp velocity = ref entity.GetAdd<VelocityCmp>();
                 velocity.Speed = move.normalized.ToNumerics() * unit.StatHandler[StatType.MoveSpeed];
             }
             Ray ray = Camera.main.ScreenPointToRay(LookAction.ReadValue<Vector2>());
@@ -56,7 +58,7 @@ namespace SkillEditorDemo.View
             Vector3 pos = ray.origin + t * ray.direction;
             System.Numerics.Vector2 mousePos = new (pos.x, pos.z);
             System.Numerics.Vector2 dir = mousePos - transform.Pos;
-            transform.Rot =dir;
+            velocity.Rot =dir;
         }
         void UpdateSkills(int entity)
         {
@@ -64,9 +66,12 @@ namespace SkillEditorDemo.View
             ref Unit unit = ref unitCmp.Unit;
             for (int i = 0; i < Skills.Length; i++)
             {
-                if (Skills[i].triggered)
+                if (Skills[i].IsPressed())
                 {
-                    unit.SkillHandler.TryCast(i);
+                    if (unit.SkillHandler.TryCast(i))
+                    {
+                        Events.OnChange.Skill?.Invoke(entity, i);
+                    }
                 }
             }
         }

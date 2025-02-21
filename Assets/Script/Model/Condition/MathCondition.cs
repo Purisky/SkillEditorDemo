@@ -8,7 +8,7 @@ using TreeNode.Utility;
 namespace SkillEditorDemo.Model
 {
     [PortColor("#40E0D0")]
-    public abstract class Condition : JsonNode, IGrowID<FuncNode>
+    public abstract class Condition : JsonNode, IGrowID<Condition>
     {
         [JsonIgnore] public int GrowID { get; set; }
         public static T Get<T>(int id) where T : Condition => (T)IGrowID<Condition>.Get(id);

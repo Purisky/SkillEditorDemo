@@ -1,4 +1,5 @@
 using Leopotam.EcsLite;
+using SkillEditorDemo.Utility;
 using TreeNode.Utility;
 
 namespace SkillEditorDemo.Model
@@ -9,6 +10,7 @@ namespace SkillEditorDemo.Model
         public EcsSystems Systems;
         public override void Init()
         {
+            Debug.Log("GameCore Init");
             World = new();
             Systems = new(World);
             Systems.Add(new GameTickStartSystem());
@@ -20,16 +22,18 @@ namespace SkillEditorDemo.Model
             Systems.Add(new CollisionDetectionSystem());
             Systems.Add(new CollisionHandlerSystem());
             Systems.Add(new AfterCollisionSystem());
-            Systems.Add(new UnitCombatResSystem());
+            Systems.Add(new UnitSystem());
             Systems.Add(new BuffPeriodicSystem());
             Systems.Add(new BuffTimeOutSystem());
 
             Systems.Add(new ReleaseSystem());
             Systems.Add(new GameTickEndSystem());
             Systems.Init();
+
+            
         }
 
-
+        
 
         public void Update()
         {

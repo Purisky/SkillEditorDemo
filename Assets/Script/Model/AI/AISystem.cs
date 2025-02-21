@@ -4,7 +4,7 @@ using Leopotam.EcsLite;
 namespace SkillEditorDemo.Model
 {
     /// <summary>
-    /// AI系统
+    /// AI系统 todo
     /// </summary>
     public class AISystem : IEcsInitSystem, IEcsRunSystem
     {
@@ -20,8 +20,11 @@ namespace SkillEditorDemo.Model
             foreach (int entity in Filter)
             {
                 ref AICmp ai = ref entity.Get<AICmp>();
-
                 Unit unit = Unit.Get(entity);
+
+
+
+
 
 
             }

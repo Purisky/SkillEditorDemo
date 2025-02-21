@@ -1,8 +1,10 @@
 using Leopotam.EcsLite;
+using SkillEditorDemo.Utility;
+using System.Numerics;
 
 namespace SkillEditorDemo.Model
 {
-    public class UnitCombatResSystem : IEcsRunSystem, IEcsInitSystem
+    public class UnitSystem : IEcsRunSystem, IEcsInitSystem
     {
         public static EcsFilter Filter;
         public void Init(IEcsSystems systems)
@@ -21,5 +23,8 @@ namespace SkillEditorDemo.Model
                 }
             }
         }
+
+
+
     }
 }

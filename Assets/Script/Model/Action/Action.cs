@@ -135,12 +135,14 @@ namespace SkillEditorDemo.Model
 
         public override bool Handle(int trigCount, TrigInfo info, CombatCache cache)
         {
+            Debug.Log("Damage Handle");
             Unit from = Unit.Get(info.SourceID);
             cache.DmgType = DmgType;
             cache.DirectDmg = Direct;
             cache.Dodge_able = Dodge_able;
             cache.Crit_able = Crit_able;
             float dmgMod = from?.StatHandler.GetDmgMod(DmgType) ?? 1;
+            Debug.Log(dmgMod);
             List<Unit> units =  UnitNode.GetUnits(info, cache);
             for (int i = 0; i < units.Count; i++)
             {
@@ -157,6 +159,7 @@ namespace SkillEditorDemo.Model
 
         public static void TryMakeDmg(int trigCount, Unit unit, CombatCache cache, Unit from)
         {
+            Debug.Log("TryMakeDmg");
             if (!unit.HitCheck(trigCount, from, cache)) { return; }
             if (!unit.Trig(trigCount, TrigType.Hit.ed(), cache, from)) { return; }
             if (!unit.CritCheck(trigCount, from, cache)) { return; };

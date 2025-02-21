@@ -13,6 +13,15 @@ namespace SkillEditorDemo.Model
         public HashSet<Buff> Buffs;
 
 
+
+        public BuffHandler(Unit unit)
+        {
+            Unit = unit;
+            UniqBuffs = new();
+            TrigDic = new();
+            Buffs = new();
+        }
+
         public bool Trig(int trigCount, TrigType type, CombatCache cache, Unit from)
         {
             if (trigCount > 0)
@@ -121,9 +130,8 @@ namespace SkillEditorDemo.Model
                 }
                 else
                 {
-                    TrigInfo trigInfo = new() { 
+                    TrigInfo trigInfo = new(sourceId) { 
                         BuffCarrierID = Unit.Entity,
-                        SourceID = sourceId,
                         BuffCreatorID = creatorId,
                     };
                     buff = new Buff(buffDataID, level, degree, trigInfo, createParams);

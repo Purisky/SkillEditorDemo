@@ -1,6 +1,7 @@
 using Leopotam.EcsLite;
 using SkillEditorDemo.Utility;
 using System;
+using System.Linq;
 
 namespace SkillEditorDemo.Model
 {
@@ -12,9 +13,9 @@ namespace SkillEditorDemo.Model
         public static Unit Get(int entity) => entity.Get<UnitCmp>().Unit;
         public static Unit Get(EcsPackedEntity entity)
         {
-            if (entity.Unpack(EcsWorld.Inst, out int entity_))
+            if (entity.Gen == EcsWorld.Inst.GetEntityGen(entity.Id))
             {
-                return Get(entity_);
+                return Get(entity.Id);
             }
             return null;
         }
@@ -32,10 +33,57 @@ namespace SkillEditorDemo.Model
         public int DeadTick = -1;
         public int Faction;
 
+        public Unit(int entity,string id, int faction)
+        {
+            Entity = EcsWorld.Inst.PackEntity(entity);
+            Faction = faction;
+            ID = id;
+            StatHandler = new StatHandler(this);
+            BuffHandler = new BuffHandler(this);
+            SkillHandler = new SkillHandler(this);
+            foreach (var stat in Data.Stats)
+            {
+                if (stat.Key.IsStat())
+                {
+                    StatHandler.AddStat(stat.Key, stat.Value);
+                }
+                else
+                {
+                    StatHandler[stat.Key] = stat.Value;
+                }
+            }
+            if (Data.Buffs != null && Data.Buffs.Any())
+            {
+                for (int i = 0; i < Data.Buffs.Count; i++)
+                {
+                    BuffInfo info = Data.Buffs[i];
+                    BuffHandler.InitAdd(info.ID, info.Level, info.Degree,info.Param );
+                }
+            }
+            if (Data.Skills != null && Data.Skills.Any())
+            {
+                for (int i = 0; i < Data.Skills.Count; i++)
+                {
+                    if (!string.IsNullOrEmpty(Data.Skills[i].ID))
+                    {
+                        SkillHandler.AddSkill(i, Data.Skills[i].ID, Data.Skills[i].Level);
+                    }
+                }
+            }
+            HP = new HealthPoint(this);
+            SP = new ShieldPoint(this);
+            Mana = new Mana(this);
+        }
+
+
+
+
         public void TakeDmg(int trigCount, CombatCache cache, Unit from)
         {
+            Debug.Log($"TakeDmg HP[{HP.Value}]- {cache[CombatCacheType.TotalDmg]}");
             //Dmged
             cache[CombatCacheType.TotalDmg]*= StatHandler.GetDmgMod(cache.DmgType, true);
+            Debug.Log(StatHandler.GetDmgMod(cache.DmgType, true));
             DmgTrig();
             if (HP.Value <= 0)
             {
@@ -113,7 +161,7 @@ namespace SkillEditorDemo.Model
             HP?.Update();
             SP?.Update();
             Mana?.Update();
-
+            SkillHandler.Update();
         }
 
 

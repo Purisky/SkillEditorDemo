@@ -1,3 +1,4 @@
+using SkillEditorDemo.Utility;
 using System.Collections.Generic;
 
 namespace SkillEditorDemo.Model
@@ -17,8 +18,12 @@ namespace SkillEditorDemo.Model
         }
         public Stat AddStat(StatType type, float baseValue)
         {
-            Stat stat = new(baseValue, type, this);
-            StatDic.Add(type, stat);
+            if (!StatDic.TryGetValue(type, out Stat stat))
+            {
+                stat = new(baseValue, type, this);
+                StatDic[type] = stat;
+            }
+            stat.BaseValue = baseValue;
             return stat;
         }
         public Stat GetStat(StatType type, bool add = false)
@@ -30,6 +35,7 @@ namespace SkillEditorDemo.Model
             if (add)
             {
                 stat = AddStat(type, Stat.GetDefault(type));
+                Debug.Log($"{type}:dft[{Stat.GetDefault(type)}]");
             }
             return stat;
         }

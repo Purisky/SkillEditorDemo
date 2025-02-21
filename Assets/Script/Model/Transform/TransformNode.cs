@@ -43,7 +43,7 @@ namespace SkillEditorDemo.Model
 
         public override TransformCmp GetResult(TrigInfo info, CombatCache cache)
         {
-            Unit unit = UnitNode.GetUnits(info, cache)[0];
+            Unit unit = UnitNode.GetUnit(info, cache);
             return unit.Entity.Get<TransformCmp>();
         }
     }

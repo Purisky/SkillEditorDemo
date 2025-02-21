@@ -1,84 +1,165 @@
 using SkillEditorDemo.Model;
-using SkillEditorDemo.View;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using TreeNode.Runtime;
 using TreeNode.Utility;
 using UnityEditor;
-using UnityEngine;
-using UnitData = SkillEditorDemo.View.UnitData;
+using UnityEngine.UIElements;
 
 namespace SkillEditorDemo
 {
-    [CustomPropertyDrawer(typeof(UnitData.StatData))]
-    public class StatDataDrawer : PropertyDrawer
+    [CustomPropertyDrawer(typeof(BuffInfo))]
+    public class BuffInfoDrawer : PropertyDrawer
     {
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+        public override VisualElement CreatePropertyGUI(SerializedProperty property)
         {
-            EditorGUI.BeginProperty(position, label, property);
-            //position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
-            var indent = EditorGUI.indentLevel;
-            EditorGUI.indentLevel = 0;
+            var container = new VisualElement();
+            container.style.flexDirection = FlexDirection.Row;
+
+            var idField = new PopupField<string>(null, UniqNodeManager<BuffNode, BuffAsset>.Dropdowns.Select(n => n.Value).ToList(), 0,
+                (value) => UniqNodeManager<BuffNode, BuffAsset>.Dropdowns.FirstOrDefault(n => n.Value == value)?.Text ?? "None",
+                (value) => UniqNodeManager<BuffNode, BuffAsset>.Dropdowns.FirstOrDefault(n => n.Value == value)?.Text ?? "None")
+            {
+                bindingPath = "ID"
+            };
+            idField.style.flexGrow = 2;
+            idField.RegisterValueChangedCallback(evt =>
+            {
+                var buffs = UniqNodeManager<BuffNode, BuffAsset>.Dropdowns;
+                var selectedBuff = buffs.FirstOrDefault(n => n.Value == evt.newValue);
+                if (selectedBuff != null)
+                {
+                    property.FindPropertyRelative("ID").stringValue = selectedBuff.Value;
+                }
+            });
+            container.Add(idField);
+            var levelField = new IntegerField("Level") { bindingPath = "Level"};
+            levelField.style.flexGrow = 1;
+            levelField.Q <Label>().style.width = 50;
+            levelField.Q<Label>().style.minWidth = 50;
+            container.Add(levelField);
 
 
-            var typeRect = new Rect(position.x, position.y, position.width * 2 / 3, position.height);
-            var valueRect = new Rect(position.x + position.width*2 / 3, position.y, position.width/3, position.height);
-            EditorGUI.PropertyField(typeRect, property.FindPropertyRelative("Type"), GUIContent.none);
+            var degreeField = new IntegerField("Degree") { bindingPath = "Degree" };
+            degreeField.style.flexGrow = 1;
+            degreeField.Q<Label>().style.width = 50;
+            degreeField.Q<Label>().style.minWidth = 50;
+            container.Add(degreeField);
 
-            EditorGUI.PropertyField(valueRect, property.FindPropertyRelative("Value"), GUIContent.none);
-            EditorGUI.indentLevel = indent;
-            EditorGUI.EndProperty();
+            var paramField = new FloatField("Param") { bindingPath = "Param" };
+            paramField.style.flexGrow = 1;
+            paramField.Q<Label>().style.width = 50;
+            paramField.Q<Label>().style.minWidth = 50;
+            container.Add(paramField);
+
+            return container;
         }
     }
-    [CustomPropertyDrawer(typeof(Model.StatType))]
-    public class StatTypeDrawer : PropertyDrawer
+    [CustomPropertyDrawer(typeof(SkillInfo))]
+    public class SkillInfoDrawer : PropertyDrawer
     {
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
+        public override VisualElement CreatePropertyGUI(SerializedProperty property)
         {
-            EditorGUI.BeginProperty(position, label, property);
+            var container = new VisualElement();
+            container.style.flexDirection = FlexDirection.Row;
 
-            // 获取当前枚举值
-            StatType currentEnum = (StatType)property.intValue;
-
-            // 获取所有枚举值
-            StatType[] enumValues = (StatType[])Enum.GetValues(typeof(StatType));
-
-            // 过滤枚举值
-            StatType[] filteredEnumValues = enumValues.Where(ShowOnMenu).ToArray();
-
-            // 获取当前枚举值在过滤后的枚举值中的索引
-            int currentIndex = Array.IndexOf(filteredEnumValues, currentEnum);
-
-            // 获取显示名称
-            string[] displayNames = filteredEnumValues.Select(e => GetLabelInfo(e)).ToArray();
-
-            // 显示枚举弹出菜单
-            int newIndex = EditorGUI.Popup(position, currentIndex, displayNames);
-
-            // 更新枚举值
-            if (newIndex >= 0 && newIndex < filteredEnumValues.Length)
+            var idField = new PopupField<string>(null, UniqNodeManager<SkillNode, SkillAsset>.Dropdowns.Select(n => n.Value).ToList(), 0,
+                (value)=> UniqNodeManager<SkillNode, SkillAsset>.Dropdowns.FirstOrDefault(n => n.Value == value)?.Text ?? "None",
+                (value) => UniqNodeManager<SkillNode, SkillAsset>.Dropdowns.FirstOrDefault(n => n.Value == value)?.Text ?? "None")
             {
-                property.intValue = (int)filteredEnumValues[newIndex];
-            }
+                bindingPath = "ID"
+            };
+            idField.style.flexGrow = 2;
+            idField.RegisterValueChangedCallback(evt =>
+            {
+                var skills = UniqNodeManager<SkillNode, SkillAsset>.Dropdowns;
+                var selectedSkill = skills.FirstOrDefault(n => n.Text == evt.newValue);
+                if (selectedSkill != null)
+                {
+                    property.FindPropertyRelative("ID").stringValue = selectedSkill.Value;
+                }
+            });
+            container.Add(idField);
 
-            EditorGUI.EndProperty();
+            var levelField = new IntegerField("Level") { bindingPath = "Level" };
+            levelField.style.flexGrow = 1;
+            levelField.Q<Label>().style.width = 50;
+            levelField.Q<Label>().style.minWidth = 50;
+            container.Add(levelField);
+
+            return container;
         }
 
-        private string GetLabelInfo(StatType enumValue)
+
+
+    }
+    [CustomPropertyDrawer(typeof(StatData))]
+    public class StatDataDrawer : PropertyDrawer 
+    {
+        public override VisualElement CreatePropertyGUI(SerializedProperty property)
         {
-            FieldInfo fieldInfo = enumValue.GetType().GetField(enumValue.ToString());
-            LabelInfoAttribute[] attributes = (LabelInfoAttribute[])fieldInfo.GetCustomAttributes(typeof(LabelInfoAttribute), false);
-            return attributes.Length > 0 ? attributes[0].Text : enumValue.ToString();
-        }
+            var container = new VisualElement();
+            container.style.flexDirection = FlexDirection.Row;
+            StatType[] filteredEnumValues = ((StatType[])Enum.GetValues(typeof(StatType))).Where(ShowOnMenu).ToArray();
 
+            List<string> values = filteredEnumValues.Select(n => n.ToString()).ToList();
+
+            List<string> Texts = filteredEnumValues.Select(n => GetLabelInfo(n)).ToList();
+
+            var statField = new PopupField<string>(null, values, 0,
+                GetLabelInfo, GetLabelInfo)
+            {
+                bindingPath = "Type"
+            };
+            statField.style.flexGrow = 2;
+            statField.RegisterValueChangedCallback(evt =>
+            {
+                var selectedStat = values.FirstOrDefault(n => n == evt.newValue);
+                if (selectedStat != null)
+                {
+                    property.FindPropertyRelative("Type").stringValue = selectedStat;
+                }
+            });
+
+            container.Add(statField);
+
+            var valueField = new FloatField(null) { bindingPath = "Value" };
+            valueField.style.flexGrow = 1;
+            container.Add(valueField);
+
+            return container;
+        }
         public bool ShowOnMenu(StatType type)
         {
             FieldInfo fieldInfo = type.GetType().GetField(type.ToString());
             HideEnumAttribute[] hideAttributes = (HideEnumAttribute[])fieldInfo.GetCustomAttributes(typeof(HideEnumAttribute), false);
-            return hideAttributes.Length == 0 && type.IsStat();
+            return hideAttributes.Length == 0;// && type.IsStat();
         }
+        private string GetLabelInfo(StatType enumValue)
+        {
 
+            FieldInfo fieldInfo = enumValue.GetType().GetField(enumValue.ToString());
+            LabelInfoAttribute labelInfo = fieldInfo.GetCustomAttribute<LabelInfoAttribute>();
+            string text =  labelInfo == null ? enumValue.ToString() : labelInfo.Text;
+            //Debug.Log(text);
+            return text;
+        }
+        private string GetLabelInfo(string enumValue)
+        {
+            if (string.IsNullOrEmpty(enumValue))
+            {
+                return "None";
+            }
+            FieldInfo fieldInfo = typeof(StatType).GetField(enumValue);
+            if (fieldInfo != null)
+            {
+                LabelInfoAttribute labelInfo = fieldInfo.GetCustomAttribute<LabelInfoAttribute>();
+                return labelInfo == null ? enumValue : labelInfo.Text;
+            }
+            return enumValue;
+
+        }
     }
-
-
 }

@@ -265,15 +265,15 @@ namespace SkillEditorDemo.Model
     {
         const ST ST = (ST)(int)SC.Stat;
         public static bool IsStat(this ST stat) => stat.HasFlag(ST);
-        public static SC GetStatClass(this ST st) => (SC)(((int)st & (~(int)SC.Stat)) >> Stat.Offset);
-        public static ST MaxResStatType(this ST st) => (ST)((int)SC.Stat | (int)st);
+        public static SC GetStatClass(this ST st) => (SC)(((int)st & (~(int)ST)) >> Stat.Offset);
+        public static ST MaxResStatType(this ST st) => (ST)((int)ST | (int)st);
         /// <summary>
         /// 属性大类的当前资源属性类型
         /// </summary>
         public static ST CurResStatType(this SC sc) => (ST)((int)sc << Stat.Offset);
-        public static ST MaxResStatType(this SC sc) => (ST)((int)SC.Stat | (int)sc.CurResStatType());
+        public static ST MaxResStatType(this SC sc) => (ST)((int)ST | (int)sc.CurResStatType());
 
-        public static ST StatType(this DT dt, bool ed) => (ST)((int)(ed ? SC.DmgedMod : SC.DmgMod) | (int)dt);
+        public static ST StatType(this DT dt, bool ed) => (ST)((int)(ed ? ST.DmgedMod : ST.DmgMod) | (int)dt);
 
 
     }

@@ -14,9 +14,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Radius: 0.5
   Stats:
-  - Type: 16777472
+  - Type: MaxHP
     Value: 100
-  - Type: 16777728
+  - Type: HP
     Value: 100
-  - Type: 16779008
+  - Type: ManaMax
+    Value: 100
+  - Type: Mana
+    Value: 100
+  - Type: Atk
     Value: 10
+  - Type: MoveSpeed
+    Value: 5
+  Buffs: []
+  Skills:
+  - ID: Minion_MeleeAtk
+    Level: 1

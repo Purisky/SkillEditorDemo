@@ -33,7 +33,7 @@ namespace SkillEditorDemo.Model
         public Buff(string Id, int level, int degree, TrigInfo trigInfo, float[] createParam)
         {
             ID = Id;
-            IIndex<Buff>.Add(this);
+            Index = IIndex<Buff>.Add(this);
             TrigInfo = trigInfo;
             TrigInfo.BuffID = Index;
             CreateParam = createParam;

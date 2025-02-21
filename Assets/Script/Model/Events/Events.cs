@@ -8,18 +8,19 @@ namespace SkillEditorDemo.Model
         public static class OnChange
         {
             public static Action<int> Transform;
-
+            public static Action<int, int> Skill;
 
 
         }
 
         public static class OnCreate
         {
+            public static Action<int> Player;
             public static Action<int> Unit;
             public static Action<int> Projectile;
             public static Action<int> Hitbox;
         }
-        public static class OnDestroy
+        public static class  OnDestroy
         {
             public static Action<int> Unit;
             public static Action<int> Projectile;

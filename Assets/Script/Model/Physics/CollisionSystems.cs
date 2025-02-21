@@ -1,4 +1,5 @@
 using Leopotam.EcsLite;
+using SkillEditorDemo.Utility;
 using System;
 using System.Collections.Generic;
 
@@ -15,12 +16,12 @@ namespace SkillEditorDemo.Model
         {
             Quadtree = new Quadtree(0, new() { Center = new(0, 0), Size = new(100, 100) });
             Filter = systems.GetWorld().Filter<ColliderCmp>().End();
-
             RawCollisions = new();
         }
 
         public void Run(IEcsSystems systems)
         {
+            if (Filter.GetEntitiesCount() <= 1) { return; }
             UpdateQuadtree();
             RawDetection();
             Detection();
@@ -38,15 +39,18 @@ namespace SkillEditorDemo.Model
         void RawDetection()
         {
             List<IAABB> returnObjects = new();
+            RawCollisions.Clear();
             foreach (int entity in Filter)
             {
                 ref ColliderCmp collider = ref entity.Get<ColliderCmp>();
                 returnObjects.Clear();
                 Quadtree.Retrieve(returnObjects, collider.Shape.AABB);
-
                 foreach (var other in returnObjects)
                 {
-                    if (collider.Shape.Entity != other.Entity && IsColliding(collider.Shape.AABB, other.AABB))
+                    if (collider.Shape.Entity == other.Entity) { continue; }
+                    bool raw = IsColliding(collider.Shape.AABB, other.AABB);
+                    //Debug.Log($"{collider.Shape.AABB}=>{other.AABB}");
+                    if (raw)
                     {
                         int entityA = Math.Min(collider.Shape.Entity, other.Entity);
                         int entityB = Math.Max(collider.Shape.Entity, other.Entity);
@@ -54,6 +58,7 @@ namespace SkillEditorDemo.Model
                     }
                 }
             }
+            //Debug.Log(RawCollisions.Count);
         }
 
         void Detection()
@@ -130,6 +135,7 @@ namespace SkillEditorDemo.Model
 
         void HitboxHitUnit(int _hitbox, int _unit)
         {
+            Debug.Log("HitboxHitUnit");
             Unit unit = Unit.Get(_unit);
             ref HitboxCmp hitbox = ref _hitbox.Get<HitboxCmp>();
             hitbox.TrigInfo.TriggerID = unit.Entity;

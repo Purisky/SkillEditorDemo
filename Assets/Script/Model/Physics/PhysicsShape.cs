@@ -307,12 +307,16 @@ namespace SkillEditorDemo.Model
     {
         public Vector2 Center;
         public Vector2 Size;
+        public override string ToString()
+        {
+            return $"{Center}[{Size}]";
+        }
     }
 
     public struct Angle
     {
-        const float Degree2Radian = System.MathF.PI / 180;
-        const float Radian2Degree = 180 / System.MathF.PI;
+        const float Degree2Radian = MathF.PI / 180;
+        const float Radian2Degree = 180 / MathF.PI;
         public float Degree;// in degrees (0,1)=>0, (1,0)=>90, (0,-1)=>180, (-1,0)=>270
         public readonly float Radian => Degree * Degree2Radian;
         public Angle(float degree)
@@ -321,10 +325,10 @@ namespace SkillEditorDemo.Model
         }
         public readonly Vector2 GetVector()
         {
-            float radian = Radian;
-            float x = System.MathF.Cos(radian);
+            float radian = MathF.PI/ 2 -Radian;
+            float x = MathF.Cos(radian);
             x = (int)(x * 1000000) / 1000000f;
-            float y = System.MathF.Sin(radian);
+            float y = MathF.Sin(radian);
             y = (int)(y * 1000000) / 1000000f;
             return new Vector2(x, y);
         }
@@ -377,7 +381,7 @@ namespace SkillEditorDemo.Model
         }
         public static implicit operator Angle(Vector2 vector)
         {
-            return new(Radian2Degree * System.MathF.Atan2(vector.Y, vector.X));
+            return new(90-Radian2Degree * MathF.Atan2(vector.Y, vector.X));
         }
         public static implicit operator Vector2(Angle degree)
         {

@@ -1,4 +1,5 @@
 using Leopotam.EcsLite;
+using SkillEditorDemo.Utility;
 
 namespace SkillEditorDemo.Model
 {
@@ -47,9 +48,11 @@ namespace SkillEditorDemo.Model
         {
             ref ColliderCmp collider = ref entity.Get<ColliderCmp>();
             CollisionDetectionSystem.Quadtree.Remove(collider.Shape);
+            entity.Del<ColliderCmp>();
         }
         void ReleaseUnit(int entity)
         {
+            Debug.Log($"ReleaseUnit{entity}");
             RemoveCollider(entity);
             Events.OnDestroy.Unit?.Invoke(entity);
             EcsWorld.Inst.DelEntity(entity);

@@ -15,6 +15,12 @@ namespace SkillEditorDemo.View
             Events.OnCreate.Unit += OnUnitCreate;
             Events.OnCreate.Projectile += OnProjectileCreate;
             Events.OnCreate.Hitbox += OnHitboxCreate;
+            Events.OnDestroy.Unit += OnUnitRelease;
+            Events.OnDestroy.Projectile += OnProjectileRelease;
+            Events.OnDestroy.Hitbox += OnHitboxRelease;
+
+
+
             Friendly = Resources.Load<Material>("Material/Friendly");
             Hostile = Resources.Load<Material>("Material/Hostile");
 
@@ -29,6 +35,10 @@ namespace SkillEditorDemo.View
             RenderCmp? render = entity.TryGet<RenderCmp>();
             if (!render.HasValue) { return; }
             render.Value.Transform.SetTransform(transform.Value);
+            if (entity.Exist<InputCmp>())
+            {
+                Camera.main.transform.position = new Vector3(transform.Value.Pos.X, 10, transform.Value.Pos.Y);
+            }
         }
 
 
@@ -50,7 +60,13 @@ namespace SkillEditorDemo.View
         void OnUnitCreate(int entity)
         {
             ref UnitCmp unit = ref entity.Get<UnitCmp>();
-            TryCreate(entity,$"Unit/{unit.Unit.ID}" );
+            if (TryCreate(entity, $"Unit/{unit.Unit.ID}"))
+            {
+                ref RenderCmp render = ref entity.Get<RenderCmp>();
+                ref TransformCmp transform = ref entity.Get<TransformCmp>();
+                render.Transform.SetTransform(transform);
+            }
+
         }
         void OnProjectileCreate(int entity)
         {
@@ -61,6 +77,8 @@ namespace SkillEditorDemo.View
                 float radius = projectile.ProjectileNode.Radius.GetResult(projectile.TrigInfo, projectile.Cache);
                 render.Transform.localScale = radius / 0.5f * Vector3.one;
                 render.GameObject.GetComponent<MeshRenderer>().material = Unit.Get(projectile.TrigInfo.SourceID).Faction == 0 ? Friendly : Hostile;
+                ref TransformCmp transform = ref entity.Get<TransformCmp>();
+                render.Transform.SetTransform(transform);
             }
         }
         void OnHitboxCreate(int entity)
@@ -89,12 +107,32 @@ namespace SkillEditorDemo.View
                     render.Transform.localScale = radius / 0.5f * Vector3.one;
                 }
                 render.GameObject.GetComponent<MeshRenderer>().material = Unit.Get(hitbox.TrigInfo.SourceID).Faction == 0 ? Friendly : Hostile;
+                ref TransformCmp transform = ref entity.Get<TransformCmp>();
+                render.Transform.SetTransform(transform);
             }
         }
 
 
-
-
+        void Release(string id,int entity,int delay_ms = 0)
+        {
+            ref RenderCmp renderCmp = ref entity.Get<RenderCmp>();
+            GoPools.Release(id, renderCmp.GameObject, delay_ms);
+        }
+        void OnUnitRelease(int entity)
+        {
+            ref UnitCmp unit = ref entity.Get<UnitCmp>();
+            Release($"Unit/{unit.Unit.ID}", entity);
+        }
+        void OnProjectileRelease(int entity)
+        {
+            ref ProjectileCmp projectile = ref entity.Get<ProjectileCmp>();
+            Release($"Projectile/{projectile.ProjectileNode.DisplayPath}", entity);
+        }
+        void OnHitboxRelease(int entity)
+        {
+            ref HitboxCmp hitbox = ref entity.Get<HitboxCmp>();
+            Release($"Hitbox/{hitbox.HitboxNode.DisplayPath}", entity,1000);
+        }
 
 
         public void Run(IEcsSystems systems)

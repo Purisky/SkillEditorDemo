@@ -6,10 +6,13 @@
         "$type": "SkillEditorDemo.Model.SkillNode, Model",
         "Time": {
           "Value": {
-            "Value": 2.0
+            "Value": 0.5
           }
         },
-        "ChargeCount": {
+        "MaxLevel": {
+          "Value": 1.0
+        },
+        "MaxCharge": {
           "Value": 1.0
         },
         "Actions": [
@@ -20,10 +23,10 @@
               "Shape": {
                 "$type": "SkillEditorDemo.Model.SectorShape, Model",
                 "Radius": {
-                  "Value": 1.0
+                  "Value": 1.5
                 },
                 "Angle": {
-                  "Value": 90.0
+                  "Value": 120.0
                 },
                 "Position": {
                   "x": 879
@@ -33,7 +36,7 @@
                 {
                   "$type": "SkillEditorDemo.Model.Damage, Model",
                   "UnitNode": {
-                    "$type": "SkillEditorDemo.Model.LastUnit, Model",
+                    "$type": "SkillEditorDemo.Model.TriggerUnit, Model",
                     "Position": {
                       "x": 1109,
                       "y": 103
@@ -66,7 +69,7 @@
                   }
                 }
               ],
-              "DisplayPath": "Cube 1",
+              "DisplayPath": "Sector",
               "Position": {
                 "x": 639
               }
@@ -89,7 +92,9 @@
               "Value": 1.0
             },
             "Angle": {},
-            "Radius": {},
+            "Radius": {
+              "Value": 0.5
+            },
             "Position": {
               "x": 430
             }

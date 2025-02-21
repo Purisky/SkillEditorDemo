@@ -1,3 +1,5 @@
+using Leopotam.EcsLite;
+
 namespace SkillEditorDemo.Model
 {
     public struct AICmp
@@ -7,7 +9,7 @@ namespace SkillEditorDemo.Model
         public float SearchRange;
         public float ThinkInterval;
         public float ThinkTime;
-        public int Target;
+        public EcsPackedEntity Target;
     }
     
 
