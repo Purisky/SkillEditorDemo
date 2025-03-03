@@ -83,7 +83,6 @@ namespace SkillEditorDemo.Model
             Debug.Log($"TakeDmg HP[{HP.Value}]- {cache[CombatCacheType.TotalDmg]}");
             //Dmged
             cache[CombatCacheType.TotalDmg]*= StatHandler.GetDmgMod(cache.DmgType, true);
-            Debug.Log(StatHandler.GetDmgMod(cache.DmgType, true));
             DmgTrig();
             if (HP.Value <= 0)
             {

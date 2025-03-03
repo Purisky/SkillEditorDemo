@@ -35,7 +35,7 @@ namespace SkillEditorDemo.Model
             if (add)
             {
                 stat = AddStat(type, Stat.GetDefault(type));
-                Debug.Log($"{type}:dft[{Stat.GetDefault(type)}]");
+                //Debug.Log($"{type}:dft[{Stat.GetDefault(type)}]");
             }
             return stat;
         }

@@ -71,6 +71,8 @@ namespace SkillEditorDemo.Model
                 {
                     continue;
                 }
+                //Debug.Log($"{colliderA.Shape.AABB}=>{colliderB.Shape.AABB}");
+
                 ref TransformCmp transformA = ref collision.EntityA.Get<TransformCmp>();
                 ref TransformCmp transformB = ref collision.EntityB.Get<TransformCmp>();
                 if (colliderA.Shape is Circle circleA)
@@ -135,7 +137,7 @@ namespace SkillEditorDemo.Model
 
         void HitboxHitUnit(int _hitbox, int _unit)
         {
-            Debug.Log("HitboxHitUnit");
+            //Debug.Log("HitboxHitUnit");
             Unit unit = Unit.Get(_unit);
             ref HitboxCmp hitbox = ref _hitbox.Get<HitboxCmp>();
             hitbox.TrigInfo.TriggerID = unit.Entity;

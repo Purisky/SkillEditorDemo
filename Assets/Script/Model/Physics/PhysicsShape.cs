@@ -1,5 +1,7 @@
+using SkillEditorDemo.Utility;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Numerics;
 
 namespace SkillEditorDemo.Model
@@ -10,8 +12,6 @@ namespace SkillEditorDemo.Model
         public ColliderType Type;
         public ColliderType ColliderToType;
         public int Faction;//-1=>Terrain
-
-
         public static ColliderType DftColliderTo(ColliderType type)
         {
             return type switch
@@ -134,6 +134,7 @@ namespace SkillEditorDemo.Model
         }
         public bool IsColliderTo(in TransformCmp transform, in Sector other, in TransformCmp otherTransform)
         {
+            //Debug.DrawLine(transform.Pos, otherTransform.Pos, Color.Red, 5);
             Vector2 circleCenter = transform.Pos;
             Vector2 sectorCenter = otherTransform.Pos;
             float sectorRadius = other.Radius;
@@ -144,15 +145,27 @@ namespace SkillEditorDemo.Model
             {
                 return false;
             }
-
+            //Debug.Log("distance pass");
             // Calculate the angle between the sector's center and the circle's center
             Vector2 direction = Vector2.Normalize(circleCenter - sectorCenter);
             float angleToCircle = MathF.Atan2(direction.Y, direction.X) * 180 / MathF.PI;
+
+
 
             // Normalize angles
             float sectorStartAngle = (otherTransform.Rot.Degree - sectorAngle / 2 + 360) % 360;
             float sectorEndAngle = (otherTransform.Rot.Degree + sectorAngle / 2 + 360) % 360;
             angleToCircle = (angleToCircle + 360) % 360;
+            if (sectorStartAngle > sectorEndAngle)
+            {
+                sectorEndAngle += 360;
+                sectorEndAngle -= sectorStartAngle;
+                angleToCircle -= sectorStartAngle;
+                angleToCircle += 360;
+                sectorEndAngle = sectorEndAngle % 360;
+                angleToCircle = angleToCircle % 360;
+            }
+
 
             // Check if the angle is within the sector's angle range
             bool withinAngleRange;
@@ -164,15 +177,15 @@ namespace SkillEditorDemo.Model
             {
                 withinAngleRange = angleToCircle >= sectorStartAngle || angleToCircle <= sectorEndAngle;
             }
-
+            //Debug.Log($"withinAngleRange  {withinAngleRange}");
             if (withinAngleRange)
             {
                 return true;
             }
 
             // Check collision with the sector's straight edges
-            Vector2 startEdge = sectorCenter + new Vector2(sectorRadius * MathF.Cos(sectorStartAngle * MathF.PI / 180), sectorRadius * MathF.Sin(sectorStartAngle * MathF.PI / 180));
-            Vector2 endEdge = sectorCenter + new Vector2(sectorRadius * MathF.Cos(sectorEndAngle * MathF.PI / 180), sectorRadius * MathF.Sin(sectorEndAngle * MathF.PI / 180));
+            Vector2 startEdge = sectorCenter + sectorRadius* (otherTransform.Rot - sectorAngle / 2).GetVector();
+            Vector2 endEdge = sectorCenter + sectorRadius * (otherTransform.Rot + sectorAngle / 2).GetVector();
 
             return IsCircleIntersectingLine(circleCenter, Radius, sectorCenter, startEdge) || IsCircleIntersectingLine(circleCenter, Radius, sectorCenter, endEdge);
         }
@@ -241,23 +254,32 @@ namespace SkillEditorDemo.Model
             Angle endAngle = CenterAngle.Degree + Angle / 2;
             // 扇形的三个关键点
             points.Add(Center);
-            points.Add(Center + new Vector2(Radius * System.MathF.Cos(startAngle.Radian), Radius * System.MathF.Sin(startAngle.Radian)));
-            points.Add(Center + new Vector2(Radius * System.MathF.Cos(endAngle.Radian), Radius * System.MathF.Sin(endAngle.Radian)));
+            points.Add(Center + startAngle.GetVector()*Radius);
+            points.Add(Center + endAngle.GetVector()*Radius);
+            //Debug.DrawLine(Center, points[1], Color.Blue, 5);
+            //Debug.DrawLine(Center, points[2], Color.Blue, 5);
+            //Debug.Log($"{startAngle}~{endAngle}");
 
+            float start = startAngle.Degree;
+            float end = endAngle.Degree;
+            if (start > end)
+            {
+                start -= 360;
+            }
             // 检查是否包含0度、90度、180度、270度
-            if (Angle >= 360 || (startAngle <= 0 && endAngle >= 0) || (startAngle <= 360 && endAngle >= 360))
+            if (Angle >= 360 || (start <= 0 && end >= 0) || (start <= 360 && end >= 360))
             {
                 points.Add(Center + new Vector2(0, Radius));
             }
-            if (Angle >= 360 || (startAngle <= 90 && endAngle >= 90))
+            if (Angle >= 360 || (start <= 90 && end >= 90))
             {
                 points.Add(Center + new Vector2(Radius, 0));
             }
-            if (Angle >= 360 || (startAngle <= 180 && endAngle >= 180))
+            if (Angle >= 360 || (start <= 180 && end >= 180))
             {
                 points.Add(Center + new Vector2(0, -Radius));
             }
-            if (Angle >= 360 || (startAngle <= 270 && endAngle >= 270))
+            if (Angle >= 360 || (start <= 270 && end >= 270))
             {
                 points.Add(Center + new Vector2(-Radius, 0));
             }
@@ -271,7 +293,6 @@ namespace SkillEditorDemo.Model
                 min = Vector2.Min(min, point);
                 max = Vector2.Max(max, point);
             }
-
             return new AABB
             {
                 Center = (min + max) / 2,
@@ -309,8 +330,17 @@ namespace SkillEditorDemo.Model
         public Vector2 Size;
         public override string ToString()
         {
+            Draw(Color.Green, 5);
             return $"{Center}[{Size}]";
         }
+        public void Draw(Color color, float time)
+        { 
+            Debug.DrawLine(Center + new Vector2(-Size.X / 2, -Size.Y / 2), Center + new Vector2(Size.X / 2, -Size.Y / 2), color, time);
+            Debug.DrawLine(Center + new Vector2(Size.X / 2, -Size.Y / 2), Center + new Vector2(Size.X / 2, Size.Y / 2), color, time);
+            Debug.DrawLine(Center + new Vector2(Size.X / 2, Size.Y / 2), Center + new Vector2(-Size.X / 2, Size.Y / 2), color, time);
+            Debug.DrawLine(Center + new Vector2(-Size.X / 2, Size.Y / 2), Center + new Vector2(-Size.X / 2, -Size.Y / 2), color, time);
+        }
+
     }
 
     public struct Angle
