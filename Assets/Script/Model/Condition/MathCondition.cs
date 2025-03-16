@@ -8,6 +8,7 @@ using TreeNode.Utility;
 namespace SkillEditorDemo.Model
 {
     [PortColor("#40E0D0")]
+    [RagDoc(@"Condition是条件节点的基类，所有的条件节点都继承自Condition")]
     public abstract class Condition : JsonNode, IGrowID<Condition>
     {
         [JsonIgnore] public int GrowID { get; set; }
@@ -19,17 +20,18 @@ namespace SkillEditorDemo.Model
         public abstract string GetText();
     }
     [NodeInfo(typeof(Condition), "比较", 100, "条件/比较"), PortColor("#0000ff")]
+    [RagDoc(@"比较节点，用于比较两个值的关系")]
     public class Compare : Condition
     {
         [Child, LabelInfo(Hide = true)]
+        [RagDoc(@"左侧的值")]
         public FuncValue Left;
         [JsonProperty, ShowInNode, LabelInfo(Hide = true)]
+        [RagDoc(@"比较的类型")]
         public CompareType CompareType;
         [Child, LabelInfo(Hide = true)]
+        [RagDoc(@"右侧的值")]
         public FuncValue Right;
-
-
-
         public override string GetText()
         {
             string left = Left == null ? "0" : Left.GetText();
@@ -63,9 +65,11 @@ namespace SkillEditorDemo.Model
         }
     }
     [NodeInfo(typeof(Condition), "与", 80, "条件/逻辑/与", "#000080"), PortColor("#0000ff")]
+    [RagDoc(@"与节点，用于判断多个条件是否同时成立")]
     public class And : Condition
     {
         [Child(true), TitlePort]
+        [RagDoc(@"条件列表")]
         public List<Condition> Conditions;
         public override string GetText()
         {
@@ -84,9 +88,11 @@ namespace SkillEditorDemo.Model
         }
     }
     [NodeInfo(typeof(Condition), "或", 80, "条件/逻辑/或", "#D2691E"), PortColor("#0000ff")]
+    [RagDoc(@"或节点，用于判断多个条件是否有至少一个成立")]
     public class Or : Condition
     {
         [Child(true), TitlePort]
+        [RagDoc(@"条件列表")]
         public List<Condition> Conditions;
         public override string GetText()
         {
@@ -106,9 +112,11 @@ namespace SkillEditorDemo.Model
         }
     }
     [NodeInfo(typeof(Condition), "非", 80, "条件/逻辑/非", "#800000"), PortColor("#0000ff")]
+    [RagDoc(@"非节点，用于取反一个条件")]
     public class Not : Condition
     {
         [Child(true), TitlePort]
+        [RagDoc(@"用于取反的条件")]
         public Condition Condition;
         public override string GetText()
         {
