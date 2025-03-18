@@ -1,3 +1,6 @@
 [submodule "Assets/TreeNode"]
 	path = Assets/TreeNode
 	url = https://github.com/Purisky/TreeNode.git
+[submodule "Assets/MCP4Unity"]
+	path = Assets/MCP4Unity
+	url = https://github.com/Purisky/MCP4Unity.git
