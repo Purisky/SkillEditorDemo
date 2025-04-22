@@ -6,14 +6,14 @@ using TreeNode.Utility;
 namespace SkillEditorDemo.Model
 {
     [PortColor("#7CFC00")]
-    [RagDoc(@"FuncNode是数值节点的基类，所有的数值节点都继承自FuncNode")]
+    [Prompt(@"FuncNode是数值节点的基类，所有的数值节点都继承自FuncNode")]
     public abstract class FuncNode : NumNode, IGrowID<FuncNode>
     {
         [JsonIgnore] public int GrowID { get; set; }
         public static T Get<T>(int id) where T : FuncNode => (T)IGrowID<FuncNode>.Get(id);
         public abstract float GetResult(TrigInfo info, CombatCache cache);
     }
-    [RagDoc(@"FuncValue是特殊的数值节点，同时包含一个float:Value和一个FuncNode:Node,既可以被视为一个常数,也可以添加其他数值节点用于复杂计算,是数值字段的主要类型")]
+    [Prompt(@"FuncValue是特殊的数值节点，同时包含一个float:Value和一个FuncNode:Node,既可以被视为一个常数,也可以添加其他数值节点用于复杂计算,是数值字段的主要类型")]
     public class FuncValue : NumValue<FuncNode>
     {
         [JsonIgnore] FuncNode FuncNode {
@@ -50,14 +50,14 @@ namespace SkillEditorDemo.Model
             return Value;
         }
     }
-    [RagDoc(@"时间类数值的主要类型,-1在大部分情况下被视为永久")]
+    [Prompt(@"时间类数值的主要类型,-1在大部分情况下被视为永久")]
     public struct TimeValue
     {
         [ShowInNode,Group("type",Width = 60),LabelInfo(Hide =true)]
-        [RagDoc(@"时间单位的类型")]
+        [Prompt(@"时间单位的类型")]
         public TimeType Type;
         [Child,LabelInfo(Hide =true), Group("type")]
-        [RagDoc(@"时间单位的数值")]
+        [Prompt(@"时间单位的数值")]
         public FuncValue Value;
 
         public readonly int GetTick(TrigInfo info, CombatCache cache)
@@ -76,11 +76,11 @@ namespace SkillEditorDemo.Model
 
 
     [NodeInfo(typeof(FuncNode), "Buff取值", 100, "取值/Buff"),AssetFilter(true,typeof(BuffAsset))]
-    [RagDoc(@"从当前Buff中取值,如当前Buff的等级/层数以及BuffRuntimeData所存储的数值等")]
+    [Prompt(@"从当前Buff中取值,如当前Buff的等级/层数以及BuffRuntimeData所存储的数值等")]
     public class BuffValueGetter : FuncNode
     {
         [ShowInNode,LabelInfo(Hide =true)]
-        [RagDoc(@"Buff数值的类型")]
+        [Prompt(@"Buff数值的类型")]
         public BuffValueType Type;
         public override string GetText()
         {
@@ -93,11 +93,11 @@ namespace SkillEditorDemo.Model
         }
     }
     [NodeInfo(typeof(FuncNode), "战斗数值缓存", 120, "取值/战斗数值缓存")]
-    [RagDoc(@"从当前战斗数值缓存中取值")]
+    [Prompt(@"从当前战斗数值缓存中取值")]
     public class CombatCacheGetter : FuncNode
     {
         [ShowInNode, LabelInfo(Hide = true)]
-        [RagDoc(@"战斗缓存的类型")]
+        [Prompt(@"战斗缓存的类型")]
         public CombatCacheType Type;
 
         public override string GetText()
@@ -111,14 +111,14 @@ namespace SkillEditorDemo.Model
         }
     }
     [NodeInfo(typeof(FuncNode), "属性取值", 140, "取值/属性")]
-    [RagDoc(@"从指定单位的属性中取值")]
+    [Prompt(@"从指定单位的属性中取值")]
     public class StatGetter : FuncNode
     {
         [Child(true), TitlePort]
-        [RagDoc(@"获取指定单位的单位节点")]
+        [Prompt(@"获取指定单位的单位节点")]
         public UnitNode UnitNode;
         [ShowInNode,LabelInfo(Hide = true)]
-        [RagDoc(@"属性的类型")]
+        [Prompt(@"属性的类型")]
         public StatType Type;
 
 
@@ -134,7 +134,7 @@ namespace SkillEditorDemo.Model
         }
     }
     [NodeInfo(typeof(FuncNode), "技能取值", 100, "取值/技能"), AssetFilter(true, typeof(SkillAsset))]
-    [RagDoc(@"从当前的技能中取值,如当前技能的等级/冷却时间/充能等")]
+    [Prompt(@"从当前的技能中取值,如当前技能的等级/冷却时间/充能等")]
     public class SkillValueGetter : FuncNode
     {
         public override string GetText()

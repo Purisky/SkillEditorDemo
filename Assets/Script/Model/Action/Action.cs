@@ -10,7 +10,7 @@ using TreeNode.Utility;
 namespace SkillEditorDemo.Model
 {
     [PortColor("#E8AC29")]
-    [RagDoc(@"ActionNode是执行节点的基类，所有的执行节点都继承自ActionNode")]
+    [Prompt(@"ActionNode是执行节点的基类，所有的执行节点都继承自ActionNode")]
     public abstract class ActionNode : JsonNode, IGrowID<ActionNode>
     {
         [JsonIgnore]
@@ -26,17 +26,17 @@ namespace SkillEditorDemo.Model
         public abstract bool Handle(int trigCount, TrigInfo info, CombatCache cache);
     }
     [NodeInfo(typeof(ActionNode), "分支执行", 100, "执行/分支执行")]
-    [RagDoc(@"根据条件的真假执行不同的ActionNode")]
+    [Prompt(@"根据条件的真假执行不同的ActionNode")]
     public class ConditionAction : ActionNode
     {
         [Child(true), TitlePort]
-        [RagDoc(@"条件节点")]
+        [Prompt(@"条件节点")]
         public Condition Condition;
         [Child, LabelInfo(Text = "真", Width = 10)]
-        [RagDoc(@"条件为真时执行的ActionNode")]
+        [Prompt(@"条件为真时执行的ActionNode")]
         public ActionNode True;
         [Child, LabelInfo(Text = "假", Width = 10)]
-        [RagDoc(@"条件为假时执行的ActionNode")]
+        [Prompt(@"条件为假时执行的ActionNode")]
         public ActionNode False;
 
         public override bool Handle(int trigCount, TrigInfo info, CombatCache cache)
@@ -56,14 +56,14 @@ namespace SkillEditorDemo.Model
 
 
     [NodeInfo(typeof(ActionNode), "单位属性修改", 200, "执行/单位属性修改")]
-    [RagDoc(@"可以修改单位的属性值")]
+    [Prompt(@"可以修改单位的属性值")]
     public class StatModify : ActionNode
     {
         [Child(true), TitlePort]
-        [RagDoc(@"用于获取所修改的对象,可以修改复数对象")]
+        [Prompt(@"用于获取所修改的对象,可以修改复数对象")]
         public List<UnitNode> UnitNodes;
         [ShowInNode, LabelInfo(Hide = true), Group("Stat"),Dropdown(nameof(GetStatTypes))]
-        [RagDoc(@"将要修改的属性类型,修改分为两种模式:
+        [Prompt(@"将要修改的属性类型,修改分为两种模式:
 1.修改常驻属性(Stat),常驻属性的修改需要定义持续时间,因此必须挂载在Buff上,对应的触发器节点(TrigNode)的触发类型必须是Start,如果Buff被移除,属性值会恢复,以下是其正确的结构
 - BuffNode
   - TrigNode(TrigType:Start)
@@ -72,13 +72,13 @@ namespace SkillEditorDemo.Model
 修改资源可用于在不触发相关逻辑的情况下直接操纵单位的当前血量(HP)/当前魔力(Mana)等资源,如正常造成伤害等可直接使用伤害节点(Damage)")]
         public StatType StatType;
         [ShowInNode(ShowIf = nameof(ShowStat)), LabelInfo(Hide = true), Group("Stat")]
-        [RagDoc(@"属性修改的计算类型,仅在StatType为属性时生效")]
+        [Prompt(@"属性修改的计算类型,仅在StatType为属性时生效")]
         public StatModType StatModType;
         [ShowInNode(ShowIf = nameof(ShowRes)), LabelInfo(Hide = true), Group("Stat")]
-        [RagDoc(@"资源修改的计算类型,仅在StatType为资源时生效")]
+        [Prompt(@"资源修改的计算类型,仅在StatType为资源时生效")]
         public ValueModType ResModType;
         [Child, LabelInfo(Hide = true)]
-        [RagDoc(@"属性修改的具体值")]
+        [Prompt(@"属性修改的具体值")]
         public FuncValue Value;
 
         [JsonIgnore]
@@ -122,26 +122,26 @@ namespace SkillEditorDemo.Model
         }
     }
     [NodeInfo(typeof(ActionNode), "伤害", 200, "执行/伤害")]
-    [RagDoc(@"用于对单位造成伤害,这个伤害可以进一步触发其他的TrigNode")]
+    [Prompt(@"用于对单位造成伤害,这个伤害可以进一步触发其他的TrigNode")]
     public class Damage : ActionNode
     {
         [Child(true), TitlePort]
-        [RagDoc(@"用于获取所造成伤害的对象")]
+        [Prompt(@"用于获取所造成伤害的对象")]
         public UnitNode UnitNode;
         [ShowInNode, LabelInfo(Hide = true),Dropdown(nameof(DmgTypes))]
-        [RagDoc(@"伤害的类型,伤害类型会影响伤害的计算,如物理伤害(Physic)会受到物理伤害减免及加成的影响")]
+        [Prompt(@"伤害的类型,伤害类型会影响伤害的计算,如物理伤害(Physic)会受到物理伤害减免及加成的影响")]
         public DmgType DmgType;
         [ShowInNode, LabelInfo("直接"), Group("Type")]
-        [RagDoc(@"是否为直接伤害,作为触发器的标签,一些基于伤害触发的效果会选择过滤非直接伤害以阻止触发进一步的效果")]
+        [Prompt(@"是否为直接伤害,作为触发器的标签,一些基于伤害触发的效果会选择过滤非直接伤害以阻止触发进一步的效果")]
         public bool Direct;
         [ShowInNode, LabelInfo("闪避"), Group("Type")]
-        [RagDoc(@"是否可以被闪避,如果为true,则目标单位可以通过闪避机制来规避伤害")]
+        [Prompt(@"是否可以被闪避,如果为true,则目标单位可以通过闪避机制来规避伤害")]
         public bool Dodge_able;
         [ShowInNode, LabelInfo("暴击"), Group("Type")]
-        [RagDoc(@"是否可以暴击,如果为true,则伤害可以触发暴击效果")]
+        [Prompt(@"是否可以暴击,如果为true,则伤害可以触发暴击效果")]
         public bool Crit_able;
         [Child, LabelInfo(Hide = true)]
-        [RagDoc(@"伤害的具体值")]
+        [Prompt(@"伤害的具体值")]
         public FuncValue Value;
 
 
@@ -188,16 +188,16 @@ namespace SkillEditorDemo.Model
         }
     }
     [NodeInfo(typeof(ActionNode), "存储Buff数据", 160, "执行/存储Buff数据"), AssetFilter(true, typeof(BuffAsset))]
-    [RagDoc(@"用于存储Buff在运行时的数据方便进一步调用,这个数值可以跨越整个Buff的生命周期,以下是其用例:
+    [Prompt(@"用于存储Buff在运行时的数据方便进一步调用,这个数值可以跨越整个Buff的生命周期,以下是其用例:
     1.在每次造成伤害时,存储累加造成的伤害值
     2.在Buff结束时或者其他任意时刻,调用存储的数值,为其他效果提供参数(如造成一次根据以往伤害总量计算的爆发伤害)")]
     public class BuffRuntimeData : ActionNode
     {
         [ShowInNode, LabelInfo(Hide = true), Group("Value", Width = 50)]
-        [RagDoc(@"数值修改的计算类型")]
+        [Prompt(@"数值修改的计算类型")]
         public ValueModType ValueModType;
         [Child, LabelInfo(Hide = true), Group("Value")]
-        [RagDoc(@"修改的具体值")]
+        [Prompt(@"修改的具体值")]
         public FuncValue Value;
         public override bool Handle(int trigCount, TrigInfo info, CombatCache cache)
         {
@@ -205,23 +205,23 @@ namespace SkillEditorDemo.Model
         }
     }
     [NodeInfo(typeof(ActionNode), "添加Buff", 160, "执行/添加Buff")]
-    [RagDoc(@"可以添加指定的Buff到指定的单位上,并且可以指定Buff的等级,层数,参数等信息")]
+    [Prompt(@"可以添加指定的Buff到指定的单位上,并且可以指定Buff的等级,层数,参数等信息")]
     public class AddBuff : ActionNode
     {
         [Child(true), TitlePort]
-        [RagDoc(@"用于获取所添加Buff的对象")]
+        [Prompt(@"用于获取所添加Buff的对象")]
         public UnitNode UnitNode;
         [ShowInNode, LabelInfo(Hide = true), Dropdown(nameof(Buffs))]
-        [RagDoc(@"Buff的ID")]
+        [Prompt(@"Buff的ID")]
         public string ID;
         [ShowInNode, LabelInfo("等级", 30)]
-        [RagDoc(@"Buff的等级")]
+        [Prompt(@"Buff的等级")]
         public FuncValue Level;
         [ShowInNode, LabelInfo("层数", 30)]
-        [RagDoc(@"Buff的层数")]
+        [Prompt(@"Buff的层数")]
         public FuncValue Degree;
         [ShowInNode, LabelInfo("参数0", 30)]
-        [RagDoc(@"Buff的参数0,Buff的创建参数可以用于在Buff之间传递参数")]
+        [Prompt(@"Buff的参数0,Buff的创建参数可以用于在Buff之间传递参数")]
         public FuncValue Param0;
         //[ShowInNode, LabelInfo("参数1", 30)]
         //public NumValue Param1;
@@ -242,29 +242,29 @@ namespace SkillEditorDemo.Model
 
     }
     [NodeInfo(typeof(ActionNode), "添加随机Buff", 180, "执行/添加随机Buff")]
-    [RagDoc(@"可以添加随机的复数Buff到指定的单位上,并且可以指定Buff的等级,层数,参数等信息")]
+    [Prompt(@"可以添加随机的复数Buff到指定的单位上,并且可以指定Buff的等级,层数,参数等信息")]
     public class AddRandomBuffs : ActionNode
     {
         [Child(true), TitlePort]
-        [RagDoc(@"用于获取所添加Buff的对象")]
+        [Prompt(@"用于获取所添加Buff的对象")]
         public UnitNode UnitNode;
         [ShowInNode, LabelInfo(Hide = true), Dropdown(nameof(Buffs))]
-        [RagDoc(@"Buff的ID列表")]
+        [Prompt(@"Buff的ID列表")]
         public List<string> IDs;
         [ShowInNode, LabelInfo("可重复", 40), Group("Count")]
-        [RagDoc(@"是否允许重复添加相同的Buff")]
+        [Prompt(@"是否允许重复添加相同的Buff")]
         public bool Repeat;
         [ShowInNode, LabelInfo("数量", 30), Group("Count")]
-        [RagDoc(@"Buff的添加次数,每次添加时都会随机抽取,受Repeat影响排除重复Buff")]
+        [Prompt(@"Buff的添加次数,每次添加时都会随机抽取,受Repeat影响排除重复Buff")]
         public FuncValue Count;
         [ShowInNode, LabelInfo("等级", 30)]
-        [RagDoc(@"Buff的等级")]
+        [Prompt(@"Buff的等级")]
         public FuncValue Level;
         [ShowInNode, LabelInfo("层数", 30)]
-        [RagDoc(@"Buff的层数")]
+        [Prompt(@"Buff的层数")]
         public FuncValue Degree;
         [ShowInNode, LabelInfo("参数0", 30)]
-        [RagDoc(@"Buff的参数0,Buff的创建参数可以用于在Buff之间传递参数")]
+        [Prompt(@"Buff的参数0,Buff的创建参数可以用于在Buff之间传递参数")]
         public FuncValue Param0;
         //[ShowInNode, LabelInfo("参数1", 30)]
         //public NumValue Param1;
@@ -281,13 +281,13 @@ namespace SkillEditorDemo.Model
     }
 
     [NodeInfo(typeof(ActionNode), "终止触发事件", 180, "执行/终止触发事件"), AssetFilter(true, typeof(BuffAsset))]
-    [RagDoc(@"当条件为真时,终止触发事件,如完整的命中伤害流程为:
+    [Prompt(@"当条件为真时,终止触发事件,如完整的命中伤害流程为:
     闪避检测->暴击检测->伤害计算->护盾结算->生命值结算->等等
     在任意触发环节中插入StopTrigEvent,可以终止后续的触发事件,如在暴击检测时插入,如果目标造成了暴击则阻止后续流程可以实现单位只能受到非暴击伤害")]
     public class StopTrigEvent : ActionNode
     {
         [Child, TitlePort]
-        [RagDoc(@"终止触发事件的条件")]
+        [Prompt(@"终止触发事件的条件")]
         public Condition Condition;
 
         public override bool Handle(int trigCount, TrigInfo info, CombatCache cache)
@@ -296,20 +296,20 @@ namespace SkillEditorDemo.Model
         }
     }
     [NodeInfo(typeof(ActionNode), "尝试移除Buff", 180, "执行/尝试移除Buff"), AssetFilter(true, typeof(BuffAsset))]
-    [RagDoc(@"尝试移除单位身上的同IDBuff")]
+    [Prompt(@"尝试移除单位身上的同IDBuff")]
     public class TryRemoveBuff : ActionNode
     {
         [Child(true), TitlePort]
-        [RagDoc(@"用于获取需要移除Buff的对象")]
+        [Prompt(@"用于获取需要移除Buff的对象")]
         public UnitNode UnitNode;
         [ShowInNode, LabelInfo(Hide = true), Dropdown(nameof(Buffs))]
-        [RagDoc(@"Buff的ID")]
+        [Prompt(@"Buff的ID")]
         public string ID;
         [Child, LabelInfo(Text = "成功", Width = 15)]
-        [RagDoc(@"成功移除Buff时执行的ActionNode")]
+        [Prompt(@"成功移除Buff时执行的ActionNode")]
         public ActionNode True;
         [Child, LabelInfo(Text = "失败", Width = 15)]
-        [RagDoc(@"未成功移除Buff时执行的ActionNode")]
+        [Prompt(@"未成功移除Buff时执行的ActionNode")]
         public ActionNode False;
         static DropdownList<string> Buffs => UniqNodeManager<BuffNode, BuffAsset>.Dropdowns;
 
@@ -320,19 +320,19 @@ namespace SkillEditorDemo.Model
         }
     }
     [NodeInfo(typeof(ActionNode), "修改战斗缓存", 180, "执行/修改战斗缓存"), AssetFilter(true, typeof(BuffAsset))]
-    [RagDoc(@"可以修改战斗缓存中的数值,如伤害值/治疗量等,如:
+    [Prompt(@"可以修改战斗缓存中的数值,如伤害值/治疗量等,如:
     Buff的效果是将受到的首次伤害减半,则可以通过CombatCacheModify修改TotalDmg的数值为TotalDmg/2,当这个效果触发一次后移除这个buff即可实现,
     这个节点仅适用于能够产生战斗缓存的触发器类型之后,如Dodge/Heal/Dmg/SPDmg等")]
     public class CombatCacheModify : ActionNode
     {
         [ShowInNode, LabelInfo(Hide = true)]
-        [RagDoc(@"需要修改的战斗缓存类型")]
+        [Prompt(@"需要修改的战斗缓存类型")]
         public CombatCacheType CacheType;
         [ShowInNode, LabelInfo(Hide = true), Group("Value",Width = 50)]
-        [RagDoc(@"数值修改的计算类型")]
+        [Prompt(@"数值修改的计算类型")]
         public ValueModType ModType;
         [Child, LabelInfo(Hide = true), Group("Value")]
-        [RagDoc(@"修改的具体值")]
+        [Prompt(@"修改的具体值")]
         public FuncValue Value;
 
 
@@ -355,26 +355,26 @@ namespace SkillEditorDemo.Model
         }
     }
     [NodeInfo(typeof(ActionNode), "按圆创建对象", 180, "执行/按圆创建对象")]
-    [RagDoc(@"可以以指定的圆形分布创建指定数量的对象")]
+    [Prompt(@"可以以指定的圆形分布创建指定数量的对象")]
     public class CreateObjsInCircle : ActionNode
     {
         [Child(true), TitlePort]
-        [RagDoc(@"所创建的对象")]
+        [Prompt(@"所创建的对象")]
         public ObjNode ObjNode;
         [Child(true), LabelInfo("起始位置")]
-        [RagDoc(@"圆心的位置及朝向")]
+        [Prompt(@"圆心的位置及朝向")]
         public TransformNode Origin;
         [ShowInNode, LabelInfo("数量")]
-        [RagDoc(@"创建的对象数量")]
+        [Prompt(@"创建的对象数量")]
         public FuncValue Count;
         [ShowInNode, LabelInfo("使用角度")]
-        [RagDoc(@"是否使用角度,如果为true,则会以朝向为中轴按照角度分布对象,否则按照数量对360°进行角度平分分布对象")]
+        [Prompt(@"是否使用角度,如果为true,则会以朝向为中轴按照角度分布对象,否则按照数量对360°进行角度平分分布对象")]
         public bool ByAngle;
         [ShowInNode(ShowIf =nameof(ByAngle)), LabelInfo("角度")]
-        [RagDoc(@"使用角度时每个对象之间的角度差")]
+        [Prompt(@"使用角度时每个对象之间的角度差")]
         public FuncValue Angle;
         [ShowInNode, LabelInfo("放射距离")]
-        [RagDoc(@"对象到圆心的距离")]
+        [Prompt(@"对象到圆心的距离")]
         public FuncValue Radius;
 
 

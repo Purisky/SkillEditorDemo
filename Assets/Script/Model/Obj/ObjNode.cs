@@ -9,39 +9,38 @@ using TreeNode.Utility;
 namespace SkillEditorDemo.Model
 {
     [PortColor("#F0A58A")]
-    [RagDoc(@"对象节点的基类，所有的对象节点都继承自ObjNode,用于在游戏场景中创建对象如地形/单位/伤害盒子/物品等")]
+    [Prompt(@"对象节点的基类，所有的对象节点都继承自ObjNode,用于在游戏场景中创建对象如地形/单位/伤害盒子/物品等")]
     public abstract class ObjNode : JsonNode, IGrowID<ObjNode>
     {
         [JsonIgnore]
         public int GrowID { get; set; }
         public static T Get<T>(int id) where T : ObjNode => (T)IGrowID<ObjNode>.Get(id);
-
         public abstract void Create(int entity, TrigInfo info, CombatCache cache);
     }
     [NodeInfo(typeof(ObjNode), "投射物", 210, "对象/投射物")]
-    [RagDoc(@"用于创建投射物,投射物是一种运动的伤害盒子,在给定初速之后和运动方向后会一直向前运动直到产生碰撞或者持续时间耗尽,投射物在产生一次碰撞后销毁")]
+    [Prompt(@"用于创建投射物,投射物是一种运动的伤害盒子,在给定初速之后和运动方向后会一直向前运动直到产生碰撞或者持续时间耗尽,投射物在产生一次碰撞后销毁")]
     public class NewProjectile : ObjNode
     {
         [ShowInNode, LabelInfo("持续时间")]
-        [RagDoc(@"投射物的持续时间")]
+        [Prompt(@"投射物的持续时间")]
         public TimeValue Time;
         [ShowInNode, LabelInfo("飞行速度")]
-        [RagDoc(@"投射物的飞行速度")]
+        [Prompt(@"投射物的飞行速度")]
         public FuncValue Speed;
         [ShowInNode, LabelInfo("半径")]
-        [RagDoc(@"投射物的碰撞盒半径")]
+        [Prompt(@"投射物的碰撞盒半径")]
         public FuncValue Radius;
         [Child(true), LabelInfo("效果组")]
-        [RagDoc(@"投射物的碰撞效果,在默认情况下只有碰撞到单位才会触发ActionNode")]
+        [Prompt(@"投射物的碰撞效果,在默认情况下只有碰撞到单位才会触发ActionNode")]
         public List<ActionNode> Actions;
         [ShowInNode, LabelInfo("超时触发效果")]
-        [RagDoc(@"当设为true,投射物超时(飞行至最大距离)也会触发碰撞效果")]
+        [Prompt(@"当设为true,投射物超时(飞行至最大距离)也会触发碰撞效果")]
         public bool TrigOnTimeout;
         [ShowInNode, LabelInfo("击中地形触发效果")]
-        [RagDoc(@"当设为true,投射物碰撞到地形时也会触发碰撞效果")]
+        [Prompt(@"当设为true,投射物碰撞到地形时也会触发碰撞效果")]
         public bool TrigOnHitTerrain;
         [ShowInNode, Dropdown(nameof(GetProjectiles)), LabelInfo("特效")]
-        public string DisplayPath;
+        public string DisplayPath; 
 
 
 #if UNITY_EDITOR

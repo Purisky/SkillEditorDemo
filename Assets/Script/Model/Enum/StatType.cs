@@ -66,7 +66,7 @@ namespace SkillEditorDemo.Model
 
     public enum StatType
     {
-        [LabelInfo("选择属性")]
+        [HideEnum]
         None = 0,
         #region 血量
         [LabelInfo("血量/当前值")]
