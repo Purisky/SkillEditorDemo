@@ -19,7 +19,7 @@
           {
             "$type": "SkillEditorDemo.Model.CreateObjsInCircle, Model",
             "ObjNode": {
-              "$type": "SkillEditorDemo.Model.NewHitbox, Model",
+              "$type": "SkillEditorDemo.Model.OneShotBox, Model",
               "Shape": {
                 "$type": "SkillEditorDemo.Model.SectorShape, Model",
                 "Radius": {

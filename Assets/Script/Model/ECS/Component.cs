@@ -35,7 +35,7 @@ namespace SkillEditorDemo.Model
         public TrigInfo TrigInfo;
         public CombatCache Cache;
         public int GrowID;
-        public readonly NewHitbox HitboxNode => ObjNode.Get<NewHitbox>(GrowID);
+        public readonly OneShotBox HitboxNode => ObjNode.Get<OneShotBox>(GrowID);
         public HitboxCmp HitboxCmp => new()
         {
             TrigInfo = TrigInfo,

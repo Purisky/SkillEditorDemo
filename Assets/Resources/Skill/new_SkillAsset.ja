@@ -31,7 +31,7 @@
         }
       },
       {
-        "$type": "SkillEditorDemo.Model.NewHitbox, Model",
+        "$type": "SkillEditorDemo.Model.OneShotBox, Model",
         "Position": {
           "x": 880,
           "y": 399

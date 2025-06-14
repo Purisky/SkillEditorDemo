@@ -74,13 +74,16 @@ namespace SkillEditorDemo.Model
             }
         }
     }
-    [NodeInfo(typeof(ObjNode), "伤害盒子", 210, "对象/伤害盒子")]
-    public class NewHitbox : ObjNode
+    [NodeInfo(typeof(ObjNode), "碰撞盒子", 210, "对象/碰撞盒子")]
+    [Prompt(@"用于创建碰撞盒子,碰撞盒子是一种静态的碰撞区域,当其他对象进入时会触发预设的效果,碰撞盒子只会存在一帧,可以同时碰撞多个单位")]
+    public class OneShotBox : ObjNode
     {
         [Child(true), LabelInfo("形狀")]
+        [Prompt(@"碰撞盒子的碰撞形状，决定了检测区域的范围和类型")]
         public ShapeNode Shape;
 
         [Child(true), LabelInfo("效果组")]
+        [Prompt(@"碰撞盒子的碰撞效果,在默认情况下只有碰撞到单位才会触发ActionNode")]
         public List<ActionNode> Actions;
 
         [ShowInNode, Dropdown(nameof(GetHitboxes)), LabelInfo("特效")]
