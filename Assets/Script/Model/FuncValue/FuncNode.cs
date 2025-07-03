@@ -1,4 +1,4 @@
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using SkillEditorDemo.Utility;
 using TreeNode.Runtime;
 using TreeNode.Utility;
@@ -37,7 +37,9 @@ namespace SkillEditorDemo.Model
         public static implicit operator FuncValue(float value) => new () { Value = value };
 
     }
-
+    /// <summary>
+    /// 这个类是FuncNode的一个特殊实现,用于表示一个常数值,仅在运行时使用
+    /// </summary>
     public class ConstValue : FuncNode
     {
         public float Value;

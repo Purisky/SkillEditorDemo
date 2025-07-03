@@ -1,4 +1,4 @@
-using TreeNode.Utility;
+﻿using TreeNode.Utility;
 
 namespace SkillEditorDemo.Model
 {
