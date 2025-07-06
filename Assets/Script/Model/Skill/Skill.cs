@@ -1,4 +1,4 @@
-using SkillEditorDemo.Utility;
+﻿using SkillEditorDemo.Utility;
 using System;
 using TreeNode.Utility;
 
@@ -71,6 +71,8 @@ namespace SkillEditorDemo.Model
     [Flags]
     public enum SkillWatchType
     {
+        [LabelInfo("无监听")]
+        None = 0,
         [LabelInfo("血量变化")]
         HpChange = 1,
         [LabelInfo("魔法变化")]

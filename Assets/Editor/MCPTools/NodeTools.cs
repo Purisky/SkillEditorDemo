@@ -1,4 +1,4 @@
-using SkillEditorDemo.Model;
+﻿using SkillEditorDemo.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,10 +6,7 @@ using TreeNode;
 using TreeNode.Editor;
 using TreeNode.Runtime;
 using TreeNode.Utility;
-using Unity.Properties;
-using UnityEngine;
 using UnityEngine.UIElements;
-using static UnityEditor.Progress;
 
 namespace SkillEditorDemo
 {
@@ -78,7 +75,9 @@ namespace SkillEditorDemo
                 NodePrompt nodePrompt = new(type);
                 nodePrompt.HandleFields(prompts);
                 prompts[type.Name] = nodePrompt;
+                Debug.Log(nodePrompt);
             }
+
             return prompts;
         }
 

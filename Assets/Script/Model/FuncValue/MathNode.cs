@@ -1,4 +1,4 @@
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using SkillEditorDemo.Utility;
 using TreeNode.Utility;
 
@@ -6,13 +6,17 @@ namespace SkillEditorDemo.Model
 {
 
     [NodeInfo(typeof(FuncNode), "二元运算", 100, "计算/二元运算"), PortColor("#00ff00")]
+    [Prompt(@"二元运算节点,用于对两个数值进行加减乘除等计算,支持随机数")]
     public class BinaryCal: FuncNode
     {
         [Child, LabelInfo(Hide = true)]
+        [Prompt(@"左侧数值,可以是常量或其他计算结果")]
         public FuncValue Left;
         [JsonProperty,ShowInNode,LabelInfo(Hide =true)]
+        [Prompt(@"计算类型,决定如何对两个数值进行计算")]
         public CalculateType CalculateType;
         [Child, LabelInfo(Hide = true)]
+        [Prompt(@"右侧数值,可以是常量或其他计算结果")]
         public FuncValue Right;
 
         public override string GetText()
@@ -51,13 +55,17 @@ namespace SkillEditorDemo.Model
 
 
     [NodeInfo(typeof(FuncNode), "三元运算", 100, "计算/三元运算"), PortColor("#00ff00")]
+    [Prompt(@"三元运算节点,用于对一个条件进行判断,如果条件为真则返回True的值,否则返回False的值")]
     public class ConditionCal : FuncNode
     {
         [Child(true), TitlePort]
+        [Prompt(@"条件判断,如果为真则返回True的值,否则返回False的值")]
         public Condition Condition;
         [Child, LabelInfo(Text = "真",Width =10)]
+        [Prompt(@"条件为真时返回的值,可以是常量或其他计算结果")]
         public FuncValue True;
         [Child, LabelInfo(Text = "假", Width = 10)]
+        [Prompt(@"条件为假时返回的值,可以是常量或其他计算结果")]
         public FuncValue False;
         public override string GetText()
         {

@@ -9,6 +9,7 @@ using TreeNode.Utility;
 namespace SkillEditorDemo.Model
 {
     [PortColor("#ECDFB0")]
+    [Prompt(@"单位节点的基类,所有的单位节点都继承自UnitNode,用于在游戏场景中获取单位信息如当前单位/所有单位/筛选单位等")]
     public abstract class UnitNode : JsonNode
     {
         public virtual string GetText()

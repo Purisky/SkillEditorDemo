@@ -7,21 +7,29 @@ using TreeNode.Utility;
 namespace SkillEditorDemo.Model
 {
     [NodeInfo(typeof(TrigNode), "触发器", 300, "Buff/触发器"), AssetFilter(true, typeof(BuffAsset)), PortColor("#7B68EE")]
+    [Prompt(@"触发器主要节点,用于描述一个触发器的基本信息,包括触发条件和触发效果")]
     public class TrigNode : JsonNode , IGrowID<TrigNode>
     {
         [ShowInNode(ShowIf = nameof(ShowPassive)), LabelInfo("被", 20), Group("Trig", Width = 45)]
+        [Prompt(@"决定出触发条件是否为被动,如造成伤害行为会先后在执行者/承受者身上触发伤害和被伤害效果")]
         public bool Passive;
         [ShowInNode, LabelInfo(Hide =true), Group("Trig")]
+        [Prompt(@"触发器的类型,决定触发器的触发方式和触发时机")]
         public TrigType TrigType;
         [ShowInNode(ShowIf = nameof(ShowSeq)), LabelInfo(Hide = true), Group("Trig", Width = 40)]
+        [Prompt(@"触发器的触发顺序,当一个触发行为存在完成状态时,用于区分在完成前还是完成后触发效果 [On]->Event->[Aft]")]
         public TriggerSequence TriggerSequence;
         [Child, TitlePort]
+        [Prompt(@"触发过滤器,当不为空时对触发状态进行过滤,如造成伤害时,过滤伤害类型/值,返回否会跳过触发")]
         public Condition Condition;
         [Child(true), LabelInfo("效果组"), Group("Trig", Width = 70)]
+        [Prompt(@"触发器的效果组,按数组顺序依次触发")]
         public List<ActionNode> Actions;
-        [ ShowInNode, LabelInfo("冷却时间")]
+        [ShowInNode, LabelInfo("冷却时间")]
+        [Prompt(@"触发器的冷却时间,在冷却时间内不会再次触发,当成功执行效果组后才会进入冷却")]
         public TimeValue CD;
         [Child, LabelInfo("触发移除")]
+        [Prompt(@"当触发器被成功触发时,移除的层数,-1为直接移除Buff,0则代表无效果,>0代表对应层数")]
         public FuncValue RemoveOnTrig;
 
 
