@@ -8,7 +8,7 @@ using TreeNode.Utility;
 namespace SkillEditorDemo.Model
 {
     [PortColor("#40E0D0")]
-    [Prompt(@"Condition是条件节点的基类，所有的条件节点都继承自Condition")]
+    [Prompt(@"Condition是条件节点的基类,所有的条件节点都继承自Condition")]
     public abstract class Condition : JsonNode, IGrowID<Condition>
     {
         [JsonIgnore] public int GrowID { get; set; }
@@ -20,7 +20,7 @@ namespace SkillEditorDemo.Model
         public abstract string GetText();
     }
     [NodeInfo(typeof(Condition), "比较", 100, "条件/比较"), PortColor("#0000ff")]
-    [Prompt(@"比较节点，用于比较两个值的关系")]
+    [Prompt(@"比较节点,用于比较两个值的关系")]
     public class Compare : Condition
     {
         [Child, LabelInfo(Hide = true)]
@@ -65,7 +65,7 @@ namespace SkillEditorDemo.Model
         }
     }
     [NodeInfo(typeof(Condition), "与", 80, "条件/逻辑/与", "#000080"), PortColor("#0000ff")]
-    [Prompt(@"与节点，用于判断多个条件是否同时成立")]
+    [Prompt(@"与节点,用于判断多个条件是否同时成立")]
     public class And : Condition
     {
         [Child(true), TitlePort]
@@ -88,7 +88,7 @@ namespace SkillEditorDemo.Model
         }
     }
     [NodeInfo(typeof(Condition), "或", 80, "条件/逻辑/或", "#D2691E"), PortColor("#0000ff")]
-    [Prompt(@"或节点，用于判断多个条件是否有至少一个成立")]
+    [Prompt(@"或节点,用于判断多个条件是否有至少一个成立")]
     public class Or : Condition
     {
         [Child(true), TitlePort]
@@ -112,7 +112,7 @@ namespace SkillEditorDemo.Model
         }
     }
     [NodeInfo(typeof(Condition), "非", 80, "条件/逻辑/非", "#800000"), PortColor("#0000ff")]
-    [Prompt(@"非节点，用于取反一个条件")]
+    [Prompt(@"非节点,用于取反一个条件")]
     public class Not : Condition
     {
         [Child(true), TitlePort]

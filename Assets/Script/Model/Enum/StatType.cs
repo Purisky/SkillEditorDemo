@@ -248,7 +248,7 @@ namespace SkillEditorDemo.Model
         }
     }
     /// <summary>
-    /// 父属性：取值时，乘父属性的值
+    /// 父属性：取值时,乘父属性的值
     /// </summary>
     [AttributeUsage(AttributeTargets.Field, AllowMultiple = false)]
     public class StatParentAttribute : Attribute

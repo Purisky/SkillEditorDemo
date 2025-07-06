@@ -10,7 +10,7 @@ using TreeNode.Utility;
 namespace SkillEditorDemo.Model
 {
     [PortColor("#E8AC29")]
-    [Prompt(@"ActionNode是执行节点的基类，所有的执行节点都继承自ActionNode")]
+    [Prompt(@"ActionNode是执行节点的基类,所有的执行节点都继承自ActionNode")]
     public abstract class ActionNode : JsonNode, IGrowID<ActionNode>
     {
         [JsonIgnore]

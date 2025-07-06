@@ -6,14 +6,14 @@ using TreeNode.Utility;
 namespace SkillEditorDemo.Model
 {
     [PortColor("#7CFC00")]
-    [Prompt(@"FuncNode是数值节点的基类，所有的数值节点都继承自FuncNode")]
+    [Prompt(@"FuncNode是数值节点的基类,所有的数值节点都继承自FuncNode")]
     public abstract class FuncNode : NumNode, IGrowID<FuncNode>
     {
         [JsonIgnore] public int GrowID { get; set; }
         public static T Get<T>(int id) where T : FuncNode => (T)IGrowID<FuncNode>.Get(id);
         public abstract float GetResult(TrigInfo info, CombatCache cache);
     }
-    [Prompt(@"FuncValue是特殊的数值节点，同时包含一个float:Value和一个FuncNode:Node,既可以被视为一个常数,也可以添加其他数值节点用于复杂计算,是数值字段的主要类型")]
+    [Prompt(@"FuncValue是特殊的数值节点,同时包含一个float:Value和一个FuncNode:Node,既可以被视为一个常数,也可以添加其他数值节点用于复杂计算,是数值字段的主要类型")]
     public class FuncValue : NumValue<FuncNode>
     {
         [JsonIgnore] FuncNode FuncNode {

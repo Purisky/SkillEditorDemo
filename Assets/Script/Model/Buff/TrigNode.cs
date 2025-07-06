@@ -1,4 +1,4 @@
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using SkillEditorDemo.Utility;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +7,6 @@ using TreeNode.Utility;
 namespace SkillEditorDemo.Model
 {
     [NodeInfo(typeof(TrigNode), "触发器", 300, "Buff/触发器"), AssetFilter(true, typeof(BuffAsset)), PortColor("#7B68EE")]
-    [Prompt("")]
     public class TrigNode : JsonNode , IGrowID<TrigNode>
     {
         [ShowInNode(ShowIf = nameof(ShowPassive)), LabelInfo("被", 20), Group("Trig", Width = 45)]

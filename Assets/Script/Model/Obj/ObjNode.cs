@@ -9,7 +9,7 @@ using TreeNode.Utility;
 namespace SkillEditorDemo.Model
 {
     [PortColor("#F0A58A")]
-    [Prompt(@"对象节点的基类，所有的对象节点都继承自ObjNode,用于在游戏场景中创建对象如地形/单位/伤害盒子/物品等")]
+    [Prompt(@"对象节点的基类,所有的对象节点都继承自ObjNode,用于在游戏场景中创建对象如地形/单位/伤害盒子/物品等")]
     public abstract class ObjNode : JsonNode, IGrowID<ObjNode>
     {
         [JsonIgnore]
@@ -79,7 +79,7 @@ namespace SkillEditorDemo.Model
     public class OneShotBox : ObjNode
     {
         [Child(true), LabelInfo("形狀")]
-        [Prompt(@"碰撞盒子的碰撞形状，决定了检测区域的范围和类型")]
+        [Prompt(@"碰撞盒子的碰撞形状,决定了检测区域的范围和类型")]
         public ShapeNode Shape;
 
         [Child(true), LabelInfo("效果组")]
