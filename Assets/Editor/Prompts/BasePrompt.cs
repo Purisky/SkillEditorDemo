@@ -1,18 +1,21 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System;
 using System.Reflection;
 using TreeNode.Utility;
 using TreeNode;
 using System.Collections;
+using TreeNode.Runtime;
 
 namespace SkillEditorDemo
 {
     public abstract class BasePrompt
     {
+        public Type Type;
         public string TypeName;
         public string Description;
         public BasePrompt(Type type)
         {
+            Type = type;
             TypeName = type.Name;
             var prompt = type.GetCustomAttribute<PromptAttribute>();
             if (prompt != null)
@@ -39,10 +42,16 @@ namespace SkillEditorDemo
         public string Description;
         public bool IsRequired;
         public Type FieldType;
+        public Type TypeWithoutList;
         public FieldPrompt(FieldInfo field)
         {
             Name = field.Name;
             FieldType = field.FieldType;
+            TypeWithoutList = field.FieldType;
+            if(TypeWithoutList.Inherited(typeof(IList)))
+            {
+                TypeWithoutList = TypeWithoutList.GetGenericArguments()[0];
+            }
             var promptAttr = field.GetCustomAttribute<PromptAttribute>();
             if (promptAttr != null)
             {

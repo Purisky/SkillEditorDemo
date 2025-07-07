@@ -1,5 +1,8 @@
-using System;
+﻿using System;
+using System.Collections.Generic;
 using System.Reflection;
+using TreeNode;
+using TreeNode.Runtime;
 using TreeNode.Utility;
 using UnityEngine;
 
@@ -20,6 +23,21 @@ namespace SkillEditorDemo
         }
         public override string ToString()
         {
+            var result = HeadInfo();
+
+            if (Fields.Count > 0)
+            {
+                result += "\n字段:";
+                foreach (var field in Fields)
+                {
+                    result +=$"\n{field}";
+                }
+            }
+            return result;
+        }
+
+        public string HeadInfo()
+        {
             var result = TypeName;
             if (string.IsNullOrEmpty(PortType))
             {
@@ -29,20 +47,32 @@ namespace SkillEditorDemo
             {
                 result += $":{PortType}\n";
             }
-
-
-
             if (!string.IsNullOrEmpty(Description))
             {
                 result += $"描述: {Description}";
             }
+            return result;
+        }
 
-            if (Fields.Count > 0)
+        public string ListDetail()
+        {
+
+            string result = ToString();
+            HashSet<Type> handledTypes = new ();
+            for (int i = 0; i < Fields.Count; i++)
             {
-                result += "\n字段:";
-                foreach (var field in Fields)
+                Type typeWithoutList = Fields[i].TypeWithoutList;
+                if (!typeWithoutList.Inherited(typeof(JsonNode)))
                 {
-                    result +=$"\n{field}";
+                    handledTypes.Add(typeWithoutList);
+                }
+            }
+            foreach (var type in handledTypes)
+            {
+                if (type.IsPrimitive || type == typeof(string)) { continue; }
+                if (NodeTools.Prompts.TryGetValue(type.Name, out var prompt))
+                { 
+                    result += $"\n{prompt}";
                 }
             }
             return result;

@@ -75,11 +75,34 @@ namespace SkillEditorDemo
                 NodePrompt nodePrompt = new(type);
                 nodePrompt.HandleFields(prompts);
                 prompts[type.Name] = nodePrompt;
-                Debug.Log(nodePrompt);
+                
             }
 
+            //foreach (var b in prompts.Values)
+            //{
+            //    Debug.Log(b);
+            //}
             return prompts;
         }
+
+
+        public static List<NodePrompt> GetNodesByName(string typeName)
+        {
+            if (typeName == null) { return GetNodes(null); }
+            Type type = GetValidType(typeName);
+            if (type == null) { return new(); }
+            return GetNodes(type);
+        }
+
+
+        public static List<NodePrompt> GetNodes(Type type)
+        {
+            if (type == null) { 
+                return Prompts.Values.OfType<NodePrompt>().ToList();
+            }
+            return Prompts.Values.OfType<NodePrompt>().Where(n => n.Type.Inherited(type)).ToList();
+        }
+
 
 
     }

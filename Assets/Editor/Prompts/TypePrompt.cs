@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
@@ -34,9 +34,6 @@ namespace SkillEditorDemo
                 if (type.IsPrimitive || type == typeof(string)) { continue; }
                 if (type.Inherited(typeof(JsonNode))) { continue; }
                 if (dic.ContainsKey(type.Name)) { continue; }
-               
-
-
                 if (type.IsEnum)
                 {
                     dic[type.Name] = new EnumPrompt(type);

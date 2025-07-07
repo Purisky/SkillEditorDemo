@@ -56,7 +56,7 @@ namespace SkillEditorDemo.Model
     public struct TimeValue
     {
         [ShowInNode,Group("type",Width = 60),LabelInfo(Hide =true)]
-        [Prompt(@"时间单位的类型")]
+        [Prompt(@"时间单位的类型:Second(秒),GameTick(游戏帧)")]
         public TimeType Type;
         [Child,LabelInfo(Hide =true), Group("type")]
         [Prompt(@"时间单位的数值")]
