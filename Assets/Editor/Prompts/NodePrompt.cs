@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using TreeNode;
 using TreeNode.Runtime;
@@ -12,6 +13,7 @@ namespace SkillEditorDemo
     {
         public bool Abstract;
         public string PortType;
+        public AssetFilterAttribute AssetFilter;
         public NodePrompt(Type type) : base(type)
         {
             Abstract = type.IsAbstract;
@@ -20,6 +22,7 @@ namespace SkillEditorDemo
             {
                 PortType = nodeInfoAttr.Type.TypeName();
             }
+            AssetFilter = type.GetCustomAttribute<AssetFilterAttribute>();
         }
         public override string ToString()
         {
@@ -39,14 +42,27 @@ namespace SkillEditorDemo
         public string HeadInfo()
         {
             var result = TypeName;
+            string filterInfo = "";
+            if (AssetFilter != null)
+            {
+                if (AssetFilter.Allowed)
+                {
+                    filterInfo = $"只允许出现在 {string.Join(',', AssetFilter.Types.Select(t => t.Name))} 中";
+                }
+                else
+                {
+                    filterInfo = $"禁止出现在 {string.Join(',', AssetFilter.Types.Select(t => t.Name))} 中";
+                }
+            }
             if (string.IsNullOrEmpty(PortType))
             {
-                result += "\n";
+                result += $" {filterInfo}\n";
             }
             else
             {
-                result += $":{PortType}\n";
+                result += $":{PortType} {filterInfo}\n";
             }
+
             if (!string.IsNullOrEmpty(Description))
             {
                 result += $"描述: {Description}";
