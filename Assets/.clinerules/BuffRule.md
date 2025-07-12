@@ -11,12 +11,13 @@ depends: [NodeRule.md]
 - addbuffnode(path, portPath, typeName, json): 在Buff文件中添加节点
 
 ## Buff特殊规范
-- 效果持续时间单位必须为秒
-- 必须包含effectType枚举字段
-- 复合Buff实现标准：
-  - 相关Buff放入同一Asset文件
-  - 文件命名反映组合效果
-  - 根节点添加关联关系注释
+ - 一个完整的Buff必须由BuffNode作为根节点构成
+ - Buff的效果部分主要由TrigNode控制,由TrigNode决定Buff的触发时机,TrigNode可以为空,Buff可作为一个没有实际效果的占位Buff配合其他Buff使用
+ - TrigNode只有一种,所有的触发场景都在TrigNode中使用字段定义
+ BuffNode
+   - TrigNode (可选)
+     - ActionNode (可选)
+     - ConditionNode (可选)
 
 ## 路径规范
 - 基本结构：`[index].fieldName.ListName[index]`

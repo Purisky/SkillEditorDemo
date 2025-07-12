@@ -21,7 +21,7 @@ namespace SkillEditorDemo.Model
 
     }
     [NodeInfo(typeof(UnitNode), "当前单位", 100, "单位/当前单位")]
-    [Prompt(@"获取当前单位,在触发逻辑中最近的单位")]
+    [Prompt(@"获取当前单位,在触发逻辑中最近的单位,这是一个在运行时随时可能变化对象的单位节点,如果有更加准确的单位节点,应该尽量避免使用该节点")]
     public class LastUnit : UnitNode
     {
         public override string GetText() => "当前单位";
@@ -32,7 +32,7 @@ namespace SkillEditorDemo.Model
         }
     }
     [NodeInfo(typeof(UnitNode), "Buff单位获取", 140, "单位/Buff单位获取"), AssetFilter(true, typeof(BuffAsset))]
-    [Prompt(@"获取当前Buff的涉及单位,如Buff的载体/创建者等")]
+    [Prompt(@"获取当前Buff的涉及单位,如Buff的携带者/创建者等")]
     public class GetBuffUnit : UnitNode
     {
         [ShowInNode, LabelInfo(Hide = true)]

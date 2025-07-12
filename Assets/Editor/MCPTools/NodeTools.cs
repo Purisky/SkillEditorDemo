@@ -1,4 +1,5 @@
-﻿using SkillEditorDemo.Utility;
+﻿using MCP4Unity;
+using SkillEditorDemo.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,98 +13,27 @@ namespace SkillEditorDemo
 {
     public class NodeTools
     {
-        public static string AddNode(string path, string portPath, string typeName,string json)
+        [Tool("为一个Asset文件添加Node")]
+        public static string AddNode([Desc("文件路径")] string path, [Desc("添加的节点路径")] string portPath, [Desc("Node类型")] string typeName, [Desc("Node数据json,以合并方式并入新对象")] string json)
         {
-            Type type = GetValidType(typeName);
-            if (type is null) { return "type not valid"; }
-            return AddNode( path, portPath, type,json);
+            return NodeTools.AddNode(path, portPath, typeName, json);
         }
-        public static Dictionary<string, Type> ValidNodeTypes;
-        static Dictionary<string, Type> InitNodes()
+        [Tool("获取可用的Node信息")]
+        public static List<string> ListNodes([Desc("null时获取所有Node,否则获取继承自baseType的Node")] string baseType)
         {
-            Dictionary<string, Type> nodes = new();
-            foreach (Type type in AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes())
-                .Where(n => n.Inherited(typeof(JsonNode))&& n.GetConstructor(Type.EmptyTypes) != null)
-                )
+            return ToolUtil.GetNodesByName(baseType).Select(n => n.HeadInfo()).ToList();
+        }
+        [Tool("获取Node的结构与用法")]
+        public static string GetNodePrompt(string typeName)
+        {
+            if (ToolUtil.Prompts.TryGetValue(typeName, out var prompt) && prompt is NodePrompt nodePrompt)
             {
-                nodes.Add(type.Name, type);
-            }
-            return nodes;
-        }
-        public static Type GetValidType(string typeName)
-        {
-            ValidNodeTypes ??= InitNodes();
-            return ValidNodeTypes.GetValueOrDefault(typeName);
-        }
-        public static string AddNode(string filePath, string portPath, Type type, string json)
-        {
-            TreeNodeGraphWindow window = JsonAssetHandler.OpenJsonAsset($"Assets/{filePath}");
-            if (window == null) { return "file not exist"; }
-            PropertyElement propertyElement = window.GraphView.Find(portPath);
-            if (propertyElement == null) { return "path not valid"; }
-            ChildPort port = propertyElement.Q<ChildPort>();
-            if (port == null) { return "field is not JsonNode or collection of JsonNode"; }
-            if (!port.portType.IsAssignableFrom(type)) { return "type not match"; }
-            JsonNode jsonNode = null;
-            if (string.IsNullOrEmpty(json))
-            {
-                jsonNode = (JsonNode)Activator.CreateInstance(type);
+                return nodePrompt.ListDetail();
             }
             else
             {
-                jsonNode = (JsonNode)Json.Get(type, json);
+                return $"Node {typeName} not found";
             }
-            if (!window.GraphView.SetNodeByPath(jsonNode, portPath))
-            { 
-                return "set value error";
-            }
-            window.GraphView.AddViewNode(jsonNode, port);
-            window.GraphView.FormatNodes();
-            window.History.AddStep();
-            window.SaveChanges();
-            return "Success";
         }
-
-        public static Dictionary<string, BasePrompt> Prompts = InitPrompts();
-
-
-        static Dictionary<string, BasePrompt> InitPrompts()
-        {
-            Dictionary<string, BasePrompt> prompts = new();
-            foreach (Type type in AppDomain.CurrentDomain.GetAssemblies().SelectMany(a => a.GetTypes()).Where(n => n.Inherited(typeof(JsonNode))))
-            {
-                NodePrompt nodePrompt = new(type);
-                nodePrompt.HandleFields(prompts);
-                prompts[type.Name] = nodePrompt;
-                
-            }
-
-            //foreach (var b in prompts.Values)
-            //{
-            //    Debug.Log(b);
-            //}
-            return prompts;
-        }
-
-
-        public static List<NodePrompt> GetNodesByName(string typeName)
-        {
-            if (typeName == null) { return GetNodes(null); }
-            Type type = GetValidType(typeName);
-            if (type == null) { return new(); }
-            return GetNodes(type);
-        }
-
-
-        public static List<NodePrompt> GetNodes(Type type)
-        {
-            if (type == null) { 
-                return Prompts.Values.OfType<NodePrompt>().ToList();
-            }
-            return Prompts.Values.OfType<NodePrompt>().Where(n => n.Type.Inherited(type)).ToList();
-        }
-
-
-
     }
 }

@@ -86,11 +86,12 @@ namespace SkillEditorDemo
             foreach (var type in handledTypes)
             {
                 if (type.IsPrimitive || type == typeof(string)) { continue; }
-                if (NodeTools.Prompts.TryGetValue(type.Name, out var prompt))
+                if (ToolUtil.Prompts.TryGetValue(type.Name, out var prompt))
                 { 
                     result += $"\n{prompt}";
                 }
             }
+            
             return result;
         }
     }
