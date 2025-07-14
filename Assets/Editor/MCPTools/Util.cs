@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using TreeNode;
@@ -18,7 +19,7 @@ namespace SkillEditorDemo
             if (type is null) { return "type not valid"; }
             return AddNode(path, portPath, type, json);
         }
-        public static Dictionary<string, Type> ValidNodeTypes;
+        static Dictionary<string, Type> ValidNodeTypes;
         static Dictionary<string, Type> InitNodes()
         {
             Dictionary<string, Type> nodes = new();
@@ -35,7 +36,7 @@ namespace SkillEditorDemo
             ValidNodeTypes ??= InitNodes();
             return ValidNodeTypes.GetValueOrDefault(typeName);
         }
-        public static string AddNode(string filePath, string portPath, Type type, string json)
+        static string AddNode(string filePath, string portPath, Type type, string json)
         {
             TreeNodeGraphWindow window = JsonAssetHandler.OpenJsonAsset($"Assets/{filePath}");
             if (window == null) { return "file not exist"; }
@@ -96,6 +97,30 @@ namespace SkillEditorDemo
             }
             return Prompts.Values.OfType<NodePrompt>().Where(n => n.Type.Inherited(type)).ToList();
         }
+        public static string ModifyNode(string path, string portPath, string json)
+        {
+            if (string.IsNullOrEmpty(json))
+            {
+                return "Skip: json is empty";
+            }
+            TreeNodeGraphWindow window = JsonAssetHandler.OpenJsonAsset($"Assets/{path}");
+            if (window == null) { return "file not exist"; }
+            JsonNode existNode = window.GraphView.Asset.Data.GetValue<JsonNode>(portPath);
+            if (existNode == null) { return "node not found at path"; }
+            Type type = existNode.GetType();
+            bool success = false;
+            foreach (JProperty jp in JObject.Parse(json).Properties())
+            {
+                success |= existNode.SetValue(type, jp.Name, jp.Value);
+            }
+            if (success)
+            {
+                window.History.AddStep();
+                window.SaveChanges();
+                window.Refresh();
+            }
+            return success ? "Success" : "Failed to modify node";
 
+        }
     }
 }

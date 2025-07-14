@@ -16,8 +16,17 @@ namespace SkillEditorDemo
         [Tool("为一个Asset文件添加Node")]
         public static string AddNode([Desc("文件路径")] string path, [Desc("添加的节点路径")] string portPath, [Desc("Node类型")] string typeName, [Desc("Node数据json,以合并方式并入新对象")] string json)
         {
-            return NodeTools.AddNode(path, portPath, typeName, json);
+            return ToolUtil.AddNode(path, portPath, typeName, json);
         }
+        public static string ModifyNode([Desc("文件路径")] string path, [Desc("修改的节点路径")] string portPath, [Desc("Node数据json,以覆盖方式修改对象")] string json)
+        {
+            return ToolUtil.ModifyNode(path, portPath, json);
+        }
+
+
+
+
+
         [Tool("获取可用的Node信息")]
         public static List<string> ListNodes([Desc("null时获取所有Node,否则获取继承自baseType的Node")] string baseType)
         {
@@ -35,5 +44,10 @@ namespace SkillEditorDemo
                 return $"Node {typeName} not found";
             }
         }
+
+
+
+
+
     }
 }
