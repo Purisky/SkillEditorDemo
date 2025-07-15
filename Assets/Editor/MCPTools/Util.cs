@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json.Linq;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using TreeNode;
@@ -121,6 +122,31 @@ namespace SkillEditorDemo
             }
             return success ? "Success" : "Failed to modify node";
 
+        }
+
+        public static string RemoveNode(string path, string portPath, bool recursive = true)
+        {
+            TreeNodeGraphWindow window = JsonAssetHandler.OpenJsonAsset($"Assets/{path}");
+            if (window == null) { return "file not exist"; }
+            JsonNode existNode = window.GraphView.Asset.Data.GetValue<JsonNode>(portPath);
+            if (existNode == null) { return "node not found at path"; }
+            ViewNode viewNode = window.GraphView.NodeDic[existNode];
+            PropertyAccessor.SetValueNull(window.GraphView.Asset.Data.Nodes, portPath);
+            if (!recursive)
+            {
+                window.GraphView.Asset.Data.Nodes.AddRange(viewNode.GetChildNodes().Select(n => n.Data));
+            }
+            window.History.AddStep();
+            window.SaveChanges();
+            window.Refresh();
+            return "Success";
+        }
+
+        public static string ValidateAsset(string path)
+        {
+            TreeNodeGraphWindow window = JsonAssetHandler.OpenJsonAsset($"Assets/{path}");
+            if (window == null) { return "file not exist"; }
+            return window.GraphView.Validate();
         }
     }
 }

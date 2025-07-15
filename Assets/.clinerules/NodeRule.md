@@ -26,16 +26,39 @@ MCP 服务 (MCP4Unity)：
 这是一个与 Unity 编辑器交互的服务层，你将通过它来查询和操作节点。
 
 ## 重要规范
-- 严格禁止直接操作JSON文件
+- 严格禁止直接写入JSON文件,允许读取json文件内容
 - 所有节点变动必须通过MCPTool提供的工具实现
 - 直接修改JSON文件会导致数据不一致和编辑器错误
 - 添加节点时应仔细考虑每个字段的功能和用途，确保正确配置
+- 修改节点时必须提供完整的portPath以确保定位准确
+- json数据应采用增量更新方式，只包含需要修改的字段
+- 添加节点时应确保typeName与现有节点类型兼容
+- 资源校验可用于检查节点树的完整性和一致性
 
 关键工具：
 
 listnodes(baseType): 获取可用的节点信息。当baseType为null时获取所有节点，否则获取继承自baseType的节点。
 
 getnodeprompt(typeName): 获取指定节点的结构与用法信息，包括功能描述、所需参数和可能的子节点类型。
+
+addnode(path, portPath, typeName, json): 添加新节点
+- path: 文件路径
+- portPath: 节点路径(格式遵循portPath规范)
+- typeName: 节点类型
+- json: 节点数据(JSON格式，以合并方式并入新对象)
+
+modifynode(path, portPath, json): 修改现有节点
+- path: 文件路径
+- portPath: 节点路径(需精确到要修改的具体节点)
+- json: 要修改的节点数据(JSON格式)
+
+removenode(path, portPath): 删除节点
+- path: 文件路径
+- portPath: 要删除的节点路径
+
+validateasset(path): 校验资源
+- path: 文件路径
+- 返回: 校验结果信息
 
 
 portPath格式规范：

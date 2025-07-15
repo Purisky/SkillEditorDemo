@@ -18,10 +18,18 @@ namespace SkillEditorDemo
         {
             return ToolUtil.AddNode(path, portPath, typeName, json);
         }
-        public static string ModifyNode([Desc("文件路径")] string path, [Desc("修改的节点路径")] string portPath, [Desc("Node数据json,以覆盖方式修改对象")] string json)
+        [Tool("修改Node数据")]
+        public static string ModifyNode([Desc("文件路径")] string path, [Desc("修改的节点路径")] string portPath, [Desc("Node数据json,以覆盖合并方式修改对象")] string json)
         {
             return ToolUtil.ModifyNode(path, portPath, json);
         }
+        [Tool("删除一个Node")]
+        public static string RemoveNode([Desc("文件路径")] string path, [Desc("删除的节点路径")] string portPath)
+        {
+            return ToolUtil.RemoveNode(path, portPath, true);
+        }
+
+
 
 
 
@@ -46,7 +54,11 @@ namespace SkillEditorDemo
         }
 
 
-
+        [Tool("校验资源")]
+        public static string ValidateAsset([Desc("文件路径")] string path)
+        {
+            return ToolUtil.ValidateAsset(path);
+        }
 
 
     }

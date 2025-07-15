@@ -8,8 +8,6 @@ depends: [NodeRule.md]
 
 ## 专属方法
 - addbuffasset(fileName): 创建一个新的BuffAsset文件
-- addbuffnode(path, portPath, typeName, json): 在Buff文件中添加节点
-
 ## Buff特殊规范
  - 一个完整的Buff必须由BuffNode作为根节点构成
  - Buff的效果部分主要由TrigNode控制,由TrigNode决定Buff的触发时机,TrigNode可以为空,Buff可作为一个没有实际效果的占位Buff配合其他Buff使用
