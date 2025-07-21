@@ -2,11 +2,13 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using TreeNode;
 using TreeNode.Editor;
 using TreeNode.Runtime;
 using TreeNode.Utility;
+using UnityEditor.VersionControl;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -44,11 +46,21 @@ namespace SkillEditorDemo
             ChildPort port = null;
             if (!string.IsNullOrEmpty(portPath))
             {
-
-
-                PropertyElement propertyElement = window.GraphView.Find(portPath);
-                if (propertyElement == null) { return "path not valid"; }
-                port = propertyElement.Q<ChildPort>();
+                if (!PropertyAccessor.GetValidPath(window.GraphView.Asset.Data.Nodes, portPath, out int index, out object validObj))
+                {
+                    string validPath = portPath[..index];
+                    Type validType = null;
+                    if (validObj is null)
+                    {
+                        object parent = PropertyAccessor.TryGetParent(window.GraphView.Asset.Data.Nodes, validPath, out string last);
+                        validType = parent.GetType().GetMember(last)[0].GetValueType();
+                    }
+                    else {
+                        validType = validObj.GetType();
+                    }
+                    return $"有效路径:{validPath}({validType.TypeName()}) 无效路径:{portPath[index..]}";
+                }
+                port = window.GraphView.GetPort(portPath);
                 if (port == null) { return "field is not JsonNode or collection of JsonNode"; }
                 if (!port.portType.IsAssignableFrom(type)) { return "type not match"; }
             }
@@ -105,7 +117,7 @@ namespace SkillEditorDemo
             {
                 return Prompts.Values.OfType<NodePrompt>().ToList();
             }
-            return Prompts.Values.OfType<NodePrompt>().Where(n => n.Type.Inherited(type)).ToList();
+            return Prompts.Values.OfType<NodePrompt>().Where(n => n.Type.Inherited(type)|| n.Type== type).ToList();
         }
         public static string ModifyNode(string path, string portPath, string json)
         {
