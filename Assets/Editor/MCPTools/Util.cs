@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using TreeNode;
 using TreeNode.Editor;
 using TreeNode.Runtime;
@@ -79,7 +80,18 @@ namespace SkillEditorDemo
 
                 foreach (JProperty jp in JObject.Parse(json).Properties())
                 {
-                    Type valueType = type.GetMember(jp.Name)[0].GetValueType();
+                    MemberInfo[] members = type.GetMember(jp.Name);
+                    if (members.Length == 0)
+                    {
+                        string promptText = "";
+                        if (Prompts.TryGetValue(type.Name, out var prompt) && prompt is NodePrompt nodePrompt)
+                        {
+                            promptText ="\n"+ nodePrompt.ListDetail();
+                        }
+                        return @$"节点添加失败,{type.Name}中不存在{jp.Name}字段{promptText}";
+                    }
+                    //Debug.Log($"Adding node: {jp.Name} of type {type.Name}");
+                    Type valueType = members[0].GetValueType();
                     object value = jp.Value.Value<object>();
                     if (valueType.Inherited(typeof(JsonNode)) || (valueType.Inherited(typeof(IList)) && value is IList list && list.Count > 0 && valueType.GetGenericArguments()[0].Inherited(typeof(JsonNode))))
                     {
@@ -160,13 +172,32 @@ namespace SkillEditorDemo
                 }
                 return $"路径无效: 在'{validPath}'(类型:{validType?.TypeName()})下找不到'{portPath[index..]}'";
             }
-            JsonNode existNode = window.GraphView.Asset.Data.GetValue<JsonNode>(portPath);
-            if (existNode == null) { return "node not found at path"; }
+            JsonNode existNode;
+            try
+            {
+                existNode = window.GraphView.Asset.Data.GetValue<JsonNode>(portPath);
+                if (existNode == null) { return "node not found at path"; }
+            }
+            catch (Exception)
+            {
+                return $"目标:{portPath} 不是继承自JsonNode的节点类型"; 
+            }
             Type type = existNode.GetType();
             bool success = false;
             foreach (JProperty jp in JObject.Parse(json).Properties())
             {
-                Type valueType = type.GetMember(jp.Name)[0].GetValueType();
+                MemberInfo[] members = type.GetMember(jp.Name);
+                if (members.Length == 0)
+                {
+                    string promptText = "";
+                    if (Prompts.TryGetValue(type.Name, out var prompt) && prompt is NodePrompt nodePrompt)
+                    {
+                        promptText = "\n" + nodePrompt.ListDetail();
+                    }
+                    return @$"节点修改失败,{type.Name}中不存在{jp.Name}字段{promptText}";
+                }
+                //Debug.Log($"Adding node: {jp.Name} of type {type.Name}");
+                Type valueType = members[0].GetValueType();
                 object value = jp.Value.Value<object>();
                 if (valueType.Inherited(typeof(JsonNode)) || (valueType.Inherited(typeof(IList)) && value is IList list && list.Count > 0 && valueType.GetGenericArguments()[0].Inherited(typeof(JsonNode))))
                 {

@@ -13,7 +13,8 @@ namespace SkillEditorDemo.Model
         public static T Get<T>(int id) where T : FuncNode => (T)IGrowID<FuncNode>.Get(id);
         public abstract float GetResult(TrigInfo info, CombatCache cache);
     }
-    [Prompt(@"FuncValue是特殊的数值节点,同时包含一个float:Value和一个FuncNode:Node,既可以被视为一个常数,也可以添加其他数值节点用于复杂计算,是数值字段的主要类型")]
+    [Prompt(@"FuncValue是特殊的数值节点,同时包含一个float:Value和一个FuncNode:Node,既可以被视为一个常数,也可以添加其他数值节点用于复杂计算,是数值字段的主要类型,
+常数和节点是互斥的存在,节点会优先被计算,当涉及到数值计算时需使用ListNodes(FuncNode)获取数值节点信息")]
     public class FuncValue : NumValue<FuncNode>
     {
         [JsonIgnore] FuncNode FuncNode {
