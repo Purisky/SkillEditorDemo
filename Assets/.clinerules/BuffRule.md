@@ -16,8 +16,4 @@ depends: [NodeRule.md]
    - TrigNode (可选)
      - ActionNode (可选)
      - ConditionNode (可选)
-
-## 路径规范
-- 基本结构：`[index].fieldName.ListName[index]`
-- 单Buff结构示例：`[0].effects[0]`
-- 多Buff结构示例：`[1].children[0]`
+当创建一组相关的Buff时,可以将它们放在同一个BuffAsset中,并通过BuffNode的portPath来区分不同的Buff

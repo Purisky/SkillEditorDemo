@@ -14,12 +14,19 @@ namespace SkillEditorDemo
         public List<FieldPrompt> Fields = new();
         public TypePrompt(Type type) : base(type)
         {
-            var fields = type.GetFields(BindingFlags.Public | BindingFlags.Instance);
-            foreach (var field in fields)
+            MemberInfo[] members = type.GetMembers(BindingFlags.Public | BindingFlags.Instance);
+            foreach (var member in members)
             {
-                if (field.GetCustomAttribute<PromptAttribute>() == null) { continue; }
-                var fieldPrompt = new FieldPrompt(field);
-                Fields.Add(fieldPrompt);
+                if (member.GetCustomAttribute<PromptAttribute>() == null) { continue; }
+                if (member is FieldInfo field)
+                {
+                    Fields.Add(new FieldPrompt(field));
+                }
+                else if (member is PropertyInfo property)
+                {
+                    if (!property.CanWrite) { continue; }
+                    Fields.Add(new FieldPrompt(property));
+                }
             }
         }
         public void HandleFields(Dictionary<string,BasePrompt> dic)

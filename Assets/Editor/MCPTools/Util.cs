@@ -46,19 +46,23 @@ namespace SkillEditorDemo
             ChildPort port = null;
             if (!string.IsNullOrEmpty(portPath))
             {
-                if (!PropertyAccessor.GetValidPath(window.GraphView.Asset.Data.Nodes, portPath, out int index, out object validObj))
+                if (!PropertyAccessor.GetValidPath(window.GraphView.Asset.Data.Nodes, portPath, out int index))
                 {
-                    string validPath = portPath[..index];
+                    string validPath = portPath[..(index)].TrimEnd('.');
                     Type validType = null;
-                    if (validObj is null)
+                    object parent = PropertyAccessor.TryGetParent(window.GraphView.Asset.Data.Nodes, validPath, out string last);
+                    if (last.StartsWith('[') && parent is IList list)
                     {
-                        object parent = PropertyAccessor.TryGetParent(window.GraphView.Asset.Data.Nodes, validPath, out string last);
+                        if (int.TryParse(last[1..^1], out int index2) && index2 < list.Count)
+                        {
+                            validType = list[index2].GetType();
+                        }
+                    }
+                    else
+                    {
                         validType = parent.GetType().GetMember(last)[0].GetValueType();
                     }
-                    else {
-                        validType = validObj.GetType();
-                    }
-                    return $"有效路径:{validPath}({validType.TypeName()}) 无效路径:{portPath[index..]}";
+                    return $"路径无效: 在'{validPath}'(类型:{validType?.TypeName()})下找不到'{portPath[index..]}'";
                 }
                 port = window.GraphView.GetPort(portPath);
                 if (port == null) { return "field is not JsonNode or collection of JsonNode"; }
@@ -71,6 +75,17 @@ namespace SkillEditorDemo
             }
             else
             {
+
+
+                foreach (JProperty jp in JObject.Parse(json).Properties())
+                {
+                    Type valueType = type.GetMember(jp.Name)[0].GetValueType();
+                    object value = jp.Value.Value<object>();
+                    if (valueType.Inherited(typeof(JsonNode)) || (valueType.Inherited(typeof(IList)) && value is IList list && list.Count > 0 && valueType.GetGenericArguments()[0].Inherited(typeof(JsonNode))))
+                    {
+                        return $"节点添加失败,禁止嵌套添加节点: {jp.Name},使用AddNode({portPath}.{jp.Name})添加该节点:{valueType.TypeName()}";
+                    }
+                }
                 jsonNode = (JsonNode)Json.Get(type, json);
             }
 
@@ -127,12 +142,36 @@ namespace SkillEditorDemo
             }
             TreeNodeGraphWindow window = JsonAssetHandler.OpenJsonAsset($"Assets/{path}");
             if (window == null) { return "file not exist"; }
+            if (!PropertyAccessor.GetValidPath(window.GraphView.Asset.Data.Nodes, portPath, out int index))
+            {
+                string validPath = portPath[..(index)].TrimEnd('.');
+                Type validType = null;
+                object parent = PropertyAccessor.TryGetParent(window.GraphView.Asset.Data.Nodes, validPath, out string last);
+                if (last.StartsWith('[') && parent is IList list)
+                {
+                    if (int.TryParse(last[1..^1], out int index2) && index2 < list.Count)
+                    {
+                        validType = list[index2].GetType();
+                    }
+                }
+                else
+                {
+                    validType = parent.GetType().GetMember(last)[0].GetValueType();
+                }
+                return $"路径无效: 在'{validPath}'(类型:{validType?.TypeName()})下找不到'{portPath[index..]}'";
+            }
             JsonNode existNode = window.GraphView.Asset.Data.GetValue<JsonNode>(portPath);
             if (existNode == null) { return "node not found at path"; }
             Type type = existNode.GetType();
             bool success = false;
             foreach (JProperty jp in JObject.Parse(json).Properties())
             {
+                Type valueType = type.GetMember(jp.Name)[0].GetValueType();
+                object value = jp.Value.Value<object>();
+                if (valueType.Inherited(typeof(JsonNode)) || (valueType.Inherited(typeof(IList)) && value is IList list && list.Count > 0 && valueType.GetGenericArguments()[0].Inherited(typeof(JsonNode))))
+                {
+                    return $"节点修改失败,禁止嵌套添加节点: {jp.Name},使用AddNode({portPath}.{jp.Name})添加该节点:{valueType.TypeName()}";
+                }
                 success |= existNode.SetValue(type, jp.Name, jp.Value);
             }
             if (success)

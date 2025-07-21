@@ -63,7 +63,26 @@ namespace SkillEditorDemo
                 IsRequired = childAttr.Require;
             }
         }
-        
+        public FieldPrompt(PropertyInfo propertyInfo)
+        {
+            Name = propertyInfo.Name;
+            FieldType = propertyInfo.PropertyType;
+            TypeWithoutList = propertyInfo.PropertyType;
+            if (TypeWithoutList.Inherited(typeof(IList)))
+            {
+                TypeWithoutList = TypeWithoutList.GetGenericArguments()[0];
+            }
+            var promptAttr = propertyInfo.GetCustomAttribute<PromptAttribute>();
+            if (promptAttr != null)
+            {
+                Description = promptAttr.Desc;
+            }
+            var childAttr = propertyInfo.GetCustomAttribute<ChildAttribute>();
+            if (childAttr != null)
+            {
+                IsRequired = childAttr.Require;
+            }
+        }
         public override string ToString()
         {
             var result = $"  - {Name}({FieldType.TypeName()})";

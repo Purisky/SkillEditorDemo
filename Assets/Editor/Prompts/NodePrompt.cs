@@ -72,8 +72,11 @@ namespace SkillEditorDemo
 
         public string ListDetail()
         {
-
             string result = ToString();
+            if (Abstract)
+            {
+                result+= $"\n**注意:该Node为抽象类,不能直接使用,使用ListNodes({TypeName})获取可用的Node**";
+            }
             HashSet<Type> handledTypes = new ();
             for (int i = 0; i < Fields.Count; i++)
             {
