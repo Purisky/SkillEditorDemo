@@ -1,4 +1,4 @@
-using Leopotam.EcsLite;
+﻿using Leopotam.EcsLite;
 using Newtonsoft.Json;
 using SkillEditorDemo.Utility;
 using System;
@@ -187,10 +187,10 @@ namespace SkillEditorDemo.Model
             unit.TakeDmg(trigCount, cache, from);
         }
     }
-    [NodeInfo(typeof(ActionNode), "存储Buff数据", 160, "执行/存储Buff数据"), AssetFilter(true, typeof(BuffAsset))]
+    [NodeInfo(typeof(ActionNode), "向Buff存储数据", 160, "执行/向Buff存储数据"), AssetFilter(true, typeof(BuffAsset))]
     [Prompt(@"用于存储Buff在运行时的数据方便进一步调用,这个数值可以跨越整个Buff的生命周期,以下是其用例:
-    1.在每次造成伤害时,存储累加造成的伤害值
-    2.在Buff结束时或者其他任意时刻,调用存储的数值,为其他效果提供参数(如造成一次根据以往伤害总量计算的爆发伤害)")]
+    1.受到相应触发时,以累加等方式存储任意来源的数值
+    2.受到相应触发时,为其他效果提供参数->使用BuffValueGetter节点中的RuntimeData调用存储的数值")]
     public class BuffRuntimeData : ActionNode
     {
         [ShowInNode, LabelInfo(Hide = true), Group("Value", Width = 50)]
