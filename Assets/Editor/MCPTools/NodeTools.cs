@@ -14,7 +14,7 @@ namespace SkillEditorDemo
     public class NodeTools
     {
         [Tool("为一个Asset文件添加Node")]
-        public static string AddNode([Desc("文件路径")] string path, [Desc("添加的节点路径")] string portPath, [Desc("Node类型")] string typeName, [Desc("Node数据json,以合并方式并入新对象")] string json)
+        public static string AddNode([Desc("文件路径")] string path, [Desc("添加的节点路径")] string portPath, [Desc("Node类型")] string typeName, [Desc("Node数据json,以合并方式并入新对象,无需重复添加$type")] string json)
         {
             return ToolUtil.AddNode(path, portPath, typeName, json);
         }
@@ -54,7 +54,7 @@ namespace SkillEditorDemo
         }
 
 
-        [Tool("校验资源")]
+        [Tool("校验资源,用于检查当前资源中的节点数据是否有不应存在的空值或者其他数值越界行为,返回Success表示没有问题")]
         public static string ValidateAsset([Desc("文件路径")] string path)
         {
             return ToolUtil.ValidateAsset(path);

@@ -41,11 +41,17 @@ namespace SkillEditorDemo
         {
             TreeNodeGraphWindow window = JsonAssetHandler.OpenJsonAsset($"Assets/{filePath}");
             if (window == null) { return "file not exist"; }
-            PropertyElement propertyElement = window.GraphView.Find(portPath);
-            if (propertyElement == null) { return "path not valid"; }
-            ChildPort port = propertyElement.Q<ChildPort>();
-            if (port == null) { return "field is not JsonNode or collection of JsonNode"; }
-            if (!port.portType.IsAssignableFrom(type)) { return "type not match"; }
+            ChildPort port = null;
+            if (!string.IsNullOrEmpty(portPath))
+            {
+
+
+                PropertyElement propertyElement = window.GraphView.Find(portPath);
+                if (propertyElement == null) { return "path not valid"; }
+                port = propertyElement.Q<ChildPort>();
+                if (port == null) { return "field is not JsonNode or collection of JsonNode"; }
+                if (!port.portType.IsAssignableFrom(type)) { return "type not match"; }
+            }
             JsonNode jsonNode = null;
             if (string.IsNullOrEmpty(json))
             {
@@ -55,6 +61,9 @@ namespace SkillEditorDemo
             {
                 jsonNode = (JsonNode)Json.Get(type, json);
             }
+
+
+
             if (!window.GraphView.SetNodeByPath(jsonNode, portPath))
             {
                 return "set value error";
