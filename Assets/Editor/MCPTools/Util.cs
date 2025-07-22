@@ -139,7 +139,6 @@ namespace SkillEditorDemo
                 string pathError = ValidatePath(window, portPath, out index);
                 if (pathError != null) return pathError;
                 string path = portPath;
-                Debug.Log($"AddNode: {path}");
                 if (portPath.EndsWith(".Node"))
                 {
                     object parent = PropertyAccessor.TryGetParent(window.GraphView.Asset.Data.Nodes, portPath, out string last);
@@ -209,47 +208,51 @@ namespace SkillEditorDemo
             }
             return Prompts.Values.OfType<NodePrompt>().Where(n => n.Type.Inherited(type)|| n.Type== type).ToList();
         }
-        
+
         public static string ModifyNode(string path, string portPath, string json)
         {
             if (string.IsNullOrEmpty(json))
             {
                 return "Skip: json is empty";
             }
-            
+
             TreeNodeGraphWindow window = OpenAsset(path);
             if (window == null) { return "file not exist"; }
-            
+
             int index;
             string pathError = ValidatePath(window, portPath, out index);
             if (pathError != null) return pathError;
-            
-            JsonNode existNode;
-            try
+
+
+            object obj = window.GraphView.Asset.Data.GetValue<object>(portPath);
+            if (obj == null) { return "object not found at path"; }
+            if (obj is not JsonNode existNode)
             {
-                existNode = window.GraphView.Asset.Data.GetValue<JsonNode>(portPath);
-                if (existNode == null) { return "node not found at path"; }
+                if (obj is FuncValue)
+                {
+                    return $"目标:{portPath} 是FuncValue类型,请使用AddNode({portPath}.Node)添加节点";
+                }
+                else
+                {
+                    return $"目标:{portPath} 不是继承自JsonNode的节点类型";
+                }
             }
-            catch (Exception)
-            {
-                return $"目标:{portPath} 不是继承自JsonNode的节点类型"; 
-            }
-            
+
             Type type = existNode.GetType();
             bool success = false;
             foreach (JProperty jp in JObject.Parse(json).Properties())
             {
                 string validationError = ValidateJsonProperty(type, jp, portPath);
                 if (validationError != null) return validationError.Replace("节点操作失败", "节点修改失败");
-                
+
                 success |= existNode.SetValue(type, jp.Name, jp.Value);
             }
-            
+
             if (success)
             {
                 return SaveChanges(window, true);
             }
-            
+
             return "Failed to modify node";
         }
 
@@ -267,7 +270,7 @@ namespace SkillEditorDemo
             {
                 window.GraphView.Asset.Data.Nodes.AddRange(viewNode.GetChildNodes().Select(n => n.Data));
             }
-            
+            window.GraphView.FormatNodes();
             return SaveChanges(window, true);
         }
 
