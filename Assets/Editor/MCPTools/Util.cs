@@ -176,9 +176,11 @@ namespace SkillEditorDemo
             }
             window.GraphView.AddViewNode(jsonNode, port);
             window.GraphView.FormatNodes();
-            string msg = SaveChanges(window);
-            window.Refresh();
-            return msg;
+            if (port is NumPort numPort)
+            {
+                numPort.TryPopUpText();
+            }
+            return SaveChanges(window); 
         }
         
         public static Dictionary<string, BasePrompt> Prompts = InitPrompts();
