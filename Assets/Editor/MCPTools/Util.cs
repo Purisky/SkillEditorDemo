@@ -91,7 +91,7 @@ namespace SkillEditorDemo
                 {
                     promptText = "\n" + nodePrompt.ListDetail();
                 }
-                return @$"节点操作失败,{type.Name}中不存在{jp.Name}字段{promptText}";
+                return @$"节点操作失败,{type.Name}中应不存在{jp.Name}字段,严格按照以下信息操作数据:{promptText}";
             }
             
             Type valueType = members[0].GetValueType();
