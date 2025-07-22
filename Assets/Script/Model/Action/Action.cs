@@ -129,7 +129,7 @@ namespace SkillEditorDemo.Model
         [Prompt(@"用于获取所造成伤害的对象")]
         public UnitNode UnitNode;
         [ShowInNode, LabelInfo(Hide = true),Dropdown(nameof(DmgTypes))]
-        [Prompt(@"伤害的类型,伤害类型会影响伤害的计算,如物理伤害(Physic)会受到物理伤害减免及加成的影响")]
+        [Prompt(@"伤害的类型,在当前字段中禁止使用Any,伤害类型会影响伤害的计算,如物理伤害(Physic)会受到物理伤害减免及加成的影响")]
         public DmgType DmgType;
         [ShowInNode, LabelInfo("直接"), Group("Type")]
         [Prompt(@"是否为直接伤害,作为触发器的标签,一些基于伤害触发的效果会选择过滤非直接伤害以阻止触发进一步的效果")]
@@ -190,7 +190,8 @@ namespace SkillEditorDemo.Model
     [NodeInfo(typeof(ActionNode), "向Buff存储数据", 160, "执行/向Buff存储数据"), AssetFilter(true, typeof(BuffAsset))]
     [Prompt(@"用于存储Buff在运行时的数据方便进一步调用,这个数值可以跨越整个Buff的生命周期,以下是其用例:
     1.受到相应触发时,以累加等方式存储任意来源的数值
-    2.受到相应触发时,为其他效果提供参数->使用BuffValueGetter节点中的RuntimeData调用存储的数值")]
+    2.受到相应触发时,为其他效果提供参数->使用BuffValueGetter节点中的RuntimeData调用存储的数值
+注意!当前存值的读写不需要使用Key,一个Buff只存在一个存值数据")]
     public class BuffRuntimeData : ActionNode
     {
         [ShowInNode, LabelInfo(Hide = true), Group("Value", Width = 50)]

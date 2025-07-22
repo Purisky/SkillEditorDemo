@@ -21,7 +21,7 @@ namespace SkillEditorDemo
         public static string AddNode(string path, string portPath, string typeName, string json)
         {
             Type type = GetValidType(typeName);
-            if (type is null) { return "type not valid"; }
+            if (type is null) { return $"需要添加的类型({typeName})不存在,使用ListNodes获取可用的Node信息"; }
             return AddNode(path, portPath, type, json);
         }
         
@@ -106,7 +106,7 @@ namespace SkillEditorDemo
             { 
                 return $"节点操作失败,禁止嵌套添加节点: {jp.Name},使用AddNode({portPath}.{jp.Name}.Node)添加该节点: FuncNode";
             }
-            if (valueType == typeof(Model.TimeValue) && jp.Value["Value"]!=null&& jp.Value["Value"]["Node"]!= null)
+            if (valueType == typeof(Model.TimeValue) && jp.Value["Value"] is JToken valueJToken&& valueJToken["Node"]!= null)
             {
                 return $"节点操作失败,禁止嵌套添加节点: {jp.Name},使用AddNode({portPath}.{jp.Name}.Value.Node)添加该节点: FuncNode";
             }
@@ -130,7 +130,7 @@ namespace SkillEditorDemo
         static string AddNode(string filePath, string portPath, Type type, string json)
         {
             TreeNodeGraphWindow window = OpenAsset(filePath);
-            if (window == null) { return "file not exist"; }
+            if (window == null) { return "文件不存在"; }
             
             ChildPort port = null;
             if (!string.IsNullOrEmpty(portPath))
@@ -148,8 +148,10 @@ namespace SkillEditorDemo
                     }
                 }
                 port = window.GraphView.GetPort(path);
-                if (port == null) { return "field is not JsonNode or collection of JsonNode"; }
-                if (!port.portType.IsAssignableFrom(type)) { return "type not match"; }
+                if (port == null) { return $"{path}:路径类型不是节点或者节点的集合"; }
+                if (!port.portType.IsAssignableFrom(type)) {
+                    return $"无法将节点({type.Name})添加到该路径,请检查路径类型({port.portType})是否与要添加的节点类型兼容";
+                }
             }
             
             JsonNode jsonNode = null;
@@ -170,12 +172,13 @@ namespace SkillEditorDemo
 
             if (!window.GraphView.SetNodeByPath(jsonNode, portPath))
             {
-                return "set value error";
+                return $"设置节点失败:目标路径({portPath})无法添加({type.Name})";
             }
             window.GraphView.AddViewNode(jsonNode, port);
             window.GraphView.FormatNodes();
-            
-            return SaveChanges(window);
+            string msg = SaveChanges(window);
+            window.Refresh();
+            return msg;
         }
         
         public static Dictionary<string, BasePrompt> Prompts = InitPrompts();
