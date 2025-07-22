@@ -41,7 +41,12 @@ namespace SkillEditorDemo
 
         public string HeadInfo()
         {
-            var result = TypeName;
+            string nodeText = "";
+            if (Type.Inherited(typeof(JsonNode)))
+            {
+                nodeText = "[Node]";
+            }
+            var result = $"{TypeName}{nodeText}";
             string filterInfo = "";
             if (AssetFilter != null)
             {

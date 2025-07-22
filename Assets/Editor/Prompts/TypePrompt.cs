@@ -57,7 +57,12 @@ namespace SkillEditorDemo
 
         public override string ToString()
         {
-            var result = $"{TypeName}\n";
+            string nodeText = "";
+            if (Type.Inherited(typeof(JsonNode)))
+            {
+                nodeText = "[Node]";
+            }
+            var result = $"{TypeName}{nodeText}\n";
             if (!string.IsNullOrEmpty(Description))
             {
                 result += $"描述: {Description}";

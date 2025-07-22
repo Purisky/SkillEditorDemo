@@ -85,7 +85,12 @@ namespace SkillEditorDemo
         }
         public override string ToString()
         {
-            var result = $"  - {Name}({FieldType.TypeName()})";
+            string nodeText = "";
+            if (TypeWithoutList.Inherited(typeof(JsonNode)))
+            {
+                nodeText = "[Node]";
+            }
+            var result = $"  - {Name}({FieldType.TypeName()}{nodeText})";
             if (IsRequired)
             {
                 result += " [必填]";

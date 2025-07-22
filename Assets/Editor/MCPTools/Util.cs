@@ -102,11 +102,14 @@ namespace SkillEditorDemo
             {
                 return $"节点操作失败,禁止嵌套添加节点: {jp.Name},使用AddNode({portPath}.{jp.Name})添加该节点:{valueType.TypeName()}";
             }
-            if (valueType == typeof(FuncValue) && jp.Value["Node"] != null)
+            if (valueType == typeof(FuncValue) &&
+                jp.Value["Node"] != null)
             { 
                 return $"节点操作失败,禁止嵌套添加节点: {jp.Name},使用AddNode({portPath}.{jp.Name}.Node)添加该节点: FuncNode";
             }
-            if (valueType == typeof(Model.TimeValue) && jp.Value["Value"] is JToken valueJToken&& valueJToken["Node"]!= null)
+            if (valueType == typeof(Model.TimeValue) &&
+                jp.Value["Value"] is JToken valueJToken&&
+                valueJToken["Node"]!= null)
             {
                 return $"节点操作失败,禁止嵌套添加节点: {jp.Name},使用AddNode({portPath}.{jp.Name}.Value.Node)添加该节点: FuncNode";
             }
