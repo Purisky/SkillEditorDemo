@@ -138,8 +138,17 @@ namespace SkillEditorDemo
                 int index;
                 string pathError = ValidatePath(window, portPath, out index);
                 if (pathError != null) return pathError;
-                
-                port = window.GraphView.GetPort(portPath);
+                string path = portPath;
+                Debug.Log($"AddNode: {path}");
+                if (portPath.EndsWith(".Node"))
+                {
+                    object parent = PropertyAccessor.TryGetParent(window.GraphView.Asset.Data.Nodes, portPath, out string last);
+                    if (parent is FuncValue)
+                    {
+                        path = portPath[..^5];
+                    }
+                }
+                port = window.GraphView.GetPort(path);
                 if (port == null) { return "field is not JsonNode or collection of JsonNode"; }
                 if (!port.portType.IsAssignableFrom(type)) { return "type not match"; }
             }
