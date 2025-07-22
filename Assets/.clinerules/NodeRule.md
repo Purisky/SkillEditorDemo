@@ -152,7 +152,7 @@ MCP 服务 (MCP4Unity)：
 参数：
 - path: 文件路径
 
-
+所有文件路径均为在Assets目录下的相对路径
 
 portPath格式规范：
 - 基本结构：`[index].fieldName.ListName[index]`
