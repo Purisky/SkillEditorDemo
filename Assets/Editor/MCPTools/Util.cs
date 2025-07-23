@@ -61,7 +61,7 @@ namespace SkillEditorDemo
             {
                 string validPath = portPath[..(index)].TrimEnd('.');
                 Type validType = null;
-                object parent = PropertyAccessor.TryGetParent(window.GraphView.Asset.Data.Nodes, validPath, out string last);
+                object parent = PropertyAccessor.GetParentObject(window.GraphView.Asset.Data.Nodes, validPath, out string last);
                 if (last.StartsWith('[') && parent is IList list)
                 {
                     if (int.TryParse(last[1..^1], out int index2) && index2 < list.Count)
@@ -144,7 +144,7 @@ namespace SkillEditorDemo
                 string path = portPath;
                 if (portPath.EndsWith(".Node"))
                 {
-                    object parent = PropertyAccessor.TryGetParent(window.GraphView.Asset.Data.Nodes, portPath, out string last);
+                    object parent = PropertyAccessor.GetParentObject(window.GraphView.Asset.Data.Nodes, portPath, out string last);
                     if (parent is FuncValue)
                     {
                         path = portPath[..^5];
