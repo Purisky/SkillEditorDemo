@@ -10,7 +10,7 @@ namespace SkillEditorDemo.MCP
     public class BuffTools
     {
         const string BuffPath = "Resources/Buff";
-        [Tool("添加一个BuffAsset文件", "当返回false时说明fileName重复,不需要添加文件后缀")]
+        [Tool("添加一个BuffAsset文件", "当返回false时说明fileName重复")]
         public static bool AddBuffAsset(string fileName)
         {
             if (fileName.EndsWith(".ja")) {
