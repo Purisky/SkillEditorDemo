@@ -8,7 +8,6 @@ depends: [NodeRule.md]
 
 ## 专属方法
 - addskillasset(fileName): 创建一个新的SkillAsset文件
-- addskillnode(path, portPath, typeName, json): 在Skill文件中添加节点
 
 ## Skill特殊规范
 - 必须包含cooldown字段（单位：秒）
