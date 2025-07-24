@@ -62,6 +62,11 @@ namespace SkillEditorDemo
         {
             return ToolUtil.ValidateAsset(path);
         }
+        [Tool("获取Asset文件中所有节点的树状视图")]
+        public static string GetAssetTreeView([Desc("文件路径"), ParamDropdown(nameof(GetValidPath))] string path)
+        {
+            return ToolUtil.GetAssetTreeView(path);
+        }
 
         public static List<string> GetValidPath(MethodInfo methodInfo, Dictionary<string, object> Args)
         {

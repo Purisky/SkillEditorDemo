@@ -295,5 +295,12 @@ namespace SkillEditorDemo
             if (window == null) { return new(); }
             return window.GraphView.GetAllNodePaths();
         }
+
+        public static string GetAssetTreeView(string path)
+        {
+            TreeNodeGraphWindow window = OpenAsset(path);
+            if (window == null) { return "file not exist"; }
+            return window.GraphView.GetTreeView();
+        }
     }
 }
