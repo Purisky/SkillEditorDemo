@@ -1,4 +1,4 @@
----
+﻿---
 scope: skill  
 priority: 5
 depends: [NodeRule.md]

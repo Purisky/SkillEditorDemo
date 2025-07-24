@@ -57,5 +57,11 @@ namespace SkillEditorDemo.Model
                 return type;
             }
         }
+
+        public override string GetInfo()
+        {
+            string passive = Passive ? " ed" : "";
+            return $"{nameof(TrigNode)}({TriggerSequence} {TrigType}{passive})";
+        }
     }
 }

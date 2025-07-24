@@ -120,6 +120,10 @@ namespace SkillEditorDemo.Model
         {
             return Value.GetResult(info, cache);
         }
+        public override string GetInfo()
+        {
+            return $"{nameof(StatModify)}({StatType})";
+        }
     }
     [NodeInfo(typeof(ActionNode), "伤害", 200, "执行/伤害")]
     [Prompt(@"用于对单位造成伤害,这个伤害可以进一步触发其他的TrigNode")]
@@ -245,6 +249,10 @@ namespace SkillEditorDemo.Model
             return true;
         }
 
+        public override string GetInfo()
+        {
+            return $"{nameof(AddBuff)}({ID})";
+        }
     }
     [NodeInfo(typeof(ActionNode), "添加随机Buff", 180, "执行/添加随机Buff")]
     [Prompt(@"可以添加随机的复数Buff到指定的单位上,并且可以指定Buff的等级,层数,参数等信息")]
@@ -282,6 +290,10 @@ namespace SkillEditorDemo.Model
         public override bool Handle(int trigCount, TrigInfo info, CombatCache cache)
         {
             return true;
+        }
+        public override string GetInfo()
+        {
+            return $"{nameof(AddRandomBuffs)}({string.Join(",", IDs)})";
         }
     }
 
@@ -323,6 +335,10 @@ namespace SkillEditorDemo.Model
         {
             return true;
         }
+        public override string GetInfo()
+        {
+            return $"{nameof(TryRemoveBuff)}({ID})";
+        }
     }
     [NodeInfo(typeof(ActionNode), "修改战斗缓存", 180, "执行/修改战斗缓存"), AssetFilter(true, typeof(BuffAsset))]
     [Prompt(@"可以修改战斗缓存中的数值,如伤害值/治疗量等,如:
@@ -357,6 +373,10 @@ namespace SkillEditorDemo.Model
                     break;
             }
             return true;
+        }
+        public override string GetInfo()
+        {
+            return $"{nameof(CombatCacheModify)}({CacheType})";
         }
     }
     [NodeInfo(typeof(ActionNode), "按圆创建对象", 180, "执行/按圆创建对象")]

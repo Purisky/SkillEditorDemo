@@ -1,4 +1,4 @@
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using SkillEditorDemo.Utility;
 using System.Collections.Generic;
 using TreeNode.Runtime;
@@ -33,6 +33,11 @@ namespace SkillEditorDemo.Model
         [Child, LabelInfo("触发器组")]
         [Prompt(@"Buff的触发器组,用于描述Buff的触发条件和效果")]
         public List<TrigNode> Triggers;
+
+        public override string GetInfo()
+        {
+            return $"{nameof(BuffNode)}({ID})";
+        }
     }
 
 }

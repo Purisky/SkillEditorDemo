@@ -1,4 +1,4 @@
----
+﻿---
 scope: buff
 priority: 5
 depends: [NodeRule.md]
