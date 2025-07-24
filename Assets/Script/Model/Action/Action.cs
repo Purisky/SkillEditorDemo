@@ -186,6 +186,10 @@ namespace SkillEditorDemo.Model
             if (!unit.CritCheck(trigCount, from, cache)) { return; };
             unit.TakeDmg(trigCount, cache, from);
         }
+        public override string GetInfo()
+        {
+            return $"{nameof(Damage)}({DmgType})";
+        }
     }
     [NodeInfo(typeof(ActionNode), "向Buff存储数据", 160, "执行/向Buff存储数据"), AssetFilter(true, typeof(BuffAsset))]
     [Prompt(@"用于存储Buff在运行时的数据方便进一步调用,这个数值可以跨越整个Buff的生命周期,以下是其用例:
