@@ -18,11 +18,11 @@ namespace SkillEditorDemo
 {
     public static class ToolUtil
     {
-        public static string AddNode(string path, string portPath, string typeName, string json)
+        public static string AddNode(string path, string nodePath, string typeName, string json)
         {
             Type type = GetValidType(typeName);
             if (type is null) { return $"需要添加的类型({typeName})不存在,使用ListNodes获取可用的Node信息"; }
-            return AddNode(path, portPath, type, json);
+            return AddNode(path, nodePath, type, json);
         }
         
         static Dictionary<string, Type> ValidNodeTypes;
@@ -55,11 +55,11 @@ namespace SkillEditorDemo
         /// <summary>
         /// Validates if a path exists in the node structure
         /// </summary>
-        private static string ValidatePath(TreeNodeGraphWindow window, string portPath, out int index)
+        private static string ValidatePath(TreeNodeGraphWindow window, string nodePath, out int index)
         {
-            if (!PropertyAccessor.GetValidPath(window.GraphView.Asset.Data.Nodes, portPath, out index))
+            if (!PropertyAccessor.GetValidPath(window.GraphView.Asset.Data.Nodes, nodePath, out index))
             {
-                string validPath = portPath[..(index)].TrimEnd('.');
+                string validPath = nodePath[..(index)].TrimEnd('.');
                 Type validType = null;
                 object parent = PropertyAccessor.GetParentObject(window.GraphView.Asset.Data.Nodes, validPath, out string last);
                 if (last.StartsWith('[') && parent is IList list)
@@ -73,7 +73,7 @@ namespace SkillEditorDemo
                 {
                     validType = parent.GetType().GetMember(last)[0].GetValueType();
                 }
-                return $"路径无效: 在'{validPath}'(类型:{validType?.TypeName()})下找不到'{portPath[index..]}'";
+                return $"路径无效: 在'{validPath}'(类型:{validType?.TypeName()})下找不到'{nodePath[index..]}'";
             }
             return null; // Path is valid
         }
@@ -81,7 +81,7 @@ namespace SkillEditorDemo
         /// <summary>
         /// Validates JSON property against a type and checks for nested node issues
         /// </summary>
-        private static string ValidateJsonProperty(Type type, JProperty jp, string portPath)
+        private static string ValidateJsonProperty(Type type, JProperty jp, string nodePath)
         {
             MemberInfo[] members = type.GetMember(jp.Name);
             if (members.Length == 0)
@@ -100,18 +100,18 @@ namespace SkillEditorDemo
                 (valueType.Inherited(typeof(IList)) && value is IList list && 
                  list.Count > 0 && valueType.GetGenericArguments()[0].Inherited(typeof(JsonNode))))
             {
-                return $"节点操作失败,禁止嵌套添加节点: {jp.Name},使用AddNode({portPath}.{jp.Name})添加该节点:{valueType.TypeName()}";
+                return $"节点操作失败,禁止嵌套添加节点: {jp.Name},使用AddNode({nodePath}.{jp.Name})添加该节点:{valueType.TypeName()}";
             }
             if (valueType == typeof(FuncValue) &&
                 jp.Value["Node"] != null)
             { 
-                return $"节点操作失败,禁止嵌套添加节点: {jp.Name},使用AddNode({portPath}.{jp.Name}.Node)添加该节点: FuncNode";
+                return $"节点操作失败,禁止嵌套添加节点: {jp.Name},使用AddNode({nodePath}.{jp.Name}.Node)添加该节点: FuncNode";
             }
             if (valueType == typeof(Model.TimeValue) &&
                 jp.Value["Value"] is JToken valueJToken&&
                 valueJToken["Node"]!= null)
             {
-                return $"节点操作失败,禁止嵌套添加节点: {jp.Name},使用AddNode({portPath}.{jp.Name}.Value.Node)添加该节点: FuncNode";
+                return $"节点操作失败,禁止嵌套添加节点: {jp.Name},使用AddNode({nodePath}.{jp.Name}.Value.Node)添加该节点: FuncNode";
             }
             return null; // Validation passed
         }
@@ -130,24 +130,24 @@ namespace SkillEditorDemo
             return "Success";
         }
         
-        static string AddNode(string filePath, string portPath, Type type, string json)
+        static string AddNode(string filePath, string nodePath, Type type, string json)
         {
             TreeNodeGraphWindow window = OpenAsset(filePath);
             if (window == null) { return "文件不存在"; }
             
             ChildPort port = null;
-            if (!string.IsNullOrEmpty(portPath))
+            if (!string.IsNullOrEmpty(nodePath))
             {
                 int index;
-                string pathError = ValidatePath(window, portPath, out index);
+                string pathError = ValidatePath(window, nodePath, out index);
                 if (pathError != null) return pathError;
-                string path = portPath;
-                if (portPath.EndsWith(".Node"))
+                string path = nodePath;
+                if (nodePath.EndsWith(".Node"))
                 {
-                    object parent = PropertyAccessor.GetParentObject(window.GraphView.Asset.Data.Nodes, portPath, out string last);
+                    object parent = PropertyAccessor.GetParentObject(window.GraphView.Asset.Data.Nodes, nodePath, out string last);
                     if (parent is FuncValue)
                     {
-                        path = portPath[..^5];
+                        path = nodePath[..^5];
                     }
                 }
                 port = window.GraphView.GetPort(path);
@@ -166,16 +166,16 @@ namespace SkillEditorDemo
             {
                 foreach (JProperty jp in JObject.Parse(json).Properties())
                 {
-                    string validationError = ValidateJsonProperty(type, jp, portPath);
+                    string validationError = ValidateJsonProperty(type, jp, nodePath);
                     if (validationError != null) return validationError.Replace("节点操作失败", "节点添加失败");
                 }
                 
                 jsonNode = (JsonNode)Json.Get(type, json);
             }
 
-            if (!window.GraphView.SetNodeByPath(jsonNode, portPath))
+            if (!window.GraphView.SetNodeByPath(jsonNode, nodePath))
             {
-                return $"设置节点失败:目标路径({portPath})无法添加({type.Name})";
+                return $"设置节点失败:目标路径({nodePath})无法添加({type.Name})";
             }
             window.GraphView.AddViewNode(jsonNode, port);
             window.GraphView.FormatNodes();
@@ -217,7 +217,7 @@ namespace SkillEditorDemo
             return Prompts.Values.OfType<NodePrompt>().Where(n => n.Type.Inherited(type)|| n.Type== type).ToList();
         }
 
-        public static string ModifyNode(string path, string portPath, string json)
+        public static string ModifyNode(string path, string nodePath, string json)
         {
             if (string.IsNullOrEmpty(json))
             {
@@ -228,21 +228,21 @@ namespace SkillEditorDemo
             if (window == null) { return "file not exist"; }
 
             int index;
-            string pathError = ValidatePath(window, portPath, out index);
+            string pathError = ValidatePath(window, nodePath, out index);
             if (pathError != null) return pathError;
 
 
-            object obj = window.GraphView.Asset.Data.GetValue<object>(portPath);
+            object obj = window.GraphView.Asset.Data.GetValue<object>(nodePath);
             if (obj == null) { return "object not found at path"; }
             if (obj is not JsonNode existNode)
             {
                 if (obj is FuncValue)
                 {
-                    return $"目标:{portPath} 是FuncValue类型,请使用AddNode({portPath}.Node)添加节点";
+                    return $"目标:{nodePath} 是FuncValue类型,请使用AddNode({nodePath}.Node)添加节点";
                 }
                 else
                 {
-                    return $"目标:{portPath} 不是继承自JsonNode的节点类型";
+                    return $"目标:{nodePath} 不是继承自JsonNode的节点类型";
                 }
             }
 
@@ -250,7 +250,7 @@ namespace SkillEditorDemo
             bool success = false;
             foreach (JProperty jp in JObject.Parse(json).Properties())
             {
-                string validationError = ValidateJsonProperty(type, jp, portPath);
+                string validationError = ValidateJsonProperty(type, jp, nodePath);
                 if (validationError != null) return validationError.Replace("节点操作失败", "节点修改失败");
 
                 success |= existNode.SetValue(type, jp.Name, jp.Value);
@@ -264,16 +264,16 @@ namespace SkillEditorDemo
             return "Failed to modify node";
         }
 
-        public static string RemoveNode(string path, string portPath, bool recursive = true)
+        public static string RemoveNode(string path, string nodePath, bool recursive = true)
         {
             TreeNodeGraphWindow window = OpenAsset(path);
             if (window == null) { return "file not exist"; }
             
-            JsonNode existNode = window.GraphView.Asset.Data.GetValue<JsonNode>(portPath);
+            JsonNode existNode = window.GraphView.Asset.Data.GetValue<JsonNode>(nodePath);
             if (existNode == null) { return "node not found at path"; }
             
             ViewNode viewNode = window.GraphView.NodeDic[existNode];
-            PropertyAccessor.SetValueNull(window.GraphView.Asset.Data.Nodes, portPath);
+            PropertyAccessor.SetValueNull(window.GraphView.Asset.Data.Nodes, nodePath);
             if (!recursive)
             {
                 window.GraphView.Asset.Data.Nodes.AddRange(viewNode.GetChildNodes().Select(n => n.Data));
@@ -287,6 +287,13 @@ namespace SkillEditorDemo
             TreeNodeGraphWindow window = OpenAsset(path);
             if (window == null) { return "file not exist"; }
             return window.GraphView.Validate();
+        }
+
+        public static List<(string, string)> GetValidPortPath(string path)
+        {
+            TreeNodeGraphWindow window = OpenAsset(path);
+            if (window == null) { return new(); }
+            return window.GraphView.GetAllNodePaths();
         }
     }
 }
