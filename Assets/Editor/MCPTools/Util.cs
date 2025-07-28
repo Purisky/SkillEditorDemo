@@ -177,7 +177,9 @@ namespace SkillEditorDemo
             {
                 return $"设置节点失败:目标路径({nodePath})无法添加({type.Name})";
             }
-            window.GraphView.AddViewNode(jsonNode, port);
+            
+            // ✅ 使用新的连接支持方法 - 修复工具节点连接缺失问题
+            window.GraphView.AddViewNodeWithConnection(jsonNode, nodePath);
             window.GraphView.FormatNodes();
             if (port is NumPort numPort)
             {
