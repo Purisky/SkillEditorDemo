@@ -1,4 +1,4 @@
-using System.Reflection;
+﻿using System.Reflection;
 using System.Text.RegularExpressions;
 using UnityEditor;
 using UnityEditor.Callbacks;
@@ -8,7 +8,7 @@ namespace SkillEditorDemo.Editor
 {
     internal static class LogRedirection
     {
-        private static readonly Regex LogRegex = new Regex(@" \(at (.+)\:(\d+)\)");
+        private static readonly Regex LogRegex = new Regex(@" \(at (?!<[a-f0-9]{32}>)(.+)\:(\d+)\)");
 
         [OnOpenAsset(0)]
         private static bool OnOpenAsset(int instanceId, int line)
