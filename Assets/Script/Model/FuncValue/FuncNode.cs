@@ -37,6 +37,10 @@ namespace SkillEditorDemo.Model
 
         public static implicit operator FuncValue(float value) => new () { Value = value };
 
+        public override string ToString()
+        {
+            return FuncNode.GetText();
+        }
     }
     /// <summary>
     /// 这个类是FuncNode的一个特殊实现,用于表示一个常数值,仅在运行时使用
@@ -71,13 +75,15 @@ namespace SkillEditorDemo.Model
 
         public static implicit operator TimeValue(float value) => new() { Type = TimeType.Second, Value = value };
 
+        public override readonly string ToString()
+        {
+            if (Type == TimeType.GameTick)
+            {
+                return $"{Value} Ticks";
+            }
+            return $"{Value} s";
+        }
     }
-
-
-
-
-
-
     [NodeInfo(typeof(FuncNode), "Buff取值", 100, "取值/Buff"),AssetFilter(true,typeof(BuffAsset))]
     [Prompt(@"从当前Buff中取值,如当前Buff的等级/层数以及BuffRuntimeData所存储的数值等")]
     public class BuffValueGetter : FuncNode

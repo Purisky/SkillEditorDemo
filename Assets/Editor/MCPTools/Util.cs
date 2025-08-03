@@ -183,7 +183,7 @@ namespace SkillEditorDemo
             window.GraphView.FormatNodes();
             if (port is NumPort numPort)
             {
-                numPort.TryPopUpText();
+                numPort.DisplayPopupText();
             }
             return SaveChanges(window); 
         }
