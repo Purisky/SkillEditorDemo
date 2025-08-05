@@ -36,9 +36,10 @@
                   },
                   "Speed": {},
                   "Radius": {},
+                  "DisplayPath": "Projectile",
                   "Position": {
                     "x": 989,
-                    "y": 125
+                    "y": 124
                   }
                 },
                 "Origin": {
@@ -46,13 +47,13 @@
                   "UnitNode": {
                     "$type": "SkillEditorDemo.Model.GetBuffUnit, Model",
                     "Position": {
-                      "x": 1219,
-                      "y": 347
+                      "x": 1229,
+                      "y": 344
                     }
                   },
                   "Position": {
                     "x": 989,
-                    "y": 347
+                    "y": 344
                   }
                 },
                 "Count": {},
@@ -60,7 +61,7 @@
                 "Radius": {},
                 "Position": {
                   "x": 759,
-                  "y": 125
+                  "y": 124
                 }
               }
             ],
@@ -68,6 +69,22 @@
               "Value": {}
             },
             "RemoveOnTrig": {},
+            "Times": [
+              {
+                "Value": {}
+              },
+              {
+                "Value": {
+                  "Node": {
+                    "$type": "SkillEditorDemo.Model.BuffValueGetter, Model",
+                    "Position": {
+                      "x": 759,
+                      "y": 276
+                    }
+                  }
+                }
+              }
+            ],
             "Position": {
               "x": 430
             }

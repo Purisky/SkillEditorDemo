@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Drawing;
 using System.Numerics;
 using TreeNode.Utility;
@@ -34,6 +34,7 @@ namespace SkillEditorDemo.Utility
             Inst.LogAction = log;
             Inst.Error = error;
             Inst.DrawLineAction = action;
+            Timer.LogAction = log;
         }
 
     }

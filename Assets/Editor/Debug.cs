@@ -27,7 +27,8 @@ namespace SkillEditorDemo.Editor
                 if (match.Success)
                 {
                     if (!trace.Contains("Debug.cs") &&
-                        !trace.Contains("Json.cs"))
+                        !trace.Contains("Json.cs")&&
+                        !trace.Contains("Timer.cs"))
                     {
                         InternalEditorUtility.OpenFileAtLineExternal(Application.dataPath.Replace("Assets", "") + match.Groups[1].Value, int.Parse(match.Groups[2].Value));
                         return true;
