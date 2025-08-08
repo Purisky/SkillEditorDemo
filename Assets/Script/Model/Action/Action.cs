@@ -27,7 +27,7 @@ namespace SkillEditorDemo.Model
     }
     [NodeInfo(typeof(ActionNode), "分支执行", 100, "执行/分支执行")]
     [Prompt(@"根据条件的真假执行不同的ActionNode")]
-    public class ConditionAction : ActionNode
+    public partial class ConditionAction : ActionNode
     {
         [Child(true), TitlePort]
         [Prompt(@"条件节点")]
@@ -57,7 +57,7 @@ namespace SkillEditorDemo.Model
 
     [NodeInfo(typeof(ActionNode), "单位属性修改", 200, "执行/单位属性修改")]
     [Prompt(@"可以修改单位的属性值")]
-    public class StatModify : ActionNode
+    public partial class StatModify : ActionNode
     {
         [Child(true), TitlePort]
         [Prompt(@"用于获取所修改的对象,可以修改复数对象")]
@@ -127,7 +127,7 @@ namespace SkillEditorDemo.Model
     }
     [NodeInfo(typeof(ActionNode), "伤害", 200, "执行/伤害")]
     [Prompt(@"用于对单位造成伤害,这个伤害可以进一步触发其他的TrigNode")]
-    public class Damage : ActionNode
+    public partial class Damage : ActionNode
     {
         [Child(true), TitlePort]
         [Prompt(@"用于获取所造成伤害的对象")]
@@ -200,7 +200,7 @@ namespace SkillEditorDemo.Model
     1.受到相应触发时,以累加等方式存储任意来源的数值
     2.受到相应触发时,为其他效果提供参数->使用BuffValueGetter节点中的RuntimeData调用存储的数值
 注意!当前存值的读写不需要使用Key,一个Buff只存在一个存值数据")]
-    public class BuffRuntimeData : ActionNode
+    public partial class BuffRuntimeData : ActionNode
     {
         [ShowInNode, LabelInfo(Hide = true), Group("Value", Width = 50)]
         [Prompt(@"数值修改的计算类型")]
@@ -215,7 +215,7 @@ namespace SkillEditorDemo.Model
     }
     [NodeInfo(typeof(ActionNode), "添加Buff", 160, "执行/添加Buff")]
     [Prompt(@"可以添加指定的Buff到指定的单位上,并且可以指定Buff的等级,层数,参数等信息")]
-    public class AddBuff : ActionNode
+    public partial class AddBuff : ActionNode
     {
         [Child(true), TitlePort]
         [Prompt(@"用于获取所添加Buff的对象")]
@@ -256,7 +256,7 @@ namespace SkillEditorDemo.Model
     }
     [NodeInfo(typeof(ActionNode), "添加随机Buff", 180, "执行/添加随机Buff")]
     [Prompt(@"可以添加随机的复数Buff到指定的单位上,并且可以指定Buff的等级,层数,参数等信息")]
-    public class AddRandomBuffs : ActionNode
+    public partial class AddRandomBuffs : ActionNode
     {
         [Child(true), TitlePort]
         [Prompt(@"用于获取所添加Buff的对象")]
@@ -301,7 +301,7 @@ namespace SkillEditorDemo.Model
     [Prompt(@"当条件为真时,终止触发事件,如完整的命中伤害流程为:
     闪避检测->暴击检测->伤害计算->护盾结算->生命值结算->等等
     在任意触发环节中插入StopTrigEvent,可以终止后续的触发事件,如在暴击检测时插入,如果目标造成了暴击则阻止后续流程可以实现单位只能受到非暴击伤害")]
-    public class StopTrigEvent : ActionNode
+    public partial class StopTrigEvent : ActionNode
     {
         [Child, TitlePort]
         [Prompt(@"终止触发事件的条件")]
@@ -314,7 +314,7 @@ namespace SkillEditorDemo.Model
     }
     [NodeInfo(typeof(ActionNode), "尝试移除Buff", 180, "执行/尝试移除Buff"), AssetFilter(true, typeof(BuffAsset))]
     [Prompt(@"尝试移除单位身上的同IDBuff")]
-    public class TryRemoveBuff : ActionNode
+    public partial class TryRemoveBuff : ActionNode
     {
         [Child(true), TitlePort]
         [Prompt(@"用于获取需要移除Buff的对象")]
@@ -344,7 +344,7 @@ namespace SkillEditorDemo.Model
     [Prompt(@"可以修改战斗缓存中的数值,如伤害值/治疗量等,如:
     Buff的效果是将受到的首次伤害减半,则可以通过CombatCacheModify修改TotalDmg的数值为TotalDmg/2,当这个效果触发一次后移除这个buff即可实现,
     这个节点仅适用于能够产生战斗缓存的触发器类型之后,如Dodge/Heal/Dmg/SPDmg等")]
-    public class CombatCacheModify : ActionNode
+    public partial class CombatCacheModify : ActionNode
     {
         [ShowInNode, LabelInfo(Hide = true)]
         [Prompt(@"需要修改的战斗缓存类型")]
@@ -381,7 +381,7 @@ namespace SkillEditorDemo.Model
     }
     [NodeInfo(typeof(ActionNode), "按圆创建对象", 180, "执行/按圆创建对象")]
     [Prompt(@"可以以指定的圆形分布创建指定数量的对象")]
-    public class CreateObjsInCircle : ActionNode
+    public partial class CreateObjsInCircle : ActionNode
     {
         [Child(true), TitlePort]
         [Prompt(@"所创建的对象")]
@@ -426,8 +426,4 @@ namespace SkillEditorDemo.Model
             return true;
         }
     }
-
-
-
-
 }

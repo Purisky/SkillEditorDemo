@@ -1,4 +1,4 @@
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using SkillEditorDemo.Utility;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +21,7 @@ namespace SkillEditorDemo.Model
     }
     [NodeInfo(typeof(Condition), "比较", 100, "条件/比较"), PortColor("#0000ff")]
     [Prompt(@"比较节点,用于比较两个值的关系")]
-    public class Compare : Condition
+    public partial class Compare : Condition
     {
         [Child, LabelInfo(Hide = true)]
         [Prompt(@"左侧的值")]
@@ -66,7 +66,7 @@ namespace SkillEditorDemo.Model
     }
     [NodeInfo(typeof(Condition), "与", 80, "条件/逻辑/与", "#000080"), PortColor("#0000ff")]
     [Prompt(@"与节点,用于判断多个条件是否同时成立")]
-    public class And : Condition
+    public partial class And : Condition
     {
         [Child(true), TitlePort]
         [Prompt(@"条件列表")]
@@ -89,7 +89,7 @@ namespace SkillEditorDemo.Model
     }
     [NodeInfo(typeof(Condition), "或", 80, "条件/逻辑/或", "#D2691E"), PortColor("#0000ff")]
     [Prompt(@"或节点,用于判断多个条件是否有至少一个成立")]
-    public class Or : Condition
+    public partial class Or : Condition
     {
         [Child(true), TitlePort]
         [Prompt(@"条件列表")]
@@ -113,7 +113,7 @@ namespace SkillEditorDemo.Model
     }
     [NodeInfo(typeof(Condition), "非", 80, "条件/逻辑/非", "#800000"), PortColor("#0000ff")]
     [Prompt(@"非节点,用于取反一个条件")]
-    public class Not : Condition
+    public partial class Not : Condition
     {
         [Child(true), TitlePort]
         [Prompt(@"用于取反的条件")]

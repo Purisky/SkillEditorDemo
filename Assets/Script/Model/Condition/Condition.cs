@@ -1,4 +1,4 @@
-using SkillEditorDemo.Utility;
+﻿using SkillEditorDemo.Utility;
 using System.Collections.Generic;
 using System.Linq;
 using TreeNode.Runtime;
@@ -8,7 +8,7 @@ namespace SkillEditorDemo.Model
 {
     [NodeInfo(typeof(Condition), "单位存在", 100, "条件/单位存在")]
     [Prompt(@"单位存在判断节点,判断输入的单位列表是否存在至少一个单位")]
-    public class UnitAny : Condition
+    public partial class UnitAny : Condition
     {
         [Child(true), TitlePort]
         [Prompt(@"单位列表")]
@@ -37,7 +37,7 @@ namespace SkillEditorDemo.Model
 
     [NodeInfo(typeof(Condition), "Buff检测", 120, "条件/Buff检测")]
     [Prompt(@"Buff检测节点,判断单位是否存在指定ID的Buff")]
-    public class BuffExist : Condition
+    public partial class BuffExist : Condition
     {
         [Child(true), TitlePort]
         [Prompt(@"检测的单位")]
@@ -65,7 +65,7 @@ namespace SkillEditorDemo.Model
     }
     [NodeInfo(typeof(Condition), "伤害检测", 120, "条件/伤害检测"), AssetFilter(true, typeof(BuffAsset))]
     [Prompt(@"伤害检测节点,判断伤害的类型,这个节点仅适用于能够产生战斗缓存的触发器类型之后,如Dodge/Heal/Dmg/SPDmg等")]
-    public class DmgCheck : Condition
+    public partial class DmgCheck : Condition
     {
         [ShowInNode, LabelInfo(Hide = true)]
         [Prompt(@"伤害类型,设为任意(Any)则跳过该检测")]

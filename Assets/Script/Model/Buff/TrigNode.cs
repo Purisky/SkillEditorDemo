@@ -8,7 +8,7 @@ namespace SkillEditorDemo.Model
 {
     [NodeInfo(typeof(TrigNode), "触发器", 300, "Buff/触发器"), AssetFilter(true, typeof(BuffAsset)), PortColor("#7B68EE")]
     [Prompt(@"触发器主要节点,用于描述一个触发器的基本信息,包括触发条件和触发效果,触发器仅由Buff携带者触发效果")]
-    public class TrigNode : JsonNode , IGrowID<TrigNode>
+    public partial class TrigNode : JsonNode , IGrowID<TrigNode>
     {
         [ShowInNode(ShowIf = nameof(ShowPassive)), LabelInfo("被", 20), Group("Trig", Width = 45)]
         [Prompt(@"决定出触发条件是否为被动,在定义该字段时需严格判断所涉及的场景是否为BUff的携带者主动发起的还是被动承受的")]

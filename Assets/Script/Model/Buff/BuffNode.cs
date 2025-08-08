@@ -7,7 +7,7 @@ namespace SkillEditorDemo.Model
 {
     [NodeInfo(null, "Buff", 400, "Buff/Buff"), AssetFilter(true, typeof(BuffAsset))]
     [Prompt(@"Buff主要节点,用于描述一个Buff的基本信息")]
-    public class BuffNode : JsonNode, IUniqNode, IData<BuffNode>
+    public partial class BuffNode : JsonNode, IUniqNode, IData<BuffNode>
     {
         [ShowInNode, LabelInfo("ID", 60)]
         [Prompt(@"Buff的ID,不可重复")]

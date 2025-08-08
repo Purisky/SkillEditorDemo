@@ -58,7 +58,7 @@ namespace SkillEditorDemo.Model
         }
     }
     [Prompt(@"时间类数值的主要类型,-1在大部分情况下被视为永久")]
-    public struct TimeValue
+    public partial struct TimeValue
     {
         [ShowInNode,Group("type",Width = 60),LabelInfo(Hide =true)]
         [Prompt(@"时间单位的类型:Second(秒),GameTick(游戏帧)")]
