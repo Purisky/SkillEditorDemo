@@ -7,7 +7,7 @@ namespace SkillEditorDemo.Model
 {
     [NodeInfo(null, "技能", 400, "技能/技能"), AssetFilter(true, typeof(SkillAsset))]
     [Prompt(@"技能主要节点,用于描述一个技能的基本信息")]
-    public class SkillNode : JsonNode, IUniqNode, IData<SkillNode>
+    public partial class SkillNode : JsonNode, IUniqNode, IData<SkillNode>
     {
         [ShowInNode, LabelInfo("ID", 60)]
         [Prompt(@"技能的ID,不可重复")]

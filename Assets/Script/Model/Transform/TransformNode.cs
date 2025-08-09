@@ -15,7 +15,7 @@ namespace SkillEditorDemo.Model
 
     [NodeInfo(typeof(TransformNode), @"XYAngle", 180, "变换/XYAngle")]
     [Prompt(@"获取一个变换,包含位置和角度,位置为Vector2,角度为度")]
-    public class Vector2RotNode : TransformNode
+    public partial class Vector2RotNode : TransformNode
     {
         [Child]
         [Prompt(@"位置")]
@@ -41,7 +41,7 @@ namespace SkillEditorDemo.Model
 
     [NodeInfo(typeof(TransformNode), "获取单位变换", 180, "变换/单位变换")]
     [Prompt(@"获取单位的变换,包含位置和旋转等信息")]
-    public class GetUnitTransform : TransformNode
+    public partial class GetUnitTransform : TransformNode
     {
         [Child(true), TitlePort]
         [Prompt(@"获取变换的单位")]
@@ -55,7 +55,7 @@ namespace SkillEditorDemo.Model
     }
     [NodeInfo(typeof(TransformNode), "获取命中变换", 150, "变换/命中变换")]
     [Prompt(@"获取命中的变换,包含位置和旋转等信息,通常用于获取命中时投射物的变换")]
-    public class GetHitTransform : TransformNode
+    public partial class GetHitTransform : TransformNode
     {
         public override TransformCmp GetResult(TrigInfo info, CombatCache cache)
         {
@@ -64,7 +64,7 @@ namespace SkillEditorDemo.Model
     }
     [NodeInfo(typeof(TransformNode), "变换相加", 150, "变换/变换相加")]
     [Prompt(@"将两个变换相加,位置相加,角度相加")]
-    public class AddTransform : TransformNode
+    public partial class AddTransform : TransformNode
     {
         [Child(true),LabelInfo(Hide =true)]
         [Prompt(@"变换A")]

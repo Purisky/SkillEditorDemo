@@ -1,4 +1,4 @@
-using Leopotam.EcsLite;
+﻿using Leopotam.EcsLite;
 using Newtonsoft.Json;
 using SkillEditorDemo.Utility;
 using System.Collections.Generic;
@@ -19,7 +19,7 @@ namespace SkillEditorDemo.Model
     }
     [NodeInfo(typeof(ObjNode), "投射物", 210, "对象/投射物")]
     [Prompt(@"用于创建投射物,投射物是一种运动的伤害盒子,在给定初速之后和运动方向后会一直向前运动直到产生碰撞或者持续时间耗尽,投射物在产生一次碰撞后销毁")]
-    public class NewProjectile : ObjNode
+    public partial class NewProjectile : ObjNode
     {
         [ShowInNode, LabelInfo("持续时间")]
         [Prompt(@"投射物的持续时间")]
@@ -76,7 +76,7 @@ namespace SkillEditorDemo.Model
     }
     [NodeInfo(typeof(ObjNode), "碰撞盒子", 210, "对象/碰撞盒子")]
     [Prompt(@"用于创建碰撞盒子,碰撞盒子是一种静态的碰撞区域,当其他对象进入时会触发预设的效果,碰撞盒子只会存在一帧,可以同时碰撞多个单位")]
-    public class OneShotBox : ObjNode
+    public partial class OneShotBox : ObjNode
     {
         [Child(true), LabelInfo("形狀")]
         [Prompt(@"碰撞盒子的碰撞形状,决定了检测区域的范围和类型")]

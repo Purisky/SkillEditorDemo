@@ -13,7 +13,7 @@ namespace SkillEditorDemo.Model
 
     [NodeInfo(typeof(ShapeNode), "圆", 200, "形状/圆")]
     [Prompt(@"圆形形状节点")]
-    public class CircleShape : ShapeNode
+    public partial class CircleShape : ShapeNode
     {
         [ShowInNode, LabelInfo("半径")]
         [Prompt(@"圆形的半径")]
@@ -27,7 +27,7 @@ namespace SkillEditorDemo.Model
     }
     [NodeInfo(typeof(ShapeNode), "矩形", 200, "形状/矩形")]
     [Prompt(@"矩形形状节点")]
-    public class RectShape : ShapeNode
+    public partial class RectShape : ShapeNode
     {
         [ShowInNode, LabelInfo("宽度")]
         [Prompt(@"矩形的宽度")]
@@ -44,7 +44,7 @@ namespace SkillEditorDemo.Model
     }
     [NodeInfo(typeof(ShapeNode), "扇形", 200, "形状/扇形")]
     [Prompt(@"扇形形状节点")]
-    public class SectorShape : ShapeNode
+    public partial class SectorShape : ShapeNode
     {
         [ShowInNode, LabelInfo("半径")]
         [Prompt(@"扇形的半径")]

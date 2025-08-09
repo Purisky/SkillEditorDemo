@@ -22,7 +22,7 @@ namespace SkillEditorDemo.Model
     }
     [NodeInfo(typeof(UnitNode), "当前单位", 100, "单位/当前单位")]
     [Prompt(@"获取当前单位,在触发逻辑中最近的单位,这是一个在运行时随时可能变化对象的单位节点,如果有更加准确的单位节点,应该尽量避免使用该节点")]
-    public class LastUnit : UnitNode
+    public partial class LastUnit : UnitNode
     {
         public override string GetText() => "当前单位";
 
@@ -33,7 +33,7 @@ namespace SkillEditorDemo.Model
     }
     [NodeInfo(typeof(UnitNode), "Buff单位获取", 140, "单位/Buff单位获取"), AssetFilter(true, typeof(BuffAsset))]
     [Prompt(@"获取当前Buff的涉及单位,如Buff的携带者/创建者等")]
-    public class GetBuffUnit : UnitNode
+    public partial class GetBuffUnit : UnitNode
     {
         [ShowInNode, LabelInfo(Hide = true)]
         [Prompt(@"Buff单位的类型")]
@@ -53,7 +53,7 @@ namespace SkillEditorDemo.Model
     }
     [NodeInfo(typeof(List<UnitNode>), "获取所有单位", 140, "单位/获取所有")]
     [Prompt(@"获取当前所有单位,性能敏感")]
-    public class GetAllUnits : UnitNode
+    public partial class GetAllUnits : UnitNode
     {
         public override string GetText() => $"所有单位";
         public override List<Unit> GetUnits(TrigInfo info, CombatCache cache)
@@ -69,7 +69,7 @@ namespace SkillEditorDemo.Model
     }
     [NodeInfo(typeof(List<UnitNode>), "单位筛选", 140, "单位/筛选")]
     [Prompt(@"筛选单位列表,根据条件筛选出符合条件的单位")]
-    public class UnitFilter : UnitNode//todo optimize
+    public partial class UnitFilter : UnitNode//todo optimize
     {
         [Child(true), TitlePort]
         [Prompt(@"需要筛选的单位列表")]
@@ -108,7 +108,7 @@ namespace SkillEditorDemo.Model
 
     [NodeInfo(typeof(List<UnitNode>), "单位排序", 140, "单位/排序")]
     [Prompt(@"对单位列表进行排序,根据指定的比较数值进行排序")]
-    public class OrderUnits : UnitNode//todo
+    public partial class OrderUnits : UnitNode//todo
     {
         [Child(true), TitlePort]
         [Prompt(@"需要排序的单位列表")]
@@ -146,7 +146,7 @@ namespace SkillEditorDemo.Model
         }
     }
     [NodeInfo(typeof(UnitNode), "取出单位", 140, "单位/取出")]
-    public class TakeOutUnit : UnitNode
+    public partial class TakeOutUnit : UnitNode
     {
         [Child(true), TitlePort]
         [Prompt(@"需要取出的单位列表")]
@@ -178,7 +178,7 @@ namespace SkillEditorDemo.Model
     }
     [NodeInfo(typeof(List<UnitNode>), "当前单位列表", 140, "单位/当前单位列表")]//cache
     [Prompt(@"获取最近缓存的单位列表,用于提升性能,避免无意义的列表获取或者筛选")]
-    public class LastUnitList : UnitNode
+    public partial class LastUnitList : UnitNode
     {
         public override string GetText()=> $"当前单位列表";
 
@@ -190,7 +190,7 @@ namespace SkillEditorDemo.Model
 
     [NodeInfo(typeof(UnitNode), "单位迭代器", 140, "单位/迭代器")]
     [Prompt(@"获取当前迭代器的单位,用于在迭代器中获取当前单位")]
-    public class UnitEnumerator : UnitNode
+    public partial class UnitEnumerator : UnitNode
     {
         public override string GetText() => $"单位迭代器";
 
@@ -202,7 +202,7 @@ namespace SkillEditorDemo.Model
 
     [NodeInfo(typeof(UnitNode), "触发单位", 140, "单位/触发单位")]
     [Prompt(@"获取触发当前逻辑的单位,通常是技能/Buff的触发者,比如触发器需要其他单位参与时的触发者")]
-    public class TriggerUnit : UnitNode
+    public partial class TriggerUnit : UnitNode
     {
         public override string GetText() => $"触发单位";
 
@@ -213,7 +213,7 @@ namespace SkillEditorDemo.Model
     }
     [NodeInfo(typeof(UnitNode), "源", 140, "单位/源")]
     [Prompt(@"获取当前技能/buff的来源单位,通常是技能的施法者或者Buff的源单位")]
-    public class SourceUnit : UnitNode// buff source/skill owner
+    public partial class SourceUnit : UnitNode// buff source/skill owner
     {
         public override string GetText() => $"源";
 
@@ -225,7 +225,7 @@ namespace SkillEditorDemo.Model
 
 
 
-    public static class UnitNodeExtensions
+    public  static class UnitNodeExtensions
     { 
         public static Unit GetUnit(this UnitNode node, TrigInfo info, CombatCache cache)
         {

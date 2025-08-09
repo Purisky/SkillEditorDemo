@@ -7,7 +7,7 @@ namespace SkillEditorDemo.Model
 
     [NodeInfo(typeof(FuncNode), "二元运算", 100, "计算/二元运算"), PortColor("#00ff00")]
     [Prompt(@"二元运算节点,用于对两个数值进行加减乘除等计算,支持随机数")]
-    public class BinaryCal: FuncNode
+    public partial class BinaryCal: FuncNode
     {
         [Child, LabelInfo(Hide = true)]
         [Prompt(@"左侧数值,可以是常量或其他计算结果")]
@@ -56,7 +56,7 @@ namespace SkillEditorDemo.Model
 
     [NodeInfo(typeof(FuncNode), "三元运算", 100, "计算/三元运算"), PortColor("#00ff00")]
     [Prompt(@"三元运算节点,用于对一个条件进行判断,如果条件为真则返回True的值,否则返回False的值")]
-    public class ConditionCal : FuncNode
+    public partial class ConditionCal : FuncNode
     {
         [Child(true), TitlePort]
         [Prompt(@"条件判断,如果为真则返回True的值,否则返回False的值")]

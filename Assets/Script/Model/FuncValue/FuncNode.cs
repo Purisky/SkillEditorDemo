@@ -15,7 +15,7 @@ namespace SkillEditorDemo.Model
     }
     [Prompt(@"FuncValue是特殊的数值节点,同时包含一个float:Value和一个FuncNode:Node,既可以被视为一个常数,也可以添加其他数值节点用于复杂计算,是数值字段的主要类型,
 常数和节点是互斥的存在,节点会优先被计算,当涉及到数值计算时需使用ListNodes(FuncNode)获取数值节点信息")]
-    public class FuncValue : NumValue<FuncNode>
+    public partial class FuncValue : NumValue<FuncNode>
     {
         [JsonIgnore] FuncNode FuncNode {
             get {
@@ -45,7 +45,7 @@ namespace SkillEditorDemo.Model
     /// <summary>
     /// 这个类是FuncNode的一个特殊实现,用于表示一个常数值,仅在运行时使用
     /// </summary>
-    public class ConstValue : FuncNode
+    public partial class ConstValue : FuncNode
     {
         public float Value;
         public override string GetText()
@@ -60,6 +60,7 @@ namespace SkillEditorDemo.Model
     [Prompt(@"时间类数值的主要类型,-1在大部分情况下被视为永久")]
     public partial struct TimeValue
     {
+
         [ShowInNode,Group("type",Width = 60),LabelInfo(Hide =true)]
         [Prompt(@"时间单位的类型:Second(秒),GameTick(游戏帧)")]
         public TimeType Type;
@@ -86,7 +87,7 @@ namespace SkillEditorDemo.Model
     }
     [NodeInfo(typeof(FuncNode), "Buff取值", 100, "取值/Buff"),AssetFilter(true,typeof(BuffAsset))]
     [Prompt(@"从当前Buff中取值,如当前Buff的等级/层数以及BuffRuntimeData所存储的数值等")]
-    public class BuffValueGetter : FuncNode
+    public partial class BuffValueGetter : FuncNode
     {
         [ShowInNode,LabelInfo(Hide =true)]
         [Prompt(@"Buff数值的类型")]
@@ -103,7 +104,7 @@ namespace SkillEditorDemo.Model
     }
     [NodeInfo(typeof(FuncNode), "战斗数值缓存", 120, "取值/战斗数值缓存")]
     [Prompt(@"从当前战斗数值缓存中取值")]
-    public class CombatCacheGetter : FuncNode
+    public partial class CombatCacheGetter : FuncNode
     {
         [ShowInNode, LabelInfo(Hide = true)]
         [Prompt(@"战斗缓存的类型")]
@@ -121,7 +122,7 @@ namespace SkillEditorDemo.Model
     }
     [NodeInfo(typeof(FuncNode), "属性取值", 140, "取值/属性")]
     [Prompt(@"从指定单位的属性中取值")]
-    public class StatGetter : FuncNode
+    public partial class StatGetter : FuncNode
     {
         [Child(true), TitlePort]
         [Prompt(@"获取指定单位的单位节点")]
@@ -144,7 +145,7 @@ namespace SkillEditorDemo.Model
     }
     [NodeInfo(typeof(FuncNode), "技能取值", 100, "取值/技能"), AssetFilter(true, typeof(SkillAsset))]
     [Prompt(@"从当前的技能中取值,如当前技能的等级/冷却时间/充能等")]
-    public class SkillValueGetter : FuncNode
+    public partial class SkillValueGetter : FuncNode
     {
         public override string GetText()
         {
