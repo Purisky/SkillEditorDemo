@@ -275,7 +275,7 @@ namespace SkillEditorDemo
             if (existNode == null) { return "node not found at path"; }
             
             ViewNode viewNode = window.GraphView.NodeDic[existNode];
-            PropertyAccessor.SetValueNull(window.GraphView.Asset.Data.Nodes, nodePath);
+            PropertyAccessor.RemoveValue(window.GraphView.Asset.Data.Nodes, nodePath);
             if (!recursive)
             {
                 window.GraphView.Asset.Data.Nodes.AddRange(viewNode.GetChildNodes().Select(n => n.Data));

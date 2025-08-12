@@ -42,6 +42,7 @@ namespace SkillEditorDemo.Model
             return FuncNode.GetText();
         }
     }
+
     /// <summary>
     /// 这个类是FuncNode的一个特殊实现,用于表示一个常数值,仅在运行时使用
     /// </summary>

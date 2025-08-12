@@ -9,6 +9,7 @@ namespace SkillEditorDemo.Model
     [Prompt(@"Buff主要节点,用于描述一个Buff的基本信息")]
     public partial class BuffNode : JsonNode, IUniqNode, IData<BuffNode>
     {
+
         [ShowInNode, LabelInfo("ID", 60)]
         [Prompt(@"Buff的ID,不可重复")]
         public string ID { get; set; }

@@ -54,6 +54,7 @@ namespace SkillEditorDemo.Model
     }
 
 
+
     [NodeInfo(typeof(FuncNode), "三元运算", 100, "计算/三元运算"), PortColor("#00ff00")]
     [Prompt(@"三元运算节点,用于对一个条件进行判断,如果条件为真则返回True的值,否则返回False的值")]
     public partial class ConditionCal : FuncNode
