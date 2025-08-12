@@ -74,3 +74,4 @@ Assets/Editor/Test.cs
 Assets/Editor/Test.cs.meta
 *.Plan.md
 *.Plan.md.meta
+Assets/Editor/Test/*
