@@ -55,25 +55,13 @@ namespace SkillEditorDemo
         /// <summary>
         /// Validates if a path exists in the node structure
         /// </summary>
-        private static string ValidatePath(TreeNodeGraphWindow window, string nodePath, out int index)
+        private static string ValidatePath(TreeNodeGraphWindow window, PAPath nodePath)
         {
-            if (!PropertyAccessor.GetValidPath(window.GraphView.Asset.Data.Nodes, nodePath, out index))
+            int depth = 0;
+            object endObject  =  window.GraphView.Asset.Data.Nodes.GetValueInternal<object>(ref nodePath, ref depth);
+            if (depth < nodePath.Depth)
             {
-                string validPath = nodePath[..(index)].TrimEnd('.');
-                Type validType = null;
-                object parent = PropertyAccessor.GetParentObject(window.GraphView.Asset.Data.Nodes, validPath, out string last);
-                if (last.StartsWith('[') && parent is IList list)
-                {
-                    if (int.TryParse(last[1..^1], out int index2) && index2 < list.Count)
-                    {
-                        validType = list[index2].GetType();
-                    }
-                }
-                else
-                {
-                    validType = parent.GetType().GetMember(last)[0].GetValueType();
-                }
-                return $"路径无效: 在'{validPath}'(类型:{validType?.TypeName()})下找不到'{nodePath[index..]}'";
+                return $"路径无效: 在'{nodePath.GetSubPath(0, depth).OriginalPath}'(类型:{endObject?.GetType().TypeName()})下找不到'{nodePath.GetSubPath(depth)}'";
             }
             return null; // Path is valid
         }
@@ -136,15 +124,15 @@ namespace SkillEditorDemo
             if (window == null) { return "文件不存在"; }
             
             ChildPort port = null;
-            if (!string.IsNullOrEmpty(nodePath))
+            PAPath pAPath = new(nodePath);
+            if (!pAPath.IsEmpty)
             {
-                int index;
-                string pathError = ValidatePath(window, nodePath, out index);
+                string pathError = ValidatePath(window, nodePath);
                 if (pathError != null) return pathError;
                 string path = nodePath;
                 if (nodePath.EndsWith(".Node"))
                 {
-                    object parent = PropertyAccessor.GetParentObject(window.GraphView.Asset.Data.Nodes, nodePath, out string last);
+                    object parent = PropertyAccessor.GetParentObject(window.GraphView.Asset.Data.Nodes, nodePath, out PAPart last);
                     if (parent is FuncValue)
                     {
                         path = nodePath[..^5];
@@ -228,9 +216,7 @@ namespace SkillEditorDemo
 
             TreeNodeGraphWindow window = OpenAsset(path);
             if (window == null) { return "file not exist"; }
-
-            int index;
-            string pathError = ValidatePath(window, nodePath, out index);
+            string pathError = ValidatePath(window, nodePath);
             if (pathError != null) return pathError;
 
 
