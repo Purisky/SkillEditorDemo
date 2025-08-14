@@ -9,7 +9,6 @@ namespace SkillEditorDemo.Model
     [Prompt(@"Buff主要节点,用于描述一个Buff的基本信息")]
     public partial class BuffNode : JsonNode, IUniqNode, IData<BuffNode>
     {
-
         [ShowInNode, LabelInfo("ID", 60)]
         [Prompt(@"Buff的ID,不可重复")]
         public string ID { get; set; }
@@ -34,7 +33,6 @@ namespace SkillEditorDemo.Model
         [Child, LabelInfo("触发器组")]
         [Prompt(@"Buff的触发器组,用于描述Buff的触发条件和效果")]
         public List<TrigNode> Triggers;
-
         public override string GetInfo()
         {
             return $"{nameof(BuffNode)}({ID})";
