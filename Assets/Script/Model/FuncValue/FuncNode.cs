@@ -27,8 +27,14 @@ namespace SkillEditorDemo.Model
             }
         }
         [JsonIgnore] FuncNode funcNode;
+        /// <summary>
+        /// 在正式项目中,需要在初始化时对该函数进行预编译,将嵌套调用转化为单次调用以获得性能提升
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="cache"></param>
+        /// <returns></returns>
         public float GetResult(TrigInfo info, CombatCache cache)
-        { 
+        {
             return FuncNode.GetResult(info, cache);
         }
         public float GetResult(TrigInfo info) => GetResult(info, CombatCache._);

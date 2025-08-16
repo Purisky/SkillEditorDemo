@@ -60,13 +60,20 @@ namespace SkillEditorDemo.Model
             return true;
         }
 
-
+        /// <summary>
+        /// 待预编译
+        /// </summary>
+        /// <param name="trigCount"></param>
+        /// <param name="info"></param>
+        /// <param name="cache"></param>
+        /// <returns></returns>
         bool internalTrig(int trigCount, TrigInfo info,CombatCache cache)
         {
             bool trigContinue = true;
             for (int i = 0; i < Actions.Count; i++)
             {
                 trigContinue &= Actions[i].Handle(trigCount, info, cache);
+                //在正式项目中,需要对Actions[i].Handle使用Expression进行预编译以提高运行时性能
             }
             int removeOnTrig = (int)TrigNode.RemoveOnTrig.GetResult(info, cache);
             if (removeOnTrig != 0)

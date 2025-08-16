@@ -17,7 +17,7 @@ namespace SkillEditorDemo.Model
         public int GrowID { get; set; }
         public static T Get<T>(int id) where T : ActionNode => (T)IGrowID < ActionNode >.Get(id);
         /// <summary>
-        /// 
+        /// 待预编译
         /// </summary>
         /// <param name="trigCount"></param>
         /// <param name="info"></param>
@@ -98,24 +98,37 @@ namespace SkillEditorDemo.Model
         }
         static readonly List<StatType> statTypes = Enum.GetValues(typeof(StatType)).Cast<StatType>().ToList();
         static readonly List<StatType> valueTypes = statTypes.Where(s => !s.IsStat()).ToList();
+        /// <summary>
+        /// 待预编译
+        /// </summary>
+        /// <param name="trigCount"></param>
+        /// <param name="info"></param>
+        /// <param name="cache"></param>
+        /// <returns></returns>
         public override bool Handle(int trigCount, TrigInfo info, CombatCache cache)
         {
             if (ShowStat && info.TrigID == -1) { return true; }
-            List<Unit> units = UnitNodes.SelectMany(n=> n.GetUnits(info, cache)).ToList();
+            List<Unit> units = UnitNodes.SelectMany(n => n.GetUnits(info, cache)).ToList();
             for (int i = 0; i < units.Count; i++)
             {
                 if (ShowStat)
                 {
-                    units[i].StatHandler.Add(StatType,new ActionCache(info.TrigID,GrowID));
+                    units[i].StatHandler.Add(StatType, new ActionCache(info.TrigID, GrowID));
                 }
                 else
-                { 
+                {
                     float value = Value.GetResult(info, cache);
                     units[i].StatHandler.SetValue(StatType, value, ResModType);
                 }
             }
             return true;
         }
+        /// <summary>
+        /// 待预编译
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="cache"></param>
+        /// <returns></returns>
         public float GetRuntimeValue(TrigInfo info, CombatCache cache)
         {
             return Value.GetResult(info, cache);

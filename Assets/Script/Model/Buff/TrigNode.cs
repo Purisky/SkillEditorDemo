@@ -32,8 +32,6 @@ namespace SkillEditorDemo.Model
         [Child, LabelInfo("触发移除")]
         [Prompt(@"当触发器被成功触发时,移除的层数,-1为直接移除Buff,0则代表无效果,>0代表对应层数")]
         public FuncValue RemoveOnTrig;
-        [ShowInNode, LabelInfo("Times")]
-        public List<TimeValue> Times;
 
 
 
@@ -46,7 +44,13 @@ namespace SkillEditorDemo.Model
 
         public static readonly HashSet<TrigType> NoPassive = EnumAttributeGetter.Get<TrigType, NoPassiveAttribute>().Keys.ToHashSet();
         public static readonly HashSet<TrigType> NoSeq = EnumAttributeGetter.Get<TrigType, NoSeqAttribute>().Keys.ToHashSet();
-        public bool CheckCondition(TrigInfo  info,CombatCache cache ) => Condition == null || Condition.GetResult(info, cache);
+        /// <summary>
+        /// 待预编译
+        /// </summary>
+        /// <param name="info"></param>
+        /// <param name="cache"></param>
+        /// <returns></returns>
+        public bool CheckCondition(TrigInfo info, CombatCache cache) => Condition == null || Condition.GetResult(info, cache);
         [JsonIgnore]
         public TrigType CombinedTrigType
         {
