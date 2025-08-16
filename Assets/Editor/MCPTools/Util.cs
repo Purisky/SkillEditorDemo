@@ -24,7 +24,7 @@ namespace SkillEditorDemo
             if (type is null) { return $"需要添加的类型({typeName})不存在,使用ListNodes获取可用的Node信息"; }
             return AddNode(path, nodePath, type, json);
         }
-        
+
         static Dictionary<string, Type> ValidNodeTypes;
         static Dictionary<string, Type> InitNodes()
         {
@@ -37,35 +37,39 @@ namespace SkillEditorDemo
             }
             return nodes;
         }
-        
+
         public static Type GetValidType(string typeName)
         {
             ValidNodeTypes ??= InitNodes();
             return ValidNodeTypes.GetValueOrDefault(typeName);
         }
-        
+
         /// <summary>
         /// Opens a TreeNodeGraphWindow for the given file path
         /// </summary>
         private static TreeNodeGraphWindow OpenAsset(string path)
         {
+            if (path.StartsWith("Assets/")) { path = path[7..]; }
             return JsonAssetHandler.OpenJsonAsset($"Assets/{path}");
         }
-        
+
         /// <summary>
         /// Validates if a path exists in the node structure
         /// </summary>
         private static string ValidatePath(TreeNodeGraphWindow window, PAPath nodePath)
         {
-            int depth = 0;
-            object endObject  =  window.GraphView.Asset.Data.Nodes.GetValueInternal<object>(ref nodePath, ref depth);
-            if (depth < nodePath.Depth)
+            int index = 0;
+            object endObject = window.GraphView.Asset.Data.Nodes.GetValueInternal<object>(ref nodePath, ref index);
+
+            Debug.Log($"depth:{index}  nodePath.Depth:{nodePath.Depth}");
+            if (index < nodePath.Depth - 1)
             {
-                return $"路径无效: 在'{nodePath.GetSubPath(0, depth).OriginalPath}'(类型:{endObject?.GetType().TypeName()})下找不到'{nodePath.GetSubPath(depth)}'";
+
+                return $"路径无效: 在'{nodePath.GetSubPath(0, index).OriginalPath}'(类型:{endObject?.GetType().TypeName()})下找不到'{nodePath.GetSubPath(index)}'";
             }
             return null; // Path is valid
         }
-        
+
         /// <summary>
         /// Validates JSON property against a type and checks for nested node issues
         /// </summary>
@@ -79,31 +83,31 @@ namespace SkillEditorDemo
                 {
                     promptText = "\n" + nodePrompt.ListDetail();
                 }
-                return @$"节点操作失败,{type.Name}中应不存在{jp.Name}字段,严格按照以下信息操作数据:{promptText}";
+                return @$"节点操作失败,{type.Name}中不应存在{jp.Name}字段,严格按照以下信息操作数据:{promptText}";
             }
-            
+
             Type valueType = members[0].GetValueType();
             object value = jp.Value.Value<object>();
-            if (valueType.Inherited(typeof(JsonNode)) || 
-                (valueType.Inherited(typeof(IList)) && value is IList list && 
+            if (valueType.Inherited(typeof(JsonNode)) ||
+                (valueType.Inherited(typeof(IList)) && value is IList list &&
                  list.Count > 0 && valueType.GetGenericArguments()[0].Inherited(typeof(JsonNode))))
             {
                 return $"节点操作失败,禁止嵌套添加节点: {jp.Name},使用AddNode({nodePath}.{jp.Name})添加该节点:{valueType.TypeName()}";
             }
             if (valueType == typeof(FuncValue) &&
                 jp.Value["Node"] != null)
-            { 
+            {
                 return $"节点操作失败,禁止嵌套添加节点: {jp.Name},使用AddNode({nodePath}.{jp.Name}.Node)添加该节点: FuncNode";
             }
             if (valueType == typeof(Model.TimeValue) &&
-                jp.Value["Value"] is JToken valueJToken&&
-                valueJToken["Node"]!= null)
+                jp.Value["Value"] is JToken valueJToken &&
+                valueJToken["Node"] != null)
             {
                 return $"节点操作失败,禁止嵌套添加节点: {jp.Name},使用AddNode({nodePath}.{jp.Name}.Value.Node)添加该节点: FuncNode";
             }
             return null; // Validation passed
         }
-        
+
         /// <summary>
         /// Saves changes and returns success message
         /// </summary>
@@ -117,12 +121,12 @@ namespace SkillEditorDemo
             }
             return "Success";
         }
-        
+
         static string AddNode(string filePath, string nodePath, Type type, string json)
         {
             TreeNodeGraphWindow window = OpenAsset(filePath);
             if (window == null) { return "文件不存在"; }
-            
+
             ChildPort port = null;
             PAPath pAPath = new(nodePath);
             if (!pAPath.IsEmpty)
@@ -144,7 +148,7 @@ namespace SkillEditorDemo
                     return $"无法将节点({type.Name})添加到该路径,请检查路径类型({port.portType})是否与要添加的节点类型兼容";
                 }
             }
-            
+
             JsonNode jsonNode = null;
             if (string.IsNullOrEmpty(json))
             {
@@ -157,7 +161,7 @@ namespace SkillEditorDemo
                     string validationError = ValidateJsonProperty(type, jp, nodePath);
                     if (validationError != null) return validationError.Replace("节点操作失败", "节点添加失败");
                 }
-                
+
                 jsonNode = (JsonNode)Json.Get(type, json);
             }
 
@@ -165,7 +169,7 @@ namespace SkillEditorDemo
             {
                 return $"设置节点失败:目标路径({nodePath})无法添加({type.Name})";
             }
-            
+
             // ✅ 使用新的连接支持方法 - 修复工具节点连接缺失问题
             window.GraphView.AddViewNodeWithConnection(jsonNode, nodePath);
             window.GraphView.FormatNodes();
@@ -173,11 +177,11 @@ namespace SkillEditorDemo
             {
                 numPort.DisplayPopupText();
             }
-            return SaveChanges(window); 
+            return SaveChanges(window);
         }
-        
+
         public static Dictionary<string, BasePrompt> Prompts = InitPrompts();
-        
+
         static Dictionary<string, BasePrompt> InitPrompts()
         {
             Dictionary<string, BasePrompt> prompts = new();
@@ -189,10 +193,10 @@ namespace SkillEditorDemo
             }
             return prompts;
         }
-        
+
         public static List<NodePrompt> GetNodesByName(string typeName)
         {
-            if (typeName == null || typeName.ToLower() == "null") { return GetNodes(null); }
+            if (string.IsNullOrEmpty(typeName) || typeName.ToLower() == "null") { return GetNodes(null); }
             Type type = GetValidType(typeName);
             if (type == null) { return new(); }
             return GetNodes(type);
