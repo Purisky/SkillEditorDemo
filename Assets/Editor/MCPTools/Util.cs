@@ -22,6 +22,7 @@ namespace SkillEditorDemo
         {
             Type type = GetValidType(typeName);
             if (type is null) { return $"需要添加的类型({typeName})不存在,使用ListNodes获取可用的Node信息"; }
+            if (type.IsAbstract) { return $"无法添加抽象类型({typeName}),请使用具体的子类"; }
             return AddNode(path, nodePath, type, json);
         }
 
@@ -59,13 +60,12 @@ namespace SkillEditorDemo
         private static string ValidatePath(TreeNodeGraphWindow window, PAPath nodePath)
         {
             int index = 0;
-            object endObject = window.GraphView.Asset.Data.Nodes.GetValueInternal<object>(ref nodePath, ref index);
-
-            Debug.Log($"depth:{index}  nodePath.Depth:{nodePath.Depth}");
+            window.GraphView.Asset.Data.Nodes.ValidatePath(ref nodePath, ref index);
             if (index < nodePath.Depth - 1)
             {
-
-                return $"路径无效: 在'{nodePath.GetSubPath(0, index).OriginalPath}'(类型:{endObject?.GetType().TypeName()})下找不到'{nodePath.GetSubPath(index)}'";
+                int index_ = 0;
+                object endObject = window.GraphView.Asset.Data.Nodes.GetValueInternal<object>(ref nodePath,ref index_);
+                return $"路径无效: 在'{nodePath.GetSubPath(0, index)}'(类型:{endObject?.GetType().TypeName()})下找不到'{nodePath.GetSubPath(index)}'";
             }
             return null; // Path is valid
         }
@@ -94,16 +94,30 @@ namespace SkillEditorDemo
             {
                 return $"节点操作失败,禁止嵌套添加节点: {jp.Name},使用AddNode({nodePath}.{jp.Name})添加该节点:{valueType.TypeName()}";
             }
-            if (valueType == typeof(FuncValue) &&
-                jp.Value["Node"] != null)
+
+
+
+            if (valueType == typeof(FuncValue))
             {
-                return $"节点操作失败,禁止嵌套添加节点: {jp.Name},使用AddNode({nodePath}.{jp.Name}.Node)添加该节点: FuncNode";
+                if (jp.Value.Type != JTokenType.Object)
+                {
+                    return $"节点操作失败,解析错误(FuncValue): {jp}";
+                }
+                if (jp.Value["Node"] != null && jp.Value["Node"].Type != JTokenType.Null)
+                {
+                    return $"节点操作失败,禁止嵌套添加节点: {jp.Name},使用AddNode({nodePath}.{jp.Name}.Node)添加该节点: FuncNode";
+                }
             }
-            if (valueType == typeof(Model.TimeValue) &&
-                jp.Value["Value"] is JToken valueJToken &&
-                valueJToken["Node"] != null)
+            if (valueType == typeof(Model.TimeValue))
             {
-                return $"节点操作失败,禁止嵌套添加节点: {jp.Name},使用AddNode({nodePath}.{jp.Name}.Value.Node)添加该节点: FuncNode";
+                if (jp.Value.Type != JTokenType.Object)
+                {
+                    return $"节点操作失败,解析错误(TimeValue): {jp}";
+                }
+                if (jp.Value["Value"] is JToken valueJToken && valueJToken["Node"] != null && valueJToken["Node"].Type != JTokenType.Null)
+                {
+                    return $"节点操作失败,禁止嵌套添加节点: {jp.Name},使用AddNode({nodePath}.{jp.Name}.Value.Node)添加该节点: FuncNode";
+                }
             }
             return null; // Validation passed
         }
@@ -124,6 +138,7 @@ namespace SkillEditorDemo
 
         static string AddNode(string filePath, string nodePath, Type type, string json)
         {
+            if (!FileCheck(ref filePath, out string error)) { return error; }
             TreeNodeGraphWindow window = OpenAsset(filePath);
             if (window == null) { return "文件不存在"; }
 
@@ -131,20 +146,13 @@ namespace SkillEditorDemo
             PAPath pAPath = new(nodePath);
             if (!pAPath.IsEmpty)
             {
+                Debug.Log(nodePath);
                 string pathError = ValidatePath(window, nodePath);
                 if (pathError != null) return pathError;
-                string path = nodePath;
-                if (nodePath.EndsWith(".Node"))
+                port = window.GraphView.GetPort(pAPath);
+                if (port == null) { return $"{pAPath}:路径类型不是节点或者节点的集合"; }
+                if (!port.portType.IsAssignableFrom(type))
                 {
-                    object parent = PropertyAccessor.GetParentObject(window.GraphView.Asset.Data.Nodes, nodePath, out PAPart last);
-                    if (parent is FuncValue)
-                    {
-                        path = nodePath[..^5];
-                    }
-                }
-                port = window.GraphView.GetPort(path);
-                if (port == null) { return $"{path}:路径类型不是节点或者节点的集合"; }
-                if (!port.portType.IsAssignableFrom(type)) {
                     return $"无法将节点({type.Name})添加到该路径,请检查路径类型({port.portType})是否与要添加的节点类型兼容";
                 }
             }
@@ -164,7 +172,16 @@ namespace SkillEditorDemo
 
                 jsonNode = (JsonNode)Json.Get(type, json);
             }
-
+            int index = 0;
+            PAPath path = nodePath;
+            if (!path.IsEmpty)
+            {
+                window.GraphView.Asset.Data.Nodes.ValidatePath(ref path, ref index);
+                if (path.Depth - 1 > index)
+                {
+                    return $"设置节点失败:路径不合法({nodePath})非法路径({path.GetSubPath(index)})";
+                }
+            }
             if (!window.GraphView.SetNodeByPath(jsonNode, nodePath))
             {
                 return $"设置节点失败:目标路径({nodePath})无法添加({type.Name})";
@@ -201,23 +218,19 @@ namespace SkillEditorDemo
             if (type == null) { return new(); }
             return GetNodes(type);
         }
-        
+
         public static List<NodePrompt> GetNodes(Type type)
         {
             if (type == null)
             {
                 return Prompts.Values.OfType<NodePrompt>().ToList();
             }
-            return Prompts.Values.OfType<NodePrompt>().Where(n => n.Type.Inherited(type)|| n.Type== type).ToList();
+            return Prompts.Values.OfType<NodePrompt>().Where(n => n.Type.Inherited(type) || n.Type == type).ToList();
         }
 
         public static string ModifyNode(string path, string nodePath, string json)
         {
-            if (string.IsNullOrEmpty(json))
-            {
-                return "Skip: json is empty";
-            }
-
+            if (!FileCheck(ref path, out string error)) { return error; }
             TreeNodeGraphWindow window = OpenAsset(path);
             if (window == null) { return "file not exist"; }
             string pathError = ValidatePath(window, nodePath);
@@ -258,12 +271,13 @@ namespace SkillEditorDemo
 
         public static string RemoveNode(string path, string nodePath, bool recursive = true)
         {
+            if (!FileCheck(ref path, out string error)) { return error; }
             TreeNodeGraphWindow window = OpenAsset(path);
             if (window == null) { return "file not exist"; }
-            
+
             JsonNode existNode = window.GraphView.Asset.Data.GetValue<JsonNode>(nodePath);
             if (existNode == null) { return "node not found at path"; }
-            
+
             ViewNode viewNode = window.GraphView.NodeDic[existNode];
             PropertyAccessor.RemoveValue(window.GraphView.Asset.Data.Nodes, nodePath);
             if (!recursive)
@@ -276,6 +290,7 @@ namespace SkillEditorDemo
 
         public static string ValidateAsset(string path)
         {
+            if (!FileCheck(ref path, out string error)) { return error; }
             TreeNodeGraphWindow window = OpenAsset(path);
             if (window == null) { return "file not exist"; }
             return window.GraphView.Validate();
@@ -283,6 +298,7 @@ namespace SkillEditorDemo
 
         public static List<(string, string)> GetValidPortPath(string path)
         {
+
             TreeNodeGraphWindow window = OpenAsset(path);
             if (window == null) { return new(); }
             return window.GraphView.GetAllNodePaths();
@@ -290,9 +306,34 @@ namespace SkillEditorDemo
 
         public static string GetAssetTreeView(string path)
         {
+            if (!FileCheck(ref path, out string error)) { return error; }
             TreeNodeGraphWindow window = OpenAsset(path);
             if (window == null) { return "file not exist"; }
             return window.GraphView.GetTreeView();
+        }
+
+        public static bool FileCheck(ref string path, out string error)
+        {
+            error = null;
+            if (string.IsNullOrEmpty(path))
+            {
+                error = "File path is null or empty.";
+                Debug.LogError(error);
+                return false;
+            }
+            if (!path.EndsWith(".ja") && !path.EndsWith(".pja"))
+            {
+                error = $"不支持后缀不为.ja或者.pja的文件";
+                Debug.LogError(error);
+                return false;
+            }
+            if (path.StartsWith("Assets/")) { path = path[7..]; }
+            if (!File.Exists($"Assets/{path}"))
+            {
+                error = $"文件不存在: {path}";
+                return false;
+            }
+            return true;
         }
     }
 }
