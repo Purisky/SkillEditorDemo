@@ -7,7 +7,7 @@ using UnityEditor;
 
 namespace SkillEditorDemo.MCP
 {
-    public class TestTools
+    public class CodeTools
     {
         [Tool("强制Unity重新编译程序集")]
         public static string RecompileAssemblies()
@@ -172,8 +172,8 @@ namespace SkillEditorDemo.MCP
                 if (parts.Length >= 3)
                 {
                     // 格式: NameSpace.ClassName.MethodName 或 NameSpace.SubNameSpace.ClassName.MethodName
-                    targetMethodName = parts[parts.Length - 1];
-                    targetClassName = parts[parts.Length - 2];
+                    targetMethodName = parts[^1];
+                    targetClassName = parts[^2];
                     targetNamespace = string.Join(".", parts.Take(parts.Length - 2));
                 }
                 else if (parts.Length == 2)

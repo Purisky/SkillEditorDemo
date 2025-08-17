@@ -20,6 +20,8 @@ priority: 1
 - **TimeValue类型**：需要节点计算时使用`AddNode(路径.字段名.Value.Node)`添加FuncNode
 - **优先级**：节点计算优先于常数值，两者互斥
 
+
+
 ## 强制工作流程
 
 ### 1. 规划阶段（绝对必需）
@@ -84,6 +86,12 @@ priority: 1
 - **ModifyNode(path, nodePath, json)**：修改现有节点（必须指向完整JsonNode）
 - **RemoveNode(path, nodePath)**：删除节点（递归删除）
 - **ValidateAsset(path)**：最终验证（构造完成后调用）
+  - **返回数据处理与警告规则**：
+    - **警告甄别原则**：出现警告时需仔细甄别该配置是否符合实际设计意图
+    - **处理策略**：
+      1. 分析警告字段的功能含义和上下文环境
+      2. 确认当前配置是否符合整体设计需求
+      3. 如符合需求，可忽略警告；如不符合，需调整配置或添加相应的节点结构
 
 ### 路径格式规范
 - 基本格式：`[index].fieldName.ListName[index]`
