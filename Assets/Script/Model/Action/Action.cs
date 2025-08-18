@@ -25,7 +25,7 @@ namespace SkillEditorDemo.Model
         /// <returns>exit trigger event if return false</returns>
         public abstract bool Handle(int trigCount, TrigInfo info, CombatCache cache);
     }
-    [NodeInfo(typeof(ActionNode), "分支执行", 100, "执行/分支执行")]
+    [NodeInfo(typeof(ActionNode), "分支执行", 120, "执行/分支执行")]
     [Prompt(@"根据条件的真假执行不同的ActionNode")]
     public partial class ConditionAction : ActionNode
     {
@@ -34,22 +34,23 @@ namespace SkillEditorDemo.Model
         public Condition Condition;
         [Child, LabelInfo(Text = "真", Width = 10)]
         [Prompt(@"条件为真时执行的ActionNode")]
-        public ActionNode True;
+        public List< ActionNode> True;
         [Child, LabelInfo(Text = "假", Width = 10)]
         [Prompt(@"条件为假时执行的ActionNode")]
-        public ActionNode False;
+        public List<ActionNode> False;
 
         public override bool Handle(int trigCount, TrigInfo info, CombatCache cache)
         {
             bool condition = Condition.GetResult(info, cache);
-            if (condition)
+
+            List< ActionNode > list = condition ? True : False;
+            if (list == null && list.Count == 0) { return true; }
+            bool ret = true;
+            for (int i = 0; i < list.Count; i++)
             {
-                return True?.Handle(trigCount, info, cache) ?? true;
+                ret&= list[i].Handle(trigCount, info, cache);
             }
-            else
-            {
-                return False?.Handle(trigCount, info, cache) ?? true;
-            }
+            return ret;
         }
     }
 

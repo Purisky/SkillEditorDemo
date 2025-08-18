@@ -11,7 +11,7 @@ namespace SkillEditorDemo.Model
         public abstract IAABB GetShape(TrigInfo info, CombatCache cache);
     }
 
-    [NodeInfo(typeof(ShapeNode), "圆", 200, "形状/圆")]
+    [NodeInfo(typeof(ShapeNode), "圆", 100, "形状/圆")]
     [Prompt(@"圆形形状节点")]
     public partial class CircleShape : ShapeNode
     {
