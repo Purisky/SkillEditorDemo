@@ -127,7 +127,7 @@ namespace SkillEditorDemo
         /// </summary>
         private static string SaveChanges(TreeNodeGraphWindow window, bool refresh = false)
         {
-            window.History.AddStep();
+            //window.History.AddStep();
             window.SaveChanges();
             if (refresh)
             {
@@ -321,9 +321,9 @@ namespace SkillEditorDemo
                 Debug.LogError(error);
                 return false;
             }
-            if (!path.EndsWith(".ja") && !path.EndsWith(".pja"))
+            if (!path.EndsWith(".ja") && !path.EndsWith(".tpl"))
             {
-                error = $"不支持后缀不为.ja或者.pja的文件";
+                error = $"不支持后缀不为.ja或者.tpl的文件";
                 Debug.LogError(error);
                 return false;
             }

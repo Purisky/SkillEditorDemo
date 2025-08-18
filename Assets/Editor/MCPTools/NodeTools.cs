@@ -83,9 +83,9 @@ namespace SkillEditorDemo
                     return filePaths;
                 }
 
-                // 递归搜索所有.ja和.pja文件
+                // 递归搜索所有.ja和.tpl文件
                 var jaFiles = Directory.GetFiles(assetsPath, "*.ja", SearchOption.AllDirectories);
-                var pjaFiles = Directory.GetFiles(assetsPath, "*.pja", SearchOption.AllDirectories);
+                var pjaFiles = Directory.GetFiles(assetsPath, "*.tpl", SearchOption.AllDirectories);
 
                 // 合并文件列表
                 var allFiles = jaFiles.Concat(pjaFiles);
@@ -111,11 +111,11 @@ namespace SkillEditorDemo
                 // 按文件名排序，便于用户查找
                 filePaths.Sort();
 
-                //UnityEngine.Debug.Log($"Found {filePaths.Count} .ja/.pja files");
+                //UnityEngine.Debug.Log($"Found {filePaths.Count} .ja/.tpl files");
             }
             catch (Exception ex)
             {
-                UnityEngine.Debug.LogError($"Error scanning for .ja/.pja files: {ex.Message}");
+                UnityEngine.Debug.LogError($"Error scanning for .ja/.tpl files: {ex.Message}");
             }
 
             return filePaths;
