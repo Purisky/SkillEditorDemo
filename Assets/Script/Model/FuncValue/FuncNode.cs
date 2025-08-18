@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using SkillEditorDemo.Utility;
 using TreeNode.Runtime;
 using TreeNode.Utility;
@@ -55,7 +55,7 @@ namespace SkillEditorDemo.Model
     public partial class ConstValue : FuncNode
     {
         public float Value;
-        public override string GetText()
+        public override string GetText(int indent = 0)
         {
             return $"{Value}";
         }
@@ -92,7 +92,7 @@ namespace SkillEditorDemo.Model
             return $"{Value} 秒";
         }
 
-        public string GetText()=> ToString();
+        public string GetText(int indent = 0)=> ToString();
     }
     [NodeInfo(typeof(FuncNode), "Buff取值", 100, "取值/Buff取值"),AssetFilter(true,typeof(BuffAsset))]
     [Prompt(@"从当前Buff中取值,如当前Buff的等级/层数以及BuffRuntimeData所存储的数值等")]
@@ -101,9 +101,10 @@ namespace SkillEditorDemo.Model
         [ShowInNode,LabelInfo(Hide =true)]
         [Prompt(@"Buff数值的类型")]
         public BuffValueType Type;
-        public override string GetText()
+        public override string GetText(int indent = 0)
         {
-            return $"Buff.{Type.GetLabel()}";
+            string typeLabel = Type.GetLabel();
+            return $"Buff.{typeLabel}";
         }
 
         public override float GetResult(TrigInfo info, CombatCache cache)
@@ -119,9 +120,10 @@ namespace SkillEditorDemo.Model
         [Prompt(@"战斗缓存的类型")]
         public CombatCacheType Type;
 
-        public override string GetText()
+        public override string GetText(int indent = 0)
         {
-            return $"战斗数值缓存.{Type.GetLabel()}";
+            string typeLabel = Type.GetLabel();
+            return $"战斗缓存.{typeLabel}";
         }
 
         public override float GetResult(TrigInfo info, CombatCache cache)
@@ -141,9 +143,11 @@ namespace SkillEditorDemo.Model
         public StatType Type;
 
 
-        public override string GetText()
+        public override string GetText(int indent = 0)
         {
-            return $"{UnitNode?.GetText()??"Null"}.{Type.GetLabel().Replace("/","_")}";
+            string unitText = UnitNode?.GetText(0) ?? "单位";
+            string statLabel = Type.GetLabel();
+            return $"{unitText}.{statLabel}";
         }
 
         public override float GetResult(TrigInfo info, CombatCache cache)
@@ -156,7 +160,7 @@ namespace SkillEditorDemo.Model
     [Prompt(@"从当前的技能中取值,如当前技能的等级/冷却时间/充能等")]
     public partial class SkillValueGetter : FuncNode
     {
-        public override string GetText()
+        public override string GetText(int indent = 0)
         {
             return "技能";
         }

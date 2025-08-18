@@ -1,4 +1,4 @@
-﻿using SkillEditorDemo.Utility;
+using SkillEditorDemo.Utility;
 using System.Collections.Generic;
 using TreeNode.Runtime;
 using TreeNode.Utility;
@@ -33,6 +33,90 @@ namespace SkillEditorDemo.Model
         [Child(true), LabelInfo("效果组")]
         [Prompt(@"技能的效果组,用于描述技能的触发条件和效果")]
         public List<ActionNode> Actions;
+
+        public override string GetText(int indent = 0)
+        {
+            string indentStr = new string(' ', indent * 2);
+            string childIndentStr = new string(' ', (indent + 1) * 2);
+            
+            List<string> lines = new List<string>();
+            
+            string nameText = !string.IsNullOrEmpty(Name) ? Name : (!string.IsNullOrEmpty(ID) ? ID : "技能");
+            
+            // 主描述行
+            lines.Add($"{indentStr}技能: {nameText}");
+            
+            // ID信息
+            if (!string.IsNullOrEmpty(ID))
+            {
+                lines.Add($"{childIndentStr}ID: {ID}");
+            }
+            
+            // 冷却时间
+            string timeText = Time.GetText();
+            if (!string.IsNullOrEmpty(timeText))
+            {
+                lines.Add($"{childIndentStr}冷却时间: {timeText}");
+            }
+            else
+            {
+                lines.Add($"{childIndentStr}冷却时间: 无");
+            }
+            
+            // 最大等级
+            string maxLevelText = MaxLevel?.GetText();
+            if (!string.IsNullOrEmpty(maxLevelText) && maxLevelText != "1")
+            {
+                lines.Add($"{childIndentStr}最大等级: {maxLevelText}");
+            }
+            
+            // 最大充能
+            string maxChargeText = MaxCharge?.GetText();
+            if (!string.IsNullOrEmpty(maxChargeText) && maxChargeText != "1")
+            {
+                lines.Add($"{childIndentStr}最大充能: {maxChargeText}");
+            }
+            
+            // 监听类型
+            if (SkillWatchType != SkillWatchType.None)
+            {
+                lines.Add($"{childIndentStr}监听类型: {SkillWatchType}");
+            }
+            
+            // 条件过滤
+            if (Condition != null)
+            {
+                string conditionText = Condition.GetText(indent + 1);
+                lines.Add($"{childIndentStr}释放条件: {conditionText}");
+            }
+            
+            // 效果组
+            if (Actions != null && Actions.Count > 0)
+            {
+                if (Actions.Count == 1)
+                {
+                    lines.Add($"{childIndentStr}技能效果:");
+                    string actionText = Actions[0].GetText(indent + 2);
+                    lines.Add(actionText);
+                }
+                else
+                {
+                    lines.Add($"{childIndentStr}技能效果组({Actions.Count}个):");
+                    for (int i = 0; i < Actions.Count; i++)
+                    {
+                        lines.Add($"{childIndentStr}  {i + 1}.");
+                        string actionText = Actions[i].GetText(indent + 2);
+                        lines.Add(actionText);
+                    }
+                }
+            }
+            else
+            {
+                lines.Add($"{childIndentStr}技能效果: 无");
+            }
+            
+            return string.Join("\n", lines);
+        }
 
         public void Cast(int trigCount,TrigInfo trigInfo,CombatCache cache)
         {

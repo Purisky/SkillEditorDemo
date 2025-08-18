@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using SkillEditorDemo.Utility;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +9,7 @@ namespace SkillEditorDemo.Model
 {
     [PortColor("#40E0D0")]
     [Prompt(@"Condition是条件节点的基类,所有的条件节点都继承自Condition")]
-    public abstract class Condition : JsonNode, IGrowID<Condition>,IText
+    public abstract class Condition : JsonNode, IGrowID<Condition>
     {
         [JsonIgnore] public int GrowID { get; set; }
         public static T Get<T>(int id) where T : Condition => (T)IGrowID<Condition>.Get(id);
@@ -17,7 +17,6 @@ namespace SkillEditorDemo.Model
         public bool GetResult(TrigInfo info) => GetResult(info, CombatCache._);
         public bool GetResult(CombatCache cache) => GetResult(TrigInfo.Empty, cache);
         public bool GetResult() => GetResult(TrigInfo.Empty);
-        public abstract string GetText();
     }
     [NodeInfo(typeof(Condition), "比较", 100, "条件/比较"), PortColor("#0000ff")]
     [Prompt(@"比较节点,用于比较两个值的关系")]
@@ -32,19 +31,19 @@ namespace SkillEditorDemo.Model
         [Child, LabelInfo(Hide = true)]
         [Prompt(@"右侧的值")]
         public FuncValue Right;
-        public override string GetText()
+        public override string GetText(int indent = 0)
         {
-            string left = Left == null ? "0" : Left.GetText();
-            string right = Right == null ? "0" : Right.GetText();
+            string left = Left?.GetText(0) ?? "0";
+            string right = Right?.GetText(0) ?? "0";
             string compareText = CompareType switch
             {
-                CompareType.GreaterThan => ">",
-                CompareType.GreaterThanOrEqual => "≥",
-                CompareType.LessThan => "<",
-                CompareType.LessThanOrEqual => "≤",
-                CompareType.Equal => "=",
-                CompareType.NotEqual => "≠",
-                _ => "?"
+                CompareType.GreaterThan => " > ",
+                CompareType.GreaterThanOrEqual => " ≥ ",
+                CompareType.LessThan => " < ",
+                CompareType.LessThanOrEqual => " ≤ ",
+                CompareType.Equal => " = ",
+                CompareType.NotEqual => " ≠ ",
+                _ => " ? "
             };
             return $"({left}{compareText}{right})";
         }
@@ -71,10 +70,11 @@ namespace SkillEditorDemo.Model
         [Child(true), TitlePort]
         [Prompt(@"条件列表")]
         public List<Condition> Conditions;
-        public override string GetText()
+        public override string GetText(int indent = 0)
         {
-            if (Conditions.Count == 0) { return "true"; }
-            return $"({string.Join("&", Conditions.Select(n => n.GetText()))})";
+            if (Conditions == null || Conditions.Count == 0) { return "真"; }
+            if (Conditions.Count == 1) { return Conditions[0].GetText(0); }
+            return $"({string.Join(" & ", Conditions.Select(n => n.GetText(0)))})";
         }
         public override bool GetResult(TrigInfo info, CombatCache cache)
         {
@@ -94,10 +94,11 @@ namespace SkillEditorDemo.Model
         [Child(true), TitlePort]
         [Prompt(@"条件列表")]
         public List<Condition> Conditions;
-        public override string GetText()
+        public override string GetText(int indent = 0)
         {
-            if (Conditions == null || Conditions.Count == 0) { return "true"; }
-            return $"({string.Join("|", Conditions.Select(n => n.GetText()))})";
+            if (Conditions == null || Conditions.Count == 0) { return "真"; }
+            if (Conditions.Count == 1) { return Conditions[0].GetText(0); }
+            return $"({string.Join(" | ", Conditions.Select(n => n.GetText(0)))})";
         }
 
         public override bool GetResult(TrigInfo info, CombatCache cache)
@@ -118,10 +119,10 @@ namespace SkillEditorDemo.Model
         [Child(true), TitlePort]
         [Prompt(@"用于取反的条件")]
         public Condition Condition;
-        public override string GetText()
+        public override string GetText(int indent = 0)
         {
-            if (Condition == null) { return "true"; }
-            return $"(!{Condition.GetText()})";
+            if (Condition == null) { return "真"; }
+            return $"(!{Condition.GetText(0)})";
         }
 
         public override bool GetResult(TrigInfo info, CombatCache cache)

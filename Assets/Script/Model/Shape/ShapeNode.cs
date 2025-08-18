@@ -1,4 +1,4 @@
-﻿using SkillEditorDemo.Utility;
+using SkillEditorDemo.Utility;
 using TreeNode.Runtime;
 using TreeNode.Utility;
 
@@ -19,6 +19,12 @@ namespace SkillEditorDemo.Model
         [Prompt(@"圆形的半径")]
         public FuncValue Radius;
 
+        public override string GetText(int indent = 0)
+        {
+            string radiusText = Radius?.GetText(indent) ?? "0";
+            return $"圆形(半径{radiusText})";
+        }
+
         public override IAABB GetShape(TrigInfo info, CombatCache cache)
         {
             float radius = Radius.GetResult(info, cache);
@@ -35,6 +41,14 @@ namespace SkillEditorDemo.Model
         [ShowInNode, LabelInfo("高度")]
         [Prompt(@"矩形的高度")]
         public FuncValue Height;
+
+        public override string GetText(int indent = 0)
+        {
+            string widthText = Width?.GetText(indent) ?? "0";
+            string heightText = Height?.GetText(indent) ?? "0";
+            return $"矩形({widthText}x{heightText})";
+        }
+
         public override IAABB GetShape(TrigInfo info, CombatCache cache)
         {
             float width = Width.GetResult(info, cache);
@@ -52,6 +66,13 @@ namespace SkillEditorDemo.Model
         [ShowInNode, LabelInfo("角度")]
         [Prompt(@"扇形的角度,单位为度,扇形会以正前方为中线向两边展开")]
         public FuncValue Angle;
+
+        public override string GetText(int indent = 0)
+        {
+            string radiusText = Radius?.GetText(indent) ?? "0";
+            string angleText = Angle?.GetText(indent) ?? "0";
+            return $"扇形(半径{radiusText},角度{angleText}°)";
+        }
 
         public override IAABB GetShape(TrigInfo info, CombatCache cache)
         {

@@ -1,4 +1,4 @@
-﻿using Leopotam.EcsLite;
+using Leopotam.EcsLite;
 using SkillEditorDemo.Utility;
 using System.Numerics;
 using TreeNode.Runtime;
@@ -23,6 +23,14 @@ namespace SkillEditorDemo.Model
         [ShowInNode, LabelInfo("Y", Width = 20)]
         [Prompt(@"Y轴的值")]
         public FuncValue Y;
+
+        public override string GetText(int indent = 0)
+        {
+            string xText = X?.GetText(indent) ?? "0";
+            string yText = Y?.GetText(indent) ?? "0";
+            return $"({xText},{yText})";
+        }
+
         public override Vector2 GetResult(TrigInfo info, CombatCache cache)
         {
             return new Vector2(X.GetResult(info,cache), Y.GetResult(info, cache));
@@ -35,6 +43,12 @@ namespace SkillEditorDemo.Model
         [Child(true), TitlePort]
         [Prompt(@"获取单位的节点")]
         public UnitNode UnitNode;
+
+        public override string GetText(int indent = 0)
+        {
+            string unitText = UnitNode?.GetText(indent) ?? "单位";
+            return $"{unitText}的坐标";
+        }
 
         public override Vector2 GetResult(TrigInfo info, CombatCache cache)
         {

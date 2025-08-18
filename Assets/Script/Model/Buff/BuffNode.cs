@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using SkillEditorDemo.Utility;
 using System.Collections.Generic;
 using TreeNode.Runtime;
@@ -33,6 +33,71 @@ namespace SkillEditorDemo.Model
         [Child, LabelInfo("触发器组")]
         [Prompt(@"Buff的触发器组,用于描述Buff的触发条件和效果")]
         public List<TrigNode> Triggers;
+
+        public override string GetText(int indent = 0)
+        {
+            string indentStr = new string(' ', indent * 2);
+            string childIndentStr = new string(' ', (indent + 1) * 2);
+            
+            List<string> lines = new List<string>();
+            
+            string nameText = !string.IsNullOrEmpty(Name) ? Name : (!string.IsNullOrEmpty(ID) ? ID : "Buff");
+            
+            // 主描述行
+            lines.Add($"{indentStr}Buff: {nameText}({ID})");
+            // 持续时间
+            string timeText = Time.GetText();
+            if (!string.IsNullOrEmpty(timeText))
+            {
+                lines.Add($"{childIndentStr}持续时间: {timeText}");
+            }
+            else
+            {
+                lines.Add($"{childIndentStr}持续时间: 无限");
+            }
+            
+            // 最大等级
+            if (MaxLevel > 1)
+            {
+                lines.Add($"{childIndentStr}最大等级: {MaxLevel}");
+            }
+            
+            // 最大层数
+            string maxDegreeText = MaxDegree?.GetText();
+            if (!string.IsNullOrEmpty(maxDegreeText) && maxDegreeText != "1")
+            {
+                lines.Add($"{childIndentStr}最大层数: {maxDegreeText}");
+            }
+            
+            // 竞争机制
+            string competeText = CompeteType.GetLabel();
+            if (CompeteInSource)
+            {
+                competeText += "(源内竞争)";
+            }
+            lines.Add($"{childIndentStr}竞争机制: {competeText}");
+            
+            // 触发器信息
+            if (Triggers != null && Triggers.Count > 0)
+            {
+                if (Triggers.Count == 1)
+                {
+                    string triggerText = Triggers[0].GetText(indent + 2);
+                    lines.Add(triggerText);
+                }
+                else
+                {
+                    for (int i = 0; i < Triggers.Count; i++)
+                    {
+                        string triggerText = Triggers[i].GetText(indent + 2);
+                        lines.Add($"{childIndentStr}  {i + 1}.{triggerText}");
+                        lines.Add(triggerText);
+                    }
+                }
+            }
+            return string.Join("\n", lines);
+        }
+
         public override string GetInfo()
         {
             return $"{nameof(BuffNode)}({ID})";

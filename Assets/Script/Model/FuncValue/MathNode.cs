@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using SkillEditorDemo.Utility;
 using TreeNode.Utility;
 
@@ -19,19 +19,19 @@ namespace SkillEditorDemo.Model
         [Prompt(@"右侧数值,可以是常量或其他计算结果")]
         public FuncValue Right;
 
-        public override string GetText()
+        public override string GetText(int indent = 0)
         {
-            string left = Left == null ? "0" : Left.GetText();
-            string right = Right == null ? "0" : Right.GetText();
+            string left = Left?.GetText(0) ?? "0";
+            string right = Right?.GetText(0) ?? "0";
             string calculateText = CalculateType switch
             {
-                CalculateType.Add => "+",
-                CalculateType.Sub => "-",
-                CalculateType.Mul => "*",
-                CalculateType.Div => "/",
-                CalculateType.Mod => "%",
-                CalculateType.Random => "~",
-                _=>"?"
+                CalculateType.Add => " + ",
+                CalculateType.Sub => " - ",
+                CalculateType.Mul => " × ",
+                CalculateType.Div => " ÷ ",
+                CalculateType.Mod => " % ",
+                CalculateType.Random => " ~ ",
+                _ => " ? "
             };
             return $"({left}{calculateText}{right})";
         }
@@ -68,15 +68,15 @@ namespace SkillEditorDemo.Model
         [Child, LabelInfo(Text = "假", Width = 10)]
         [Prompt(@"条件为假时返回的值,可以是常量或其他计算结果")]
         public FuncValue False;
-        public override string GetText()
+        public override string GetText(int indent = 0)
         {
-            string _true = True == null ? "0" : True.GetText();
-            string _false = False == null ? "0" : False.GetText();
+            string _true = True?.GetText(0) ?? "0";
+            string _false = False?.GetText(0) ?? "0";
             if (Condition == null)
             {
                 return _true;
             }
-            return $"({Condition.GetText()}?{_true}:{_false})";
+            return $"({Condition.GetText(0)} ? {_true} : {_false})";
         }
         public override float GetResult(TrigInfo info, CombatCache cache)
         {

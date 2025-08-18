@@ -1,4 +1,4 @@
-﻿using Leopotam.EcsLite;
+using Leopotam.EcsLite;
 using SkillEditorDemo.Utility;
 using System.Numerics;
 using TreeNode.Runtime;
@@ -23,6 +23,14 @@ namespace SkillEditorDemo.Model
         [ShowInNode]
         [Prompt(@"角度 in degrees (0,1)=>0, (1,0)=>90, (0,-1)=>180, (-1,0)=>270")]
         public FuncValue Angle;
+
+        public override string GetText(int indent = 0)
+        {
+            string posText = Vector2?.GetText(indent) ?? "(0,0)";
+            string angleText = Angle?.GetText(indent) ?? "0";
+            return $"变换({posText},角度{angleText}°)";
+        }
+
         public override TransformCmp GetResult(TrigInfo info, CombatCache cache)
         {
             return new TransformCmp()
@@ -47,6 +55,12 @@ namespace SkillEditorDemo.Model
         [Prompt(@"获取变换的单位")]
         public UnitNode UnitNode;
 
+        public override string GetText(int indent = 0)
+        {
+            string unitText = UnitNode?.GetText(indent) ?? "单位";
+            return $"{unitText}的变换";
+        }
+
         public override TransformCmp GetResult(TrigInfo info, CombatCache cache)
         {
             Unit unit = UnitNode.GetUnit(info, cache);
@@ -57,6 +71,11 @@ namespace SkillEditorDemo.Model
     [Prompt(@"获取命中的变换,包含位置和旋转等信息,通常用于获取命中时投射物的变换")]
     public partial class GetHitTransform : TransformNode
     {
+        public override string GetText(int indent = 0)
+        {
+            return "命中变换";
+        }
+
         public override TransformCmp GetResult(TrigInfo info, CombatCache cache)
         {
             return cache.HitInfo;
@@ -72,6 +91,14 @@ namespace SkillEditorDemo.Model
         [Child(true), LabelInfo(Hide = true)]
         [Prompt(@"变换B")]
         public TransformNode TransformB;
+
+        public override string GetText(int indent = 0)
+        {
+            string transformAText = TransformA?.GetText(indent) ?? "变换A";
+            string transformBText = TransformB?.GetText(indent) ?? "变换B";
+            return $"({transformAText}+{transformBText})";
+        }
+
         public override TransformCmp GetResult(TrigInfo info, CombatCache cache)
         {
             return TransformA.GetResult(info, cache) + TransformB.GetResult(info, cache);

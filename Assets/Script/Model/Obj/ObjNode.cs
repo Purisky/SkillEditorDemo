@@ -1,8 +1,9 @@
-﻿using Leopotam.EcsLite;
+using Leopotam.EcsLite;
 using Newtonsoft.Json;
 using SkillEditorDemo.Utility;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using TreeNode.Runtime;
 using TreeNode.Utility;
 
@@ -66,6 +67,47 @@ namespace SkillEditorDemo.Model
             });
         }
 
+        public override string GetText(int indent = 0)
+        {
+            List<string> paramParts = new List<string>();
+            
+            // 基础参数 - 总是显示
+            string speedText = Speed?.GetText(indent) ?? "0";
+            paramParts.Add($"速度{speedText}");
+            
+            string radiusText = Radius?.GetText(indent) ?? "0";
+            paramParts.Add($"半径{radiusText}");
+            
+            string timeText = Time.GetText(indent) ?? "0";
+            paramParts.Add($"持续{timeText}");
+            
+            // 触发条件
+            List<string> triggerConditions = new List<string>();
+            triggerConditions.Add("命中单位"); // 默认总是触发
+            if (TrigOnHitTerrain) triggerConditions.Add("地形");
+            if (TrigOnTimeout) triggerConditions.Add("超时");
+            
+            // 执行效果
+            string actionText = "无事发生";
+            if (Actions != null && Actions.Count > 0)
+            {
+                if (Actions.Count == 1)
+                {
+                    actionText = Actions[0].GetText(indent);
+                }
+                else
+                {
+                    actionText = $"[{string.Join(",", Actions.Select(a => a.GetText(indent)))}]";
+                }
+            }
+            
+            // 组装最终描述
+            string paramText = string.Join(",", paramParts);
+            string triggerText = string.Join("|", triggerConditions);
+            
+            return $"{paramText}且({triggerText})后:{actionText}的投射物";
+        }
+
         public void Hit(TrigInfo info, CombatCache cache)
         {
             for (int i = 0; i < Actions.Count; i++)
@@ -111,6 +153,27 @@ namespace SkillEditorDemo.Model
             });
         }
 
+        public override string GetText(int indent = 0)
+        {
+            // 形状描述
+            string shapeText = Shape?.GetText(indent) ?? "形状";
+            
+            // 执行效果
+            string actionText = "无事发生";
+            if (Actions != null && Actions.Count > 0)
+            {
+                if (Actions.Count == 1)
+                {
+                    actionText = Actions[0].GetText(indent);
+                }
+                else
+                {
+                    actionText = $"[{string.Join(",", Actions.Select(a => a.GetText(indent)))}]";
+                }
+            }
+            
+            return $"{shapeText}且命中后:{actionText}的碰撞盒子";
+        }
 
         public void Hit(TrigInfo info, CombatCache cache)
         {

@@ -1,4 +1,4 @@
-﻿using SkillEditorDemo.Utility;
+using SkillEditorDemo.Utility;
 using System.Collections.Generic;
 using System.Linq;
 using TreeNode.Runtime;
@@ -24,14 +24,14 @@ namespace SkillEditorDemo.Model
             return false;
         }
 
-        public override string GetText()
+        public override string GetText(int indent = 0)
         {
-            string unitText = "";
-            if (UnitList != null)
+            if (UnitList == null || UnitList.Count == 0)
             {
-                unitText = string.Join(",", UnitList.Select(n => n.GetText()));
+                return "真";
             }
-            return $"([{unitText}].存在任意)";
+            string unitText = string.Join(" | ", UnitList.Select(n => n.GetText(0)));
+            return $"存在任意 ({unitText}) 单位";
         }
     }
 
@@ -61,7 +61,13 @@ namespace SkillEditorDemo.Model
 
         }
 
-        public override string GetText()=> $"{UnitNode?.GetText() ?? "Null"}.ExistBuff({ID})";
+        public override string GetText(int indent = 0)
+        {
+            string unit = UnitNode?.GetText(0) ?? "目标";
+            string buffId = string.IsNullOrEmpty(ID) ? "指定Buff" : ID;
+            string sourcePrefix = SameSource ? "同源的 " : "";
+            return $"{unit} 存在 {sourcePrefix}{buffId}";
+        }
     }
     [NodeInfo(typeof(Condition), "伤害检测", 120, "条件/伤害检测"), AssetFilter(true, typeof(BuffAsset))]
     [Prompt(@"伤害检测节点,判断伤害的类型,这个节点仅适用于能够产生战斗缓存的触发器类型之后,如Dodge/Heal/Dmg/SPDmg等")]
@@ -85,25 +91,49 @@ namespace SkillEditorDemo.Model
             return true;
         }
 
-        public override string GetText()
+        public override string GetText(int indent = 0)
         {
-            List<string> strings = ListPool<string>.GetList();
+            List<string> conditions = ListPool<string>.GetList();
+            
             if (Type != DmgType.Any)
             {
-                strings.Add( Type.GetLabel());
+                string dmgTypeName = Type switch
+                {
+                    DmgType.Physic => "物理",
+                    DmgType.Fire => "火焰", 
+                    DmgType.Frost => "冰霜",
+                    DmgType.Lightning => "闪电",
+                    _ => Type.ToString()
+                };
+                conditions.Add($"{dmgTypeName}伤害");
             }
+            
             if (DirectType != DmgDirectType.Any)
             {
-                strings.Add(DirectType.GetLabel());
+                conditions.Add(DirectType == DmgDirectType.Direct ? "直接伤害" : "间接伤害");
             }
+            
             if (CritType != CritType.Any)
             {
-                strings.Add(CritType.GetLabel());
+                conditions.Add(CritType == CritType.Crit ? "暴击伤害" : "非暴击伤害");
             }
-            string text = string.Join("&", strings);
-            int count = strings.Count;
-            strings.Release();
-            return count == 0 ? "true" : $"(伤害类型检测:{text})";
+            
+            string result;
+            if (conditions.Count == 0)
+            {
+                result = "真";
+            }
+            else if (conditions.Count == 1)
+            {
+                result = conditions[0];
+            }
+            else
+            {
+                result = $"(伤害为 {string.Join(" | ", conditions)})";
+            }
+            
+            conditions.Release();
+            return result;
         }
     }
 

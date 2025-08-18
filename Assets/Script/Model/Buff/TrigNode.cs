@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using SkillEditorDemo.Utility;
 using System.Collections.Generic;
 using System.Linq;
@@ -64,6 +64,89 @@ namespace SkillEditorDemo.Model
                 }
                 return type;
             }
+        }
+
+        public override string GetText(int indent = 0)
+        {
+            string indentStr = new string(' ', indent * 2);
+            string childIndentStr = new string(' ', (indent + 1) * 2);
+            
+            List<string> lines = new List<string>();
+            
+            // 构建触发条件描述
+            string trigCondition = "";
+            string trigTypeText = TrigType.GetLabel();
+            
+            if (Passive)
+            {
+                trigCondition = "当被" + trigTypeText;
+            }
+            else
+            {
+                trigCondition = "当" + trigTypeText;
+            }
+            
+            if (TriggerSequence == TriggerSequence.Aft)
+            {
+                trigCondition += "后";
+            }
+            else if (TriggerSequence == TriggerSequence.On)
+            {
+                trigCondition += "时";
+            }
+            
+            // 构建执行效果描述
+            string actionText = "无事发生";
+            if (Actions != null && Actions.Count > 0)
+            {
+                if (Actions.Count == 1)
+                {
+                    actionText = Actions[0].GetText(0);
+                }
+            }
+            
+            // 构建条件过滤描述
+            string conditionPart = "";
+            if (Condition != null)
+            {
+                string conditionText = Condition.GetText(0);
+                conditionPart = $",如果{conditionText}";
+            }
+            
+            // 主描述行：当...时,如果...执行:...
+            lines.Add($"{indentStr}{trigCondition}{conditionPart},执行: {actionText}");
+            
+            // 详细信息
+            if (Actions != null && Actions.Count > 1)
+            {
+                for (int i = 0; i < Actions.Count; i++)
+                {
+                    lines.Add($"{childIndentStr}  {i + 1}. {Actions[i].GetText(0)}");
+                }
+            }
+            
+            // 冷却时间
+            string cdText = CD.GetText();
+            if (CD.Value.Node!=null|| CD.Value.Value!=0)
+            {
+                lines.Add($"{childIndentStr}冷却时间: {cdText}");
+            }
+            
+            // 触发移除
+            string removeText = RemoveOnTrig?.GetText();
+            if (!string.IsNullOrEmpty(removeText) && removeText != "0")
+            {
+                if (removeText == "-1")
+                {
+                    lines.Add($"{childIndentStr}触发后: 移除整个Buff");
+                }
+                else
+                {
+                    lines.Add($"{childIndentStr}触发后: 移除{removeText}层");
+                }
+            }
+            
+            return string.Join("\n", lines);
         }
 
         public override string GetInfo()

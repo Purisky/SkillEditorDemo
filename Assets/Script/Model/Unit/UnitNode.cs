@@ -1,4 +1,4 @@
-﻿using Leopotam.EcsLite;
+using Leopotam.EcsLite;
 using SkillEditorDemo.Utility;
 using System;
 using System.Collections.Generic;
@@ -12,10 +12,6 @@ namespace SkillEditorDemo.Model
     [Prompt(@"单位节点的基类,所有的单位节点都继承自UnitNode,用于在游戏场景中获取单位信息如当前单位/所有单位/筛选单位等")]
     public abstract class UnitNode : JsonNode
     {
-        public virtual string GetText()
-        {
-            return "单位";
-        }
         public abstract List<Unit> GetUnits(TrigInfo info,CombatCache cache);
 
 
@@ -24,7 +20,7 @@ namespace SkillEditorDemo.Model
     [Prompt(@"获取当前单位,在触发逻辑中最近的单位,这是一个在运行时随时可能变化对象的单位节点,如果有更加准确的单位节点,应该尽量避免使用该节点")]
     public partial class LastUnit : UnitNode
     {
-        public override string GetText() => "当前单位";
+        public override string GetText(int indent = 0) => "当前单位";
 
         public override List<Unit> GetUnits(TrigInfo info, CombatCache cache)
         {
@@ -38,7 +34,7 @@ namespace SkillEditorDemo.Model
         [ShowInNode, LabelInfo(Hide = true)]
         [Prompt(@"Buff单位的类型")]
         public BuffUnitType BuffUnitType;
-        public override string GetText() => $"Buff.{BuffUnitType.GetLabel()}";
+        public override string GetText(int indent = 0) => $"Buff.{BuffUnitType.GetLabel()}";
 
         public override List<Unit> GetUnits(TrigInfo info, CombatCache cache)
         {
@@ -55,7 +51,7 @@ namespace SkillEditorDemo.Model
     [Prompt(@"获取当前所有单位,性能敏感")]
     public partial class GetAllUnits : UnitNode
     {
-        public override string GetText() => $"所有单位";
+        public override string GetText(int indent = 0) => $"所有单位";
         public override List<Unit> GetUnits(TrigInfo info, CombatCache cache)
         {
             List<Unit> list = new();
@@ -78,14 +74,23 @@ namespace SkillEditorDemo.Model
         [Prompt(@"筛选条件,只有满足条件的单位才会被保留,用于对比的单位需要从UnitEnumerator(单位迭代器)中取出进行对比")]
         public Condition Condition;
 
-        public override string GetText()
+        public override string GetText(int indent = 0)
         {
-            string unitText = "";
-            if (UnitList != null)
+            string unitText = "单位列表";
+            if (UnitList != null && UnitList.Count > 0)
             {
-                unitText = string.Join(",", UnitList.Select(n => n.GetText()));
+                if (UnitList.Count == 1)
+                {
+                    unitText = UnitList[0].GetText(indent);
+                }
+                else
+                {
+                    unitText = $"[{string.Join(",", UnitList.Select(n => n.GetText(indent)))}]";
+                }
             }
-            return $"([{unitText}]=>{Condition.GetText()})";
+            
+            string conditionText = Condition?.GetText(indent) ?? "条件";
+            return $"筛选{unitText}中符合({conditionText})的单位";
         }
 
         public override List<Unit> GetUnits(TrigInfo info, CombatCache cache)
@@ -120,14 +125,24 @@ namespace SkillEditorDemo.Model
         [Prompt(@"是否反序排序,默认升序,如果为true则降序")]
         public bool ByDescending;
 
-        public override string GetText()
+        public override string GetText(int indent = 0)
         {
-            string unitText = "";
-            if (UnitList != null)
+            string unitText = "单位列表";
+            if (UnitList != null && UnitList.Count > 0)
             {
-                unitText = string.Join(",", UnitList.Select(n => n.GetText()));
+                if (UnitList.Count == 1)
+                {
+                    unitText = UnitList[0].GetText(indent);
+                }
+                else
+                {
+                    unitText = $"[{string.Join(",", UnitList.Select(n => n.GetText(indent)))}]";
+                }
             }
-            return $"([{unitText}].排序)";
+            
+            string compareText = Compare?.GetText(indent) ?? "数值";
+            string orderText = ByDescending ? "降序" : "升序";
+            return $"排序{unitText}(按{compareText}{orderText})";
         }
 
         public override List<Unit> GetUnits(TrigInfo info, CombatCache cache)
@@ -154,14 +169,23 @@ namespace SkillEditorDemo.Model
         [ShowInNode, LabelInfo("索引", 45)]//-1=^1
         [Prompt(@"需要取出的单位的索引,如果为负数则从后向前取,如-1表示最后一个单位,0表示第一个单位")]
         public FuncValue Index;
-        public override string GetText()
+        public override string GetText(int indent = 0)
         {
-            string unitText = "";
-            if (UnitList != null)
+            string unitText = "单位列表";
+            if (UnitList != null && UnitList.Count > 0)
             {
-                unitText = string.Join(",", UnitList.Select(n => n.GetText()));
+                if (UnitList.Count == 1)
+                {
+                    unitText = UnitList[0].GetText(indent);
+                }
+                else
+                {
+                    unitText = $"[{string.Join(",", UnitList.Select(n => n.GetText(indent)))}]";
+                }
             }
-            return $"([{unitText}].[{Index.GetText()}])";
+            
+            string indexText = Index?.GetText(indent) ?? "0";
+            return $"取出{unitText}的第{indexText}个";
         }
 
         public override List<Unit> GetUnits(TrigInfo info, CombatCache cache)
@@ -180,7 +204,7 @@ namespace SkillEditorDemo.Model
     [Prompt(@"获取最近缓存的单位列表,用于提升性能,避免无意义的列表获取或者筛选")]
     public partial class LastUnitList : UnitNode
     {
-        public override string GetText()=> $"当前单位列表";
+        public override string GetText(int indent = 0)=> $"缓存单位列表";
 
         public override List<Unit> GetUnits(TrigInfo info, CombatCache cache)
         {
@@ -192,7 +216,7 @@ namespace SkillEditorDemo.Model
     [Prompt(@"获取当前迭代器的单位,用于在迭代器中获取当前单位")]
     public partial class UnitEnumerator : UnitNode
     {
-        public override string GetText() => $"单位迭代器";
+        public override string GetText(int indent = 0) => $"迭代单位";
 
         public override List<Unit> GetUnits(TrigInfo info, CombatCache cache)
         {
@@ -204,7 +228,7 @@ namespace SkillEditorDemo.Model
     [Prompt(@"获取触发当前逻辑的单位,通常是技能/Buff/碰撞的触发者,比如触发器需要其他单位参与时的触发者")]
     public partial class TriggerUnit : UnitNode
     {
-        public override string GetText() => $"触发单位";
+        public override string GetText(int indent = 0) => $"触发单位";
 
         public override List<Unit> GetUnits(TrigInfo info, CombatCache cache)
         {
@@ -215,7 +239,7 @@ namespace SkillEditorDemo.Model
     [Prompt(@"获取当前技能/buff的来源单位,通常是技能的施法者或者Buff的源单位")]
     public partial class SourceUnit : UnitNode// buff source/skill owner
     {
-        public override string GetText() => $"源";
+        public override string GetText(int indent = 0) => $"源";
 
         public override List<Unit> GetUnits(TrigInfo info, CombatCache cache)
         {

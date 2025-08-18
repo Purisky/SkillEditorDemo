@@ -38,7 +38,6 @@ namespace SkillEditorDemo.Model
         [Child, LabelInfo(Text = "假", Width = 10)]
         [Prompt(@"条件为假时执行的ActionNode")]
         public List<ActionNode> False;
-
         public override bool Handle(int trigCount, TrigInfo info, CombatCache cache)
         {
             bool condition = Condition.GetResult(info, cache);
@@ -52,6 +51,21 @@ namespace SkillEditorDemo.Model
             }
             return ret;
         }
+        public override string GetText(int indent = 0)
+        {
+            string trueActions = "无事发生";
+            string falseActions = "无事发生";
+            if (True != null && True.Count > 0)
+            {
+                trueActions = True.Count == 1 ? True[0].GetText(0) : $"[{string.Join(", ", True.Select(n => n.GetText(0)))}]";
+            }
+            if(False != null && False.Count > 0)
+            {
+                falseActions = False.Count == 1 ? False[0].GetText(0) : $"[{string.Join(", ", False.Select(n => n.GetText(0)))}]";
+            }
+            return $"如果 {Condition.GetText(0)}: {trueActions}, 否则: {falseActions}";
+        }
+
     }
 
 
@@ -138,6 +152,36 @@ namespace SkillEditorDemo.Model
         {
             return $"{nameof(StatModify)}({StatType})";
         }
+
+        public override string GetText(int indent = 0)
+        {
+            string units = UnitNodes?.Count > 0 ? string.Join(" 和 ", UnitNodes.Select(n => n.GetText(0))) : "目标单位";
+            string statTypeText = StatType.ToString();
+            string valueText = Value?.GetText(0) ?? "数值";
+            
+            if (ShowStat)
+            {
+                string modTypeText = StatModType switch
+                {
+                    StatModType.BaseAdd => $"基础增加 {valueText} 点",
+                    StatModType.FinalAdd => $"最终增加 {valueText} 点",
+                    StatModType.Multiply => $"乘以 {valueText} 倍",
+                    _ => $"修改为 {valueText}"
+                };
+                return $"将 {units} 的 {statTypeText} 属性 {modTypeText}";
+            }
+            else
+            {
+                string modTypeText = ResModType switch
+                {
+                    ValueModType.Set => $"设置为 {valueText}",
+                    ValueModType.Add => $"增加 {valueText}",
+                    ValueModType.Multiply => $"乘以 {valueText} 倍",
+                    _ => $"修改为 {valueText}"
+                };
+                return $"将 {units} 的 {statTypeText} 资源 {modTypeText}";
+            }
+        }
     }
     [NodeInfo(typeof(ActionNode), "伤害", 200, "执行/伤害")]
     [Prompt(@"用于对单位造成伤害,这个伤害可以进一步触发其他的TrigNode")]
@@ -208,6 +252,28 @@ namespace SkillEditorDemo.Model
         {
             return $"{nameof(Damage)}({DmgType})";
         }
+
+        public override string GetText(int indent = 0)
+        {
+            string target = UnitNode?.GetText(0) ?? "目标";
+            string dmgValue = Value?.GetText(0) ?? "伤害值";
+            string dmgTypeText = DmgType switch
+            {
+                DmgType.Physic => "物理",
+                DmgType.Fire => "火焰",
+                DmgType.Frost => "冰霜", 
+                DmgType.Lightning => "闪电",
+                _ => "未知"
+            };
+            
+            List<string> properties = new List<string>();
+            if (Direct) properties.Add("直接");
+            if (Dodge_able) properties.Add("可闪避");
+            if (Crit_able) properties.Add("可暴击");
+            
+            string propText = properties.Count > 0 ? $"({string.Join(" & ", properties)}) " : "";
+            return $"对 {target} 造成 {dmgValue} 点 {propText}{dmgTypeText}伤害";
+        }
     }
     [NodeInfo(typeof(ActionNode), "向Buff存储数据", 160, "执行/向Buff存储数据"), AssetFilter(true, typeof(BuffAsset))]
     [Prompt(@"用于存储Buff在运行时的数据方便进一步调用,这个数值可以跨越整个Buff的生命周期,以下是其用例:
@@ -225,6 +291,19 @@ namespace SkillEditorDemo.Model
         public override bool Handle(int trigCount, TrigInfo info, CombatCache cache)
         {
             return true;
+        }
+
+        public override string GetText(int indent = 0)
+        {
+            string valueText = Value?.GetText(indent) ?? "数值";
+            string modTypeText = ValueModType switch
+            {
+                ValueModType.Set => "设置为",
+                ValueModType.Add => "增加",
+                ValueModType.Multiply => "乘以",
+                _ => "修改为"
+            };
+            return $"将Buff的运行时数据{modTypeText}{valueText}";
         }
     }
     [NodeInfo(typeof(ActionNode), "添加Buff", 160, "执行/添加Buff")]
@@ -266,6 +345,24 @@ namespace SkillEditorDemo.Model
         public override string GetInfo()
         {
             return $"{nameof(AddBuff)}({ID})";
+        }
+
+        public override string GetText(int indent = 0)
+        {
+            string target = UnitNode?.GetText(indent) ?? "目标";
+            string buffId = string.IsNullOrEmpty(ID) ? "Buff" : ID;
+            string levelText = Level?.GetText(indent) ?? "1";
+            string degreeText = Degree?.GetText(indent) ?? "1";
+            string param0Text = Param0?.GetText(indent);
+            
+            // 构建属性信息
+            List<string> details = new List<string>();
+            if (levelText != "1") details.Add($"等级{levelText}");
+            if (degreeText != "1") details.Add($"层数{degreeText}");
+            if (!string.IsNullOrEmpty(param0Text)) details.Add($"参数{param0Text}");
+            
+            string detailText = details.Count > 0 ? $"({string.Join(",", details)})" : "";
+            return $"为{target}添加{buffId}{detailText}";
         }
     }
     [NodeInfo(typeof(ActionNode), "添加随机Buff", 180, "执行/添加随机Buff")]
@@ -309,6 +406,28 @@ namespace SkillEditorDemo.Model
         {
             return $"{nameof(AddRandomBuffs)}({string.Join(",", IDs)})";
         }
+
+        public override string GetText(int indent = 0)
+        {
+            string target = UnitNode?.GetText(indent) ?? "目标";
+            string buffList = IDs?.Count > 0 ? string.Join(",", IDs) : "随机Buff";
+            string countText = Count?.GetText(indent) ?? "1";
+            string repeatText = Repeat ? "可重复" : "不重复";
+            string levelText = Level?.GetText(indent) ?? "1";
+            string degreeText = Degree?.GetText(indent) ?? "1";
+            
+            // 简化参数显示
+            List<string> details = new List<string>();
+            details.Add(repeatText);
+            if (levelText != "1") details.Add($"等级{levelText}");
+            if (degreeText != "1") details.Add($"层数{degreeText}");
+            
+            string param0Text = Param0?.GetText(indent);
+            if (!string.IsNullOrEmpty(param0Text)) details.Add($"参数{param0Text}");
+            
+            string detailText = details.Count > 0 ? $"({string.Join(",", details)})" : "";
+            return $"为{target}从[{buffList}]中随机选择{countText}个Buff添加{detailText}";
+        }
     }
 
     [NodeInfo(typeof(ActionNode), "终止触发事件", 180, "执行/终止触发事件"), AssetFilter(true, typeof(BuffAsset))]
@@ -324,6 +443,12 @@ namespace SkillEditorDemo.Model
         public override bool Handle(int trigCount, TrigInfo info, CombatCache cache)
         {
             return !Condition.GetResult(info, cache);
+        }
+
+        public override string GetText(int indent = 0)
+        {
+            string conditionText = Condition?.GetText(indent) ?? "条件";
+            return $"当{conditionText}时终止触发事件";
         }
     }
     [NodeInfo(typeof(ActionNode), "尝试移除Buff", 180, "执行/尝试移除Buff"), AssetFilter(true, typeof(BuffAsset))]
@@ -352,6 +477,15 @@ namespace SkillEditorDemo.Model
         public override string GetInfo()
         {
             return $"{nameof(TryRemoveBuff)}({ID})";
+        }
+
+        public override string GetText(int indent = 0)
+        {
+            string target = UnitNode?.GetText(indent) ?? "目标";
+            string buffId = string.IsNullOrEmpty(ID) ? "Buff" : ID;
+            string trueAction = True?.GetText(indent) ?? "无事发生";
+            string falseAction = False?.GetText(indent) ?? "无事发生";
+            return $"尝试从{target}移除{buffId},如果成功:{trueAction}否则:{falseAction}";
         }
     }
     [NodeInfo(typeof(ActionNode), "修改战斗缓存", 180, "执行/修改战斗缓存"), AssetFilter(true, typeof(BuffAsset))]
@@ -391,6 +525,19 @@ namespace SkillEditorDemo.Model
         public override string GetInfo()
         {
             return $"{nameof(CombatCacheModify)}({CacheType})";
+        }
+
+        public override string GetText(int indent = 0)
+        {
+            string valueText = Value?.GetText(indent) ?? "数值";
+            string modTypeText = ModType switch
+            {
+                ValueModType.Set => "设置为",
+                ValueModType.Add => "增加",
+                ValueModType.Multiply => "乘以",
+                _ => "修改为"
+            };
+            return $"将战斗缓存中的{CacheType}{modTypeText}{valueText}";
         }
     }
     [NodeInfo(typeof(ActionNode), "按圆创建对象", 180, "执行/按圆创建对象")]
@@ -438,6 +585,18 @@ namespace SkillEditorDemo.Model
                 ObjNode.Create(entity, info, cache.Clone());
             }
             return true;
+        }
+
+        public override string GetText(int indent = 0)
+        {
+            string objText = ObjNode?.GetText(indent) ?? "对象";
+            string originText = Origin?.GetText(indent) ?? "起始位置";
+            string countText = Count?.GetText(indent) ?? "数量";
+            string radiusText = Radius?.GetText(indent) ?? "半径";
+            string angleInfo = ByAngle ? 
+                $"每隔{Angle?.GetText(indent) ?? "角度"}度" : 
+                "均匀";
+            return $"在以{originText}为圆心,半径{radiusText}的圆周上{angleInfo}创建{countText}个{objText}";
         }
     }
 }
