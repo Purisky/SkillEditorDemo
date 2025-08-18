@@ -31,7 +31,7 @@ namespace SkillEditorDemo.Model
             {
                 unitText = string.Join(",", UnitList.Select(n => n.GetText()));
             }
-            return $"([{unitText}].存在)";
+            return $"([{unitText}].存在任意)";
         }
     }
 
@@ -85,7 +85,26 @@ namespace SkillEditorDemo.Model
             return true;
         }
 
-        public override string GetText() => $"(Dmg=>{Type.GetLabel()},{DirectType.GetLabel()},{CritType.GetLabel()})";
+        public override string GetText()
+        {
+            List<string> strings = ListPool<string>.GetList();
+            if (Type != DmgType.Any)
+            {
+                strings.Add( Type.GetLabel());
+            }
+            if (DirectType != DmgDirectType.Any)
+            {
+                strings.Add(DirectType.GetLabel());
+            }
+            if (CritType != CritType.Any)
+            {
+                strings.Add(CritType.GetLabel());
+            }
+            string text = string.Join("&", strings);
+            int count = strings.Count;
+            strings.Release();
+            return count == 0 ? "true" : $"(伤害类型检测:{text})";
+        }
     }
 
 

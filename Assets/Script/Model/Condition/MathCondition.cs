@@ -9,7 +9,7 @@ namespace SkillEditorDemo.Model
 {
     [PortColor("#40E0D0")]
     [Prompt(@"Condition是条件节点的基类,所有的条件节点都继承自Condition")]
-    public abstract class Condition : JsonNode, IGrowID<Condition>
+    public abstract class Condition : JsonNode, IGrowID<Condition>,IText
     {
         [JsonIgnore] public int GrowID { get; set; }
         public static T Get<T>(int id) where T : Condition => (T)IGrowID<Condition>.Get(id);

@@ -8,12 +8,12 @@ namespace SkillEditorDemo.Model
 {
     [NodeInfo(typeof(TrigNode), "触发器", 300, "Buff/触发器"), AssetFilter(true, typeof(BuffAsset)), PortColor("#7B68EE")]
     [Prompt(@"触发器主要节点,用于描述一个触发器的基本信息,包括触发条件和触发效果,触发器仅由Buff携带者触发效果")]
-    public partial class TrigNode : JsonNode , IGrowID<TrigNode>
+    public partial class TrigNode : JsonNode, IGrowID<TrigNode>
     {
-        [ShowInNode(ShowIf = nameof(ShowPassive)), LabelInfo("被", 20), Group("Trig", Width = 45)]
+        [ShowInNode(ShowIf = nameof(ShowPassive)), LabelInfo("被"), Group("Trig"), Style]
         [Prompt(@"决定出触发条件是否为被动,在定义该字段时需严格判断所涉及的场景是否为BUff的携带者主动发起的还是被动承受的")]
         public bool Passive;
-        [ShowInNode, LabelInfo(Hide =true), Group("Trig")]
+        [ShowInNode, LabelInfo(Hide = true), Group("Trig")]
         [Prompt(@"触发器的类型,决定触发器的触发方式和触发时机")]
         public TrigType TrigType;
         [ShowInNode(ShowIf = nameof(ShowSeq)), LabelInfo(Hide = true), Group("Trig", Width = 40)]
@@ -54,11 +54,12 @@ namespace SkillEditorDemo.Model
         [JsonIgnore]
         public TrigType CombinedTrigType
         {
-            get {
+            get
+            {
                 TrigType type = TrigType;
                 if (Passive) { type = type.ed(); }
                 if (TriggerSequence == TriggerSequence.Aft)
-                { 
+                {
                     type |= STrigType.Aft;
                 }
                 return type;

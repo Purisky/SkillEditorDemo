@@ -18,7 +18,7 @@ namespace SkillEditorDemo.Model
         [ShowInNode, LabelInfo("竞争机制", 60), Group("Compete")]
         [Prompt(@"Buff的竞争机制,当添加同ID Buff时,决定如何处理")]
         public CompeteType CompeteType;
-        [ShowInNode, LabelInfo("源内竞争", 60), Group("Compete")]
+        [ShowInNode, LabelInfo("源内竞争", 60), Group("Compete"),Style]
         [Prompt(@"Buff的竞争机制的补充,当为true时,只有相同来源的同ID Buff才会引发竞争机制")]
         public bool CompeteInSource;
         [ShowInNode, LabelInfo("最大等级", 60), Group("level")]

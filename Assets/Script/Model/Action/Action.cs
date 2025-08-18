@@ -148,13 +148,13 @@ namespace SkillEditorDemo.Model
         [ShowInNode, LabelInfo(Hide = true),Dropdown(nameof(DmgTypes))]
         [Prompt(@"伤害的类型,在当前字段中禁止使用Any,伤害类型会影响伤害的计算,如物理伤害(Physic)会受到物理伤害减免及加成的影响")]
         public DmgType DmgType;
-        [ShowInNode, LabelInfo("直接"), Group("Type")]
+        [ShowInNode, LabelInfo("直接伤害"), Group("Type"),Style]
         [Prompt(@"是否为直接伤害,作为触发器的标签,一些基于伤害触发的效果会选择过滤非直接伤害以阻止触发进一步的效果")]
         public bool Direct;
-        [ShowInNode, LabelInfo("闪避"), Group("Type")]
+        [ShowInNode, LabelInfo("可被闪避"), Group("Type"), Style]
         [Prompt(@"是否可以被闪避,如果为true,则目标单位可以通过闪避机制来规避伤害")]
         public bool Dodge_able;
-        [ShowInNode, LabelInfo("暴击"), Group("Type")]
+        [ShowInNode, LabelInfo("可暴击"), Group("Type"), Style]
         [Prompt(@"是否可以暴击,如果为true,则伤害可以触发暴击效果")]
         public bool Crit_able;
         [Child, LabelInfo(Hide = true)]

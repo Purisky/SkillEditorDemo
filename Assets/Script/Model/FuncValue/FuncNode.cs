@@ -65,7 +65,7 @@ namespace SkillEditorDemo.Model
         }
     }
     [Prompt(@"时间类数值的主要类型,-1在大部分情况下被视为永久")]
-    public partial struct TimeValue
+    public partial struct TimeValue:IText
     {
 
         [ShowInNode,Group("type",Width = 60),LabelInfo(Hide =true)]
@@ -87,12 +87,14 @@ namespace SkillEditorDemo.Model
         {
             if (Type == TimeType.GameTick)
             {
-                return $"{Value} Ticks";
+                return $"{Value} 帧";
             }
-            return $"{Value} s";
+            return $"{Value} 秒";
         }
+
+        public string GetText()=> ToString();
     }
-    [NodeInfo(typeof(FuncNode), "Buff取值", 100, "取值/Buff"),AssetFilter(true,typeof(BuffAsset))]
+    [NodeInfo(typeof(FuncNode), "Buff取值", 100, "取值/Buff取值"),AssetFilter(true,typeof(BuffAsset))]
     [Prompt(@"从当前Buff中取值,如当前Buff的等级/层数以及BuffRuntimeData所存储的数值等")]
     public partial class BuffValueGetter : FuncNode
     {

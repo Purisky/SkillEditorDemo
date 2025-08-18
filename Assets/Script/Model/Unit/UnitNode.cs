@@ -201,7 +201,7 @@ namespace SkillEditorDemo.Model
     }
 
     [NodeInfo(typeof(UnitNode), "触发单位", 140, "单位/触发单位")]
-    [Prompt(@"获取触发当前逻辑的单位,通常是技能/Buff的触发者,比如触发器需要其他单位参与时的触发者")]
+    [Prompt(@"获取触发当前逻辑的单位,通常是技能/Buff/碰撞的触发者,比如触发器需要其他单位参与时的触发者")]
     public partial class TriggerUnit : UnitNode
     {
         public override string GetText() => $"触发单位";
