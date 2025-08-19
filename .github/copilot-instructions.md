@@ -9,8 +9,16 @@
 - 使用 C# 9.0+ 语法
 - 遵循 Microsoft 命名约定
 - **强制要求：所有if/else语句必须使用大括号{}**
-  - 正确：`if (condition) { DoSomething(); }`
-  - 错误：`if (condition) DoSomething();`
+
+## TypeCacheSystem与代码生成一致性
+**⚠️ 重要：任何对反射信息/TypeCacheSystem的修改，都应该同步考虑Generator~.PrecompiledTypeInfo中代码生成的修改，以保持一致性**
+
+- **必读指南**：详见 `Assets\TreeNode\开发指南-TypeCacheSystem与代码生成一致性.md`
+- **核心原则**：运行时反射与编译时代码生成必须保持双向同步
+- **修改流程**：
+  1. 分析影响范围（TypeReflectionInfo结构、UnifiedMemberInfo生成、Attribute提取等）
+  2. 同步修改运行时TypeCacheSystem和编译时PrecompiledTypeInfo代码生成
+  3. 确保预编译版本性能优势
 
 ## 复杂需求处理
 - **🚫 严禁添加测试/性能代码**：除非用户明确要求，否则禁止在任何阶段添加测试代码、性能检测代码或相关任务
