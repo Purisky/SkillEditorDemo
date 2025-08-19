@@ -4,6 +4,7 @@
     "Nodes": [
       {
         "$type": "SkillEditorDemo.Model.BuffNode, Model",
+        "CompeteType": "Indie",
         "MaxLevel": 1,
         "MaxDegree": {
           "Value": 1.0
@@ -13,6 +14,7 @@
         },
         "Triggers": [
           {
+            "TrigType": "Remove",
             "Actions": [
               {
                 "$type": "SkillEditorDemo.Model.Damage, Model",
@@ -36,6 +38,24 @@
                   },
                   "Speed": {},
                   "Radius": {},
+                  "Actions": [
+                    {
+                      "$type": "SkillEditorDemo.Model.Damage, Model",
+                      "Value": {},
+                      "Position": {
+                        "x": 1269,
+                        "y": 89
+                      }
+                    },
+                    {
+                      "$type": "SkillEditorDemo.Model.CombatCacheModify, Model",
+                      "Value": {},
+                      "Position": {
+                        "x": 1428,
+                        "y": 272
+                      }
+                    }
+                  ],
                   "DisplayPath": "Projectile",
                   "Position": {
                     "x": 989,
@@ -66,25 +86,12 @@
               }
             ],
             "CD": {
-              "Value": {}
+              "Value": {
+                "Value": 3.0
+              }
             },
             "RemoveOnTrig": {},
-            "Times": [
-              {
-                "Value": {}
-              },
-              {
-                "Value": {
-                  "Node": {
-                    "$type": "SkillEditorDemo.Model.BuffValueGetter, Model",
-                    "Position": {
-                      "x": 759,
-                      "y": 276
-                    }
-                  }
-                }
-              }
-            ],
+            "Times": [],
             "Position": {
               "x": 430
             }

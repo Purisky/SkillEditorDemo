@@ -1,0 +1,222 @@
+{
+  "Data": {
+    "$type": "SkillEditorDemo.Model.BuffAsset, Model",
+    "Nodes": [
+      {
+        "$type": "SkillEditorDemo.Model.BuffNode, Model",
+        "MaxLevel": 3,
+        "MaxDegree": {
+          "Value": 1.0
+        },
+        "Time": {
+          "Value": {
+            "Value": 10.0
+          }
+        },
+        "Triggers": [
+          {
+            "Passive": true,
+            "TrigType": "Dmg",
+            "TriggerSequence": "Aft",
+            "Condition": {
+              "$type": "SkillEditorDemo.Model.DmgCheck, Model",
+              "Type": "Fire",
+              "Position": {
+                "x": 759
+              }
+            },
+            "Actions": [
+              {
+                "$type": "SkillEditorDemo.Model.BuffRuntimeData, Model",
+                "ValueModType": "Add",
+                "Value": {
+                  "Node": {
+                    "$type": "SkillEditorDemo.Model.CombatCacheGetter, Model",
+                    "Position": {
+                      "x": 989,
+                      "y": 98
+                    }
+                  }
+                },
+                "Position": {
+                  "x": 759,
+                  "y": 98
+                }
+              }
+            ],
+            "CD": {
+              "Value": {}
+            },
+            "RemoveOnTrig": {},
+            "Position": {
+              "x": 430
+            }
+          },
+          {
+            "Passive": true,
+            "TrigType": "RemoveOrTimeOut",
+            "Actions": [
+              {
+                "$type": "SkillEditorDemo.Model.ConditionAction, Model",
+                "Condition": {
+                  "$type": "SkillEditorDemo.Model.Compare, Model",
+                  "Left": {
+                    "Node": {
+                      "$type": "SkillEditorDemo.Model.BuffValueGetter, Model",
+                      "Position": {
+                        "x": 1158,
+                        "y": 176
+                      }
+                    }
+                  },
+                  "Right": {},
+                  "Position": {
+                    "x": 989,
+                    "y": 177
+                  }
+                },
+                "True": {
+                  "$type": "SkillEditorDemo.Model.AddBuff, Model",
+                  "UnitNode": {
+                    "$type": "SkillEditorDemo.Model.TriggerUnit, Model",
+                    "Position": {
+                      "x": 1179,
+                      "y": 300
+                    }
+                  },
+                  "ID": "DamageStoreDebuff",
+                  "Level": {},
+                  "Degree": {},
+                  "Param0": {},
+                  "Position": {
+                    "x": 989,
+                    "y": 300
+                  }
+                },
+                "Position": {
+                  "x": 759,
+                  "y": 177
+                }
+              }
+            ],
+            "CD": {
+              "Value": {}
+            },
+            "RemoveOnTrig": {},
+            "Position": {
+              "x": 430,
+              "y": 177
+            }
+          }
+        ],
+        "ID": "DamageStoreDebuff",
+        "Name": "负面效果/反弹/伤害存储"
+      },
+      {
+        "$type": "SkillEditorDemo.Model.CreateObjsInCircle, Model",
+        "ObjNode": {
+          "$type": "SkillEditorDemo.Model.OneShotBox, Model",
+          "Shape": {
+            "$type": "SkillEditorDemo.Model.CircleShape, Model",
+            "Radius": {
+              "Value": 2.0
+            },
+            "Position": {
+              "x": 759,
+              "y": 449
+            }
+          },
+          "Actions": [
+            {
+              "$type": "SkillEditorDemo.Model.Damage, Model",
+              "UnitNode": {
+                "$type": "SkillEditorDemo.Model.TriggerUnit, Model",
+                "Position": {
+                  "x": 989,
+                  "y": 528
+                }
+              },
+              "DmgType": "Frost",
+              "Direct": true,
+              "Crit_able": true,
+              "Value": {
+                "Node": {
+                  "$type": "SkillEditorDemo.Model.BinaryCal, Model",
+                  "Left": {
+                    "Node": {
+                      "$type": "SkillEditorDemo.Model.BuffValueGetter, Model",
+                      "Position": {
+                        "x": 1179,
+                        "y": 583
+                      }
+                    }
+                  },
+                  "CalculateType": "Mul",
+                  "Right": {
+                    "Value": 0.2,
+                    "Node": {
+                      "$type": "SkillEditorDemo.Model.BinaryCal, Model",
+                      "Left": {
+                        "Value": 0.2
+                      },
+                      "CalculateType": "Mul",
+                      "Right": {
+                        "Node": {
+                          "$type": "SkillEditorDemo.Model.BuffValueGetter, Model",
+                          "Type": "Level",
+                          "Position": {
+                            "x": 1348,
+                            "y": 660
+                          }
+                        }
+                      },
+                      "Position": {
+                        "x": 1179,
+                        "y": 660
+                      }
+                    }
+                  },
+                  "Position": {
+                    "x": 989,
+                    "y": 583
+                  }
+                }
+              },
+              "Position": {
+                "x": 759,
+                "y": 528
+              }
+            }
+          ],
+          "DisplayPath": "Circle",
+          "Position": {
+            "x": 430,
+            "y": 449
+          }
+        },
+        "Origin": {
+          "$type": "SkillEditorDemo.Model.GetUnitTransform, Model",
+          "UnitNode": {
+            "$type": "SkillEditorDemo.Model.GetBuffUnit, Model",
+            "Position": {
+              "x": 759,
+              "y": 653
+            }
+          },
+          "Position": {
+            "x": 430,
+            "y": 653
+          }
+        },
+        "Count": {
+          "Value": 1.0
+        },
+        "Angle": {},
+        "Radius": {},
+        "Position": {
+          "y": 449
+        }
+      }
+    ]
+  }
+}

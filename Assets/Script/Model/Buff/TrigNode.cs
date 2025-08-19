@@ -1,4 +1,4 @@
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using SkillEditorDemo.Utility;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +10,9 @@ namespace SkillEditorDemo.Model
     [Prompt(@"触发器主要节点,用于描述一个触发器的基本信息,包括触发条件和触发效果,触发器仅由Buff携带者触发效果")]
     public partial class TrigNode : JsonNode, IGrowID<TrigNode>
     {
+        [Child, TitlePort]
+        [Prompt(@"触发过滤器,当不为空时对触发状态进行过滤,如造成伤害时,过滤伤害类型/值,返回否会跳过触发")]
+        public Condition Condition;
         [ShowInNode(ShowIf = nameof(ShowPassive)), LabelInfo("被"), Group("Trig"), Style]
         [Prompt(@"决定出触发条件是否为被动,在定义该字段时需严格判断所涉及的场景是否为BUff的携带者主动发起的还是被动承受的")]
         public bool Passive;
@@ -20,9 +23,6 @@ namespace SkillEditorDemo.Model
         [Prompt(@"触发器的触发顺序,当一个触发行为存在完成状态时,用于区分在完成前还是完成后触发效果 以下是其在代码中的执行顺序:[On]->Event->[Aft]
 完成前触发可用于修改或者打断事件,完成后触发则可以获得事件执行后的完整数据")]
         public TriggerSequence TriggerSequence;
-        [Child, TitlePort]
-        [Prompt(@"触发过滤器,当不为空时对触发状态进行过滤,如造成伤害时,过滤伤害类型/值,返回否会跳过触发")]
-        public Condition Condition;
         [Child(true), LabelInfo("效果组"), Group("Trig", Width = 70)]
         [Prompt(@"触发器的效果组,按数组顺序依次触发")]
         public List<ActionNode> Actions;
@@ -32,7 +32,8 @@ namespace SkillEditorDemo.Model
         [Child, LabelInfo("触发移除")]
         [Prompt(@"当触发器被成功触发时,移除的层数,-1为直接移除Buff,0则代表无效果,>0代表对应层数")]
         public FuncValue RemoveOnTrig;
-
+        [ShowInNode, LabelInfo("奥术大师多")]
+        public List<TimeValue> Times;
 
 
         [JsonIgnore]
