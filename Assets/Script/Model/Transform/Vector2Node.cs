@@ -47,7 +47,7 @@ namespace SkillEditorDemo.Model
         public override string GetText(int indent = 0)
         {
             string unitText = UnitNode?.GetText(indent) ?? "单位";
-            return $"{unitText}的坐标";
+            return $"{unitText} 的坐标";
         }
 
         public override Vector2 GetResult(TrigInfo info, CombatCache cache)

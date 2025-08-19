@@ -90,7 +90,7 @@ namespace SkillEditorDemo.Model
             }
             
             string conditionText = Condition?.GetText(indent) ?? "条件";
-            return $"筛选{unitText}中符合({conditionText})的单位";
+            return $"筛选 {unitText} 中符合({conditionText})的单位";
         }
 
         public override List<Unit> GetUnits(TrigInfo info, CombatCache cache)
@@ -142,7 +142,7 @@ namespace SkillEditorDemo.Model
             
             string compareText = Compare?.GetText(indent) ?? "数值";
             string orderText = ByDescending ? "降序" : "升序";
-            return $"排序{unitText}(按{compareText}{orderText})";
+            return $"排序 {unitText} (按 {compareText} {orderText})";
         }
 
         public override List<Unit> GetUnits(TrigInfo info, CombatCache cache)
@@ -185,7 +185,7 @@ namespace SkillEditorDemo.Model
             }
             
             string indexText = Index?.GetText(indent) ?? "0";
-            return $"取出{unitText}的第{indexText}个";
+            return $"取出 {unitText} 的第 {indexText} 个";
         }
 
         public override List<Unit> GetUnits(TrigInfo info, CombatCache cache)

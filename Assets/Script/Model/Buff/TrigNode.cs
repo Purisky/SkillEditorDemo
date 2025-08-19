@@ -68,8 +68,8 @@ namespace SkillEditorDemo.Model
 
         public override string GetText(int indent = 0)
         {
-            string indentStr = new string(' ', indent * 2);
-            string childIndentStr = new string(' ', (indent + 1) * 2);
+            string indentStr = new string('\t', indent);
+            string childIndentStr = new string('\t', indent + 1);
             
             List<string> lines = new List<string>();
             
@@ -79,30 +79,27 @@ namespace SkillEditorDemo.Model
             
             if (Passive)
             {
-                trigCondition = "当被" + trigTypeText;
+                trigCondition = "当 被 " + trigTypeText;
             }
             else
             {
-                trigCondition = "当" + trigTypeText;
+                trigCondition = "当 " + trigTypeText;
             }
             
             if (TriggerSequence == TriggerSequence.Aft)
             {
-                trigCondition += "后";
+                trigCondition += " 后";
             }
             else if (TriggerSequence == TriggerSequence.On)
             {
-                trigCondition += "时";
+                trigCondition += " 时";
             }
             
             // 构建执行效果描述
             string actionText = "无事发生";
             if (Actions != null && Actions.Count > 0)
             {
-                if (Actions.Count == 1)
-                {
-                    actionText = Actions[0].GetText(0);
-                }
+                actionText = "";
             }
             
             // 构建条件过滤描述
@@ -110,23 +107,22 @@ namespace SkillEditorDemo.Model
             if (Condition != null)
             {
                 string conditionText = Condition.GetText(0);
-                conditionPart = $",如果{conditionText}";
+                conditionPart = $",如果 {conditionText}";
             }
             
             // 主描述行：当...时,如果...执行:...
-            lines.Add($"{indentStr}{trigCondition}{conditionPart},执行: {actionText}");
+            lines.Add($"{indentStr}{trigCondition} {conditionPart},执行:{actionText}");
             
             // 详细信息
-            if (Actions != null && Actions.Count > 1)
+            if (Actions != null && Actions.Count > 0)
             {
                 for (int i = 0; i < Actions.Count; i++)
                 {
-                    lines.Add($"{childIndentStr}  {i + 1}. {Actions[i].GetText(0)}");
+                    lines.Add($"{Actions[i].GetText(indent+1)}");
                 }
             }
-            
             // 冷却时间
-            string cdText = CD.GetText();
+                string cdText = CD.GetText();
             if (CD.Value.Node!=null|| CD.Value.Value!=0)
             {
                 lines.Add($"{childIndentStr}冷却时间: {cdText}");
@@ -142,7 +138,7 @@ namespace SkillEditorDemo.Model
                 }
                 else
                 {
-                    lines.Add($"{childIndentStr}触发后: 移除{removeText}层");
+                    lines.Add($"{childIndentStr}触发后: 移除 {removeText} 层");
                 }
             }
             

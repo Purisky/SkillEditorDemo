@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using TreeNode.Utility;
 
 namespace SkillEditorDemo.Model
@@ -18,7 +18,7 @@ namespace SkillEditorDemo.Model
     }
     public enum TrigType
     {
-        [LabelInfo("Buff添加"), NoPassive, NoSeq]
+        [LabelInfo("Buff启动"), NoPassive, NoSeq]
         Start,
         [LabelInfo("Buff移除"), NoPassive, NoSeq]
         Remove,

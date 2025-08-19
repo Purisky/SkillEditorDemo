@@ -36,8 +36,8 @@ namespace SkillEditorDemo.Model
 
         public override string GetText(int indent = 0)
         {
-            string indentStr = new string(' ', indent * 2);
-            string childIndentStr = new string(' ', (indent + 1) * 2);
+            string indentStr = new string('\t', indent);
+            string childIndentStr = new string('\t', indent + 1);
             
             List<string> lines = new List<string>();
             

@@ -28,7 +28,7 @@ namespace SkillEditorDemo.Model
         {
             string posText = Vector2?.GetText(indent) ?? "(0,0)";
             string angleText = Angle?.GetText(indent) ?? "0";
-            return $"变换({posText},角度{angleText}°)";
+            return $"变换({posText},角度 {angleText}°)";
         }
 
         public override TransformCmp GetResult(TrigInfo info, CombatCache cache)

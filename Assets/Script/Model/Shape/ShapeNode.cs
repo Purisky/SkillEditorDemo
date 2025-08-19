@@ -22,7 +22,7 @@ namespace SkillEditorDemo.Model
         public override string GetText(int indent = 0)
         {
             string radiusText = Radius?.GetText(indent) ?? "0";
-            return $"圆形(半径{radiusText})";
+            return $"圆形(半径 {radiusText})";
         }
 
         public override IAABB GetShape(TrigInfo info, CombatCache cache)
@@ -46,7 +46,7 @@ namespace SkillEditorDemo.Model
         {
             string widthText = Width?.GetText(indent) ?? "0";
             string heightText = Height?.GetText(indent) ?? "0";
-            return $"矩形({widthText}x{heightText})";
+            return $"矩形({widthText} x {heightText})";
         }
 
         public override IAABB GetShape(TrigInfo info, CombatCache cache)
@@ -71,7 +71,7 @@ namespace SkillEditorDemo.Model
         {
             string radiusText = Radius?.GetText(indent) ?? "0";
             string angleText = Angle?.GetText(indent) ?? "0";
-            return $"扇形(半径{radiusText},角度{angleText}°)";
+            return $"扇形(半径 {radiusText},角度 {angleText}°)";
         }
 
         public override IAABB GetShape(TrigInfo info, CombatCache cache)

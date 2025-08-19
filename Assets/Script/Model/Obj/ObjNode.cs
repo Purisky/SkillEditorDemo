@@ -69,17 +69,19 @@ namespace SkillEditorDemo.Model
 
         public override string GetText(int indent = 0)
         {
+            string childIndentStr = new string('\t', indent + 1);
+            
             List<string> paramParts = new List<string>();
             
             // 基础参数 - 总是显示
-            string speedText = Speed?.GetText(indent) ?? "0";
-            paramParts.Add($"速度{speedText}");
+            string speedText = Speed?.GetText(0) ?? "0";
+            paramParts.Add($"速度 {speedText}");
             
-            string radiusText = Radius?.GetText(indent) ?? "0";
-            paramParts.Add($"半径{radiusText}");
+            string radiusText = Radius?.GetText(0) ?? "0";
+            paramParts.Add($"半径 {radiusText}");
             
-            string timeText = Time.GetText(indent) ?? "0";
-            paramParts.Add($"持续{timeText}");
+            string timeText = Time.GetText() ?? "0";
+            paramParts.Add($"持续 {timeText}");
             
             // 触发条件
             List<string> triggerConditions = new List<string>();
@@ -87,25 +89,30 @@ namespace SkillEditorDemo.Model
             if (TrigOnHitTerrain) triggerConditions.Add("地形");
             if (TrigOnTimeout) triggerConditions.Add("超时");
             
+            // 组装基础描述
+            string paramText = string.Join(", ", paramParts);
+            string triggerText = string.Join(" | ", triggerConditions);
+            
+            List<string> lines = new List<string>();
+            
             // 执行效果
-            string actionText = "无事发生";
             if (Actions != null && Actions.Count > 0)
             {
-                if (Actions.Count == 1)
-                {
-                    actionText = Actions[0].GetText(indent);
-                }
-                else
-                {
-                    actionText = $"[{string.Join(",", Actions.Select(a => a.GetText(indent)))}]";
-                }
+
+                    lines.Add($"({paramText}) 且 {triggerText} 后执行以下的投射物:");
+                    for (int i = 0; i < Actions.Count; i++)
+                    {
+                        string actionText = Actions[i].GetText(indent+1);
+                        lines.Add($"{actionText}");
+                    }
+                
+            }
+            else
+            {
+                lines.Add($"({paramText}) 且 {triggerText} 后 无事发生 的投射物");
             }
             
-            // 组装最终描述
-            string paramText = string.Join(",", paramParts);
-            string triggerText = string.Join("|", triggerConditions);
-            
-            return $"{paramText}且({triggerText})后:{actionText}的投射物";
+            return string.Join("\n", lines);
         }
 
         public void Hit(TrigInfo info, CombatCache cache)
@@ -155,24 +162,32 @@ namespace SkillEditorDemo.Model
 
         public override string GetText(int indent = 0)
         {
+            string indentStr = new string('\t', indent);
+            string childIndentStr = new string('\t', indent + 1);
+            
             // 形状描述
-            string shapeText = Shape?.GetText(indent) ?? "形状";
+            string shapeText = Shape?.GetText(0) ?? "形状";
+            
+            List<string> lines = new List<string>();
             
             // 执行效果
-            string actionText = "无事发生";
             if (Actions != null && Actions.Count > 0)
             {
-                if (Actions.Count == 1)
-                {
-                    actionText = Actions[0].GetText(indent);
-                }
-                else
-                {
-                    actionText = $"[{string.Join(",", Actions.Select(a => a.GetText(indent)))}]";
-                }
+
+                    lines.Add($"{indentStr}{shapeText} 且命中后执行以下的碰撞盒子:");
+                    for (int i = 0; i < Actions.Count; i++)
+                    {
+                        string actionText = Actions[i].GetText(indent + 1);
+                        lines.Add($"{actionText}");
+                    }
+                
+            }
+            else
+            {
+                lines.Add($"{indentStr}{shapeText} 且命中后 无事发生 的碰撞盒子");
             }
             
-            return $"{shapeText}且命中后:{actionText}的碰撞盒子";
+            return string.Join("\n", lines);
         }
 
         public void Hit(TrigInfo info, CombatCache cache)

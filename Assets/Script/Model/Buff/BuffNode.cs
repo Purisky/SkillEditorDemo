@@ -36,8 +36,8 @@ namespace SkillEditorDemo.Model
 
         public override string GetText(int indent = 0)
         {
-            string indentStr = new string(' ', indent * 2);
-            string childIndentStr = new string(' ', (indent + 1) * 2);
+            string indentStr = new string('\t', indent);
+            string childIndentStr = new string('\t', indent + 1);
             
             List<string> lines = new List<string>();
             
@@ -82,16 +82,15 @@ namespace SkillEditorDemo.Model
             {
                 if (Triggers.Count == 1)
                 {
-                    string triggerText = Triggers[0].GetText(indent + 2);
+                    string triggerText = Triggers[0].GetText(indent + 1);
                     lines.Add(triggerText);
                 }
                 else
                 {
                     for (int i = 0; i < Triggers.Count; i++)
                     {
-                        string triggerText = Triggers[i].GetText(indent + 2);
-                        lines.Add($"{childIndentStr}  {i + 1}.{triggerText}");
-                        lines.Add(triggerText);
+                        string triggerText = Triggers[i].GetText(indent + 1).TrimStart('\t');
+                        lines.Add($"{childIndentStr}{i + 1}.{triggerText}");
                     }
                 }
             }
