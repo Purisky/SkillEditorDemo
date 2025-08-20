@@ -18,16 +18,12 @@ namespace SkillEditorDemo.MCP
                 log.AppendLine("=== 开始强制重新编译程序集 ===");
                 log.AppendLine($"时间: {System.DateTime.Now:yyyy-MM-dd HH:mm:ss}");
                 
-                // 刷新资源数据库
-                log.AppendLine("正在刷新资源数据库...");
-                AssetDatabase.Refresh();
+                // 触发脚本重新编译（不重新导入资源）
+                log.AppendLine("正在触发脚本重新编译...");
+                UnityEditor.Compilation.CompilationPipeline.RequestScriptCompilation();
                 
-                // 强制重新编译脚本
-                log.AppendLine("正在强制重新编译脚本...");
-                AssetDatabase.ImportAsset("Assets", ImportAssetOptions.ImportRecursive);
-                
-                // 等待编译完成
-                log.AppendLine("等待编译完成...");
+                // 等待编译开始
+                log.AppendLine("等待编译开始...");
                 
                 // 检查编译状态
                 if (EditorApplication.isCompiling)
@@ -36,15 +32,18 @@ namespace SkillEditorDemo.MCP
                 }
                 else
                 {
-                    log.AppendLine("✅ 编译完成，程序集已重新加载");
+                    log.AppendLine("✅ 编译请求已发送，程序集将在短时间内重新加载");
+                    log.AppendLine("💡 如果编译状态显示为未编译，编译可能已经在后台完成");
                 }
                 
                 log.AppendLine("=== 重新编译操作完成 ===");
                 log.AppendLine();
-                log.AppendLine("💡 提示：如果仍然无法调用测试方法，请尝试：");
-                log.AppendLine("1. 等待几秒钟让Unity完成所有编译操作");
-                log.AppendLine("2. 检查Console面板是否有编译错误");
-                log.AppendLine("3. 重启Unity Editor（如果问题持续存在）");
+                log.AppendLine("💡 提示：");
+                log.AppendLine("• 此操作仅重新编译代码，不会重新导入资源或场景");
+                log.AppendLine("• 如果仍然无法调用测试方法，请尝试：");
+                log.AppendLine("  1. 等待几秒钟让Unity完成编译操作");
+                log.AppendLine("  2. 检查Console面板是否有编译错误");
+                log.AppendLine("  3. 如果问题持续存在，可以手动修改并保存任意脚本文件触发编译");
                 
                 return log.ToString();
             }
@@ -144,8 +143,6 @@ namespace SkillEditorDemo.MCP
                 return $"检查程序集状态时发生错误: {ex.Message}\n堆栈跟踪: {ex.StackTrace}";
             }
         }
-
-
 
         [Tool("运行无参静态函数")]
         public static string RunCode(string methodFullName)
