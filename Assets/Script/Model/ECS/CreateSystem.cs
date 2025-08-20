@@ -1,6 +1,7 @@
 ﻿using Leopotam.EcsLite;
 using SkillEditorDemo.Utility;
 using System;
+using System.Collections.Generic;
 using System.Numerics;
 
 namespace SkillEditorDemo.Model
@@ -10,17 +11,34 @@ namespace SkillEditorDemo.Model
         EcsFilter Units;
         EcsFilter Projectiles;
         EcsFilter Hitboxes;
+
+        public static List<(TransformCmp, UnitCreateCmp)> InitInfos;
         public void Init(IEcsSystems systems)
         {
             EcsWorld world = systems.GetWorld();
             Units = world.Filter<UnitCreateCmp>().Exc<UnitCmp>().End();
             Projectiles = world.Filter<ProjectileCreateCmp>().Exc<ProjectileCmp>().End();
             Hitboxes = world.Filter<HitboxCreateCmp>().Exc<HitboxCmp>().End();
-
-            AddUnit("Player","玩家", 0, new Vector2(), 0, true);
-
-            AddUnit("Minion1","杂兵", 1, new Vector2(3.5f,2), 0);
-            AddUnit("Minion1", "杂兵", 1, new Vector2(3,3.5f), 0);
+            if (InitInfos != null)
+            {
+                for (int i = 0; i < InitInfos.Count; i++)
+                {
+                    (TransformCmp trans, UnitCreateCmp unit) = InitInfos[i];
+                    int entity = EcsWorld.Inst.NewEntity();
+                    entity.Add(trans);
+                    entity.Add(unit);
+                }
+            }
+        }
+        public static void AddInitUnit(string id, string name, int faction, Vector2 pos, Angle rot, bool player = false)
+        {
+            TransformCmp transformCmp = new() { Pos = pos, Rot = rot };
+            UnitCreateCmp unitCreateCmp = new() { ID = id, Name = name, Faction = faction, IsPlayer = player };
+            if (InitInfos == null)
+            {
+                InitInfos = new List<(TransformCmp, UnitCreateCmp)>();
+            }
+            InitInfos.Add((transformCmp, unitCreateCmp));
         }
         public static int AddUnit(string id,string name, int faction, Vector2 pos, Angle rot, bool player = false)
         {
@@ -63,7 +81,11 @@ namespace SkillEditorDemo.Model
         {
             ref UnitCreateCmp unitCreate = ref entity.Get<UnitCreateCmp>();
             ref TransformCmp transform = ref entity.Get<TransformCmp>();
-            Unit unit = new(entity, unitCreate.ID, unitCreate.Faction) { Name = unitCreate.Name };
+            
+            // 处理Unit名称：如果unitCreate.Name为空，使用默认名称
+            string unitName = string.IsNullOrEmpty(unitCreate.Name) ? unitCreate.ID : unitCreate.Name;
+            
+            Unit unit = new(entity, unitCreate.ID, unitCreate.Faction) { Name = unitName };
             float radius = unit.Data.Radius;
             ColliderCmp collider = new(new Circle() { Radius = radius, Entity = entity }, unit.Faction, ColliderType.Unit);
             collider.Shape.SetDirty(ref transform);

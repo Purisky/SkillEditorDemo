@@ -1,4 +1,4 @@
-using Leopotam.EcsLite;
+﻿using Leopotam.EcsLite;
 using UnityEngine;
 using UnityEngine.UIElements;
 
@@ -19,7 +19,15 @@ namespace SkillEditorDemo.View
             });
             DataMgr.Inst.Init();
             MainUI = UIDocument.rootVisualElement.Q<MainUI>();
-            //将MainUI添加到UI根节点
+
+
+
+            //获取所有VisualUnitSpawner组件并调用SpawnUnitAndDestroy方法
+            VisualUnitSpawner[] visualUnitSpawners =FindObjectsByType<VisualUnitSpawner>( FindObjectsSortMode.None);
+            for (int i = 0; i < visualUnitSpawners.Length; i++)
+            {
+                visualUnitSpawners[i].SpawnUnitAndDestroy();
+            }
             Model.GameCore.Inst.Init();
             Systems = new EcsSystems(Model.GameCore.Inst.World);
             Systems.Add(new InputSystem());

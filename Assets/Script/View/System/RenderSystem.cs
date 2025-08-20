@@ -19,13 +19,11 @@ namespace SkillEditorDemo.View
             Events.OnDestroy.Projectile += OnProjectileRelease;
             Events.OnDestroy.Hitbox += OnHitboxRelease;
 
-
-
             Friendly = Resources.Load<Material>("Material/Friendly");
             Hostile = Resources.Load<Material>("Material/Hostile");
 
-
-
+            // 创建无限网格地板
+            InfiniteGridFloor.CreateGridFloor();
         }
 
         void OnTransform(int entity)
