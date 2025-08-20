@@ -1,9 +1,11 @@
 ﻿using Leopotam.EcsLite;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SkillEditorDemo.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.AccessControl;
 using TreeNode.Runtime;
 using TreeNode.Utility;
 
@@ -256,6 +258,7 @@ namespace SkillEditorDemo.Model
                 CombatCache clone = cache.Clone();
                 float dmgValue = Value.GetResult(info, clone);
                 clone[CombatCacheType.TotalDmg] = dmgValue * dmgMod;
+                Debug.Log($"{from?.ToString()??"未知目标"} 尝试对 {units[i]} 造成伤害 {clone[CombatCacheType.TotalDmg]}(原始数值)");
                 TryMakeDmg(trigCount, units[i], clone, from);
             }
 
@@ -313,6 +316,23 @@ namespace SkillEditorDemo.Model
         public FuncValue Value;
         public override bool Handle(int trigCount, TrigInfo info, CombatCache cache)
         {
+            Buff buff = Buff.Get(info.BuffID);
+            if (buff == null) { return true; }
+            float value = Value.GetResult(info, cache);
+            float oldValue = buff.RuntimeData;
+            switch (ValueModType)
+            {
+                case ValueModType.Set:
+                    buff.RuntimeData = value;
+                    break;
+                case ValueModType.Add:
+                    buff.RuntimeData += value;
+                    break;
+                case ValueModType.Multiply:
+                    buff.RuntimeData *= value;
+                    break;
+            }
+            Debug.Log($"{buff.CarrierUnit}.{buff}.存值[{oldValue} -> {buff.RuntimeData}]");
             return true;
         }
 
@@ -361,7 +381,19 @@ namespace SkillEditorDemo.Model
 
 
         public override bool Handle(int trigCount, TrigInfo info, CombatCache cache)
-        {
+        {  
+            Unit from = Unit.Get(info.SourceID);
+            List<Unit> units = UnitNode.GetUnits(info, cache);
+            int level = (int)(Level?.GetResult(info, cache) ?? 1);
+            int degree = (int)(Degree?.GetResult(info, cache) ?? 1);
+            float param0 = Param0?.GetResult(info, cache) ?? 0;
+            for (int i = 0; i < units.Count; i++)
+            {
+                info.CurrentID = units[i].Entity;
+                CombatCache clone = cache.Clone();
+                Debug.Log($"{from?.ToString() ?? "未知目标"} 尝试对 {units[i]} 添加Buff(lv.{level} {ID}|{degree}层|{param0})");
+                units[i].BuffHandler.AddBuff(ID, info.SourceID, info.SourceID, level, degree, param0);
+            }
             return true;
         }
 
@@ -423,6 +455,7 @@ namespace SkillEditorDemo.Model
 
         public override bool Handle(int trigCount, TrigInfo info, CombatCache cache)
         {
+            throw new NotImplementedException(nameof(AddRandomBuffs));
             return true;
         }
         public override string GetInfo()
@@ -495,7 +528,7 @@ namespace SkillEditorDemo.Model
 
         public override bool Handle(int trigCount, TrigInfo info, CombatCache cache)
         {
-            return true;
+            throw new NotImplementedException(nameof(TryRemoveBuff));
         }
         public override string GetInfo()
         {

@@ -1,4 +1,4 @@
-using Leopotam.EcsLite;
+﻿using Leopotam.EcsLite;
 using SkillEditorDemo.Utility;
 using System.Collections.Generic;
 
@@ -67,9 +67,10 @@ namespace SkillEditorDemo.Model
         /// <param name="info"></param>
         /// <param name="cache"></param>
         /// <returns></returns>
-        bool internalTrig(int trigCount, TrigInfo info,CombatCache cache)
+        bool internalTrig(int trigCount, TrigInfo info, CombatCache cache)
         {
             bool trigContinue = true;
+            Debug.Log($"{new string('\t', 5 - trigCount)}{Buff.CarrierUnit}.{Buff}.{TrigNode.CombinedTrigType} 触发");
             for (int i = 0; i < Actions.Count; i++)
             {
                 trigContinue &= Actions[i].Handle(trigCount, info, cache);

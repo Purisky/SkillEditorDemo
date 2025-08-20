@@ -1,4 +1,4 @@
-using Leopotam.EcsLite;
+﻿using Leopotam.EcsLite;
 using SkillEditorDemo.Utility;
 using System;
 using System.Linq;
@@ -10,6 +10,7 @@ namespace SkillEditorDemo.Model
         protected const TrigType Aft = STrigType.Aft;
         public EcsPackedEntity Entity;
         public string ID;
+        public string Name;
         public static Unit Get(int entity) => entity.Get<UnitCmp>().Unit;
         public static Unit Get(EcsPackedEntity entity)
         {
@@ -80,10 +81,11 @@ namespace SkillEditorDemo.Model
 
         public void TakeDmg(int trigCount, CombatCache cache, Unit from)
         {
-            Debug.Log($"TakeDmg HP[{HP.Value}]- {cache[CombatCacheType.TotalDmg]}");
+            int old = HP.Value;
             //Dmged
             cache[CombatCacheType.TotalDmg]*= StatHandler.GetDmgMod(cache.DmgType, true);
             DmgTrig();
+            Debug.Log($"{this} TakeDmg HP[{old} -> {HP.Value}]");
             if (HP.Value <= 0)
             {
                 TryDie(trigCount, cache, from);
@@ -99,6 +101,7 @@ namespace SkillEditorDemo.Model
                     cache[CombatCacheType.LeftDmg] = cache[CombatCacheType.TotalDmg] * defMod;
                     //ShieldPoint
                     if (!SP.TrigCost(trigCount, (int)cache[CombatCacheType.LeftDmg], cache, from)) { return; }
+                    //HealthPoint
                     if (!HP.TrigCost(trigCount, (int)cache[CombatCacheType.LeftDmg], cache, from)) { return; }
                 }
                 if (!Trig(trigCount, Aft | TrigType.Dmg.ed(), cache, from)) { return; }
@@ -166,7 +169,11 @@ namespace SkillEditorDemo.Model
 
 
 
-
+        public override string ToString()
+        {
+            string name = string.IsNullOrEmpty(Name) ? "Unit" : Name;
+            return $"{name}({ID}[{Entity.Id}])";
+        }
 
     }
 }

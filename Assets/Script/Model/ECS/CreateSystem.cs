@@ -1,4 +1,4 @@
-using Leopotam.EcsLite;
+﻿using Leopotam.EcsLite;
 using SkillEditorDemo.Utility;
 using System;
 using System.Numerics;
@@ -17,15 +17,15 @@ namespace SkillEditorDemo.Model
             Projectiles = world.Filter<ProjectileCreateCmp>().Exc<ProjectileCmp>().End();
             Hitboxes = world.Filter<HitboxCreateCmp>().Exc<HitboxCmp>().End();
 
-            AddUnit("Player", 0, new Vector2(), 0, true);
+            AddUnit("Player","玩家", 0, new Vector2(), 0, true);
 
-            AddUnit("Minion1", 1, new Vector2(3.5f,2), 0);
-            AddUnit("Minion1", 1, new Vector2(3,3.5f), 0);
+            AddUnit("Minion1","杂兵", 1, new Vector2(3.5f,2), 0);
+            AddUnit("Minion1", "杂兵", 1, new Vector2(3,3.5f), 0);
         }
-        public static int AddUnit(string id, int faction, Vector2 pos, Angle rot, bool player = false)
+        public static int AddUnit(string id,string name, int faction, Vector2 pos, Angle rot, bool player = false)
         {
             TransformCmp transformCmp = new () { Pos = pos, Rot = rot };
-            UnitCreateCmp unitCreateCmp = new () { ID = id, Faction = faction, IsPlayer = player };
+            UnitCreateCmp unitCreateCmp = new () { ID = id,Name = name, Faction = faction, IsPlayer = player };
             int entity = EcsWorld.Inst.NewEntity();
             //Debug.Log(entity);
             entity.Add(transformCmp);
@@ -63,7 +63,7 @@ namespace SkillEditorDemo.Model
         {
             ref UnitCreateCmp unitCreate = ref entity.Get<UnitCreateCmp>();
             ref TransformCmp transform = ref entity.Get<TransformCmp>();
-            Unit unit = new (entity,unitCreate.ID, unitCreate.Faction);
+            Unit unit = new(entity, unitCreate.ID, unitCreate.Faction) { Name = unitCreate.Name };
             float radius = unit.Data.Radius;
             ColliderCmp collider = new(new Circle() { Radius = radius, Entity = entity }, unit.Faction, ColliderType.Unit);
             collider.Shape.SetDirty(ref transform);

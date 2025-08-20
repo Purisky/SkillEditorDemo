@@ -1,4 +1,4 @@
-using Leopotam.EcsLite;
+﻿using Leopotam.EcsLite;
 using SkillEditorDemo.Utility;
 using System;
 using System.Collections.Generic;
@@ -22,8 +22,6 @@ namespace SkillEditorDemo.Model
         public int TotalTick;
         public TrigInfo TrigInfo;
         public Dictionary<TrigType, BuffTrig[]> Lifecycle;
-        public Dictionary<int, float> ValueCache;
-        public Dictionary<string, float> ParamValues;
         public BuffNode BuffData=> IData<BuffNode>.Get(ID);
         public static Buff Get(int id) => IIndex<Buff>.Get(id);
         public EcsPackedEntity SourceID => TrigInfo.SourceID;
@@ -156,6 +154,11 @@ namespace SkillEditorDemo.Model
                 Trigs[i].Dispose();
             }
             IIndex<Buff>.Remove(Index);
+        }
+
+        public override string ToString()
+        {
+            return $"Buff({ID}[{Index}])";
         }
     }
 }

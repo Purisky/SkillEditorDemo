@@ -1,4 +1,4 @@
-using SkillEditorDemo.Utility;
+﻿using SkillEditorDemo.Utility;
 
 namespace SkillEditorDemo.Model
 {
@@ -10,6 +10,7 @@ namespace SkillEditorDemo.Model
     public struct UnitCreateCmp
     {
         public string ID;
+        public string Name;
         public int Faction;
         public bool IsPlayer;
 
