@@ -134,60 +134,65 @@ namespace SkillEditorDemo.Model
         }
         public bool IsColliderTo(in TransformCmp transform, in Sector other, in TransformCmp otherTransform)
         {
-            //Debug.DrawLine(transform.Pos, otherTransform.Pos, Color.Red, 5);
             Vector2 circleCenter = transform.Pos;
             Vector2 sectorCenter = otherTransform.Pos;
             float sectorRadius = other.Radius;
             float sectorAngle = other.Angle;
 
-            // Check if the circle's center is within the sector's radius
-            if (Vector2.DistanceSquared(circleCenter, sectorCenter) > (sectorRadius + Radius) * (sectorRadius + Radius))
+            // Quick distance check - if too far away, no collision possible
+            float distanceToSectorCenter = Vector2.Distance(circleCenter, sectorCenter);
+            if (distanceToSectorCenter > sectorRadius + Radius)
             {
                 return false;
             }
-            //Debug.Log("distance pass");
-            // Calculate the angle between the sector's center and the circle's center
-            Vector2 direction = Vector2.Normalize(circleCenter - sectorCenter);
-            float angleToCircle = MathF.Atan2(direction.Y, direction.X) * 180 / MathF.PI;
 
+            // Convert angles to match our coordinate system (0 degree = up, clockwise positive)
+            Vector2 toCircle = circleCenter - sectorCenter;
+            float angleToCircle = MathF.Atan2(toCircle.X, toCircle.Y) * 180f / MathF.PI;
+            
+            // Normalize angle to [0, 360)
+            angleToCircle = (angleToCircle + 360f) % 360f;
+            
+            // Calculate sector start and end angles
+            float sectorStartAngle = (otherTransform.Rot.Degree - sectorAngle * 0.5f + 360f) % 360f;
+            float sectorEndAngle = (otherTransform.Rot.Degree + sectorAngle * 0.5f + 360f) % 360f;
 
+            // Check if angle is within sector range
+            bool withinAngleRange = IsAngleInRange(angleToCircle, sectorStartAngle, sectorEndAngle);
 
-            // Normalize angles
-            float sectorStartAngle = (otherTransform.Rot.Degree - sectorAngle / 2 + 360) % 360;
-            float sectorEndAngle = (otherTransform.Rot.Degree + sectorAngle / 2 + 360) % 360;
-            angleToCircle = (angleToCircle + 360) % 360;
-            if (sectorStartAngle > sectorEndAngle)
+            if (withinAngleRange)
             {
-                sectorEndAngle += 360;
-                sectorEndAngle -= sectorStartAngle;
-                angleToCircle -= sectorStartAngle;
-                angleToCircle += 360;
-                sectorEndAngle = sectorEndAngle % 360;
-                angleToCircle = angleToCircle % 360;
-            }
-
-
-            // Check if the angle is within the sector's angle range
-            bool withinAngleRange;
-            if (sectorStartAngle < sectorEndAngle)
-            {
-                withinAngleRange = angleToCircle >= sectorStartAngle && angleToCircle <= sectorEndAngle;
+                // Circle is within sector angle range
+                if (distanceToSectorCenter <= sectorRadius - Radius)
+                {
+                    // Circle is completely inside sector
+                    return true;
+                }
+                else if (distanceToSectorCenter <= sectorRadius + Radius)
+                {
+                    // Circle intersects with sector (either inside or crossing the arc)
+                    return true;
+                }
             }
             else
             {
-                withinAngleRange = angleToCircle >= sectorStartAngle || angleToCircle <= sectorEndAngle;
-            }
-            //Debug.Log($"withinAngleRange  {withinAngleRange}");
-            if (withinAngleRange)
-            {
-                return true;
+                // Circle is outside angle range, check collision with sector edges and arc
+                
+                // Check collision with the two straight edges
+                Vector2 startEdgePoint = sectorCenter + sectorRadius * (otherTransform.Rot - sectorAngle * 0.5f).GetVector();
+                Vector2 endEdgePoint = sectorCenter + sectorRadius * (otherTransform.Rot + sectorAngle * 0.5f).GetVector();
+
+                if (IsCircleIntersectingLine(circleCenter, Radius, sectorCenter, startEdgePoint) ||
+                    IsCircleIntersectingLine(circleCenter, Radius, sectorCenter, endEdgePoint))
+                {
+                    return true;
+                }
+
+                // Check collision with the arc (most important for fixing the arc collision issue!)
+                return IsCircleIntersectingArc(circleCenter, Radius, sectorCenter, sectorRadius, sectorStartAngle, sectorEndAngle);
             }
 
-            // Check collision with the sector's straight edges
-            Vector2 startEdge = sectorCenter + sectorRadius* (otherTransform.Rot - sectorAngle / 2).GetVector();
-            Vector2 endEdge = sectorCenter + sectorRadius * (otherTransform.Rot + sectorAngle / 2).GetVector();
-
-            return IsCircleIntersectingLine(circleCenter, Radius, sectorCenter, startEdge) || IsCircleIntersectingLine(circleCenter, Radius, sectorCenter, endEdge);
+            return false;
         }
 
         private bool IsCircleIntersectingLine(Vector2 circleCenter, float radius, Vector2 lineStart, Vector2 lineEnd)
@@ -198,6 +203,66 @@ namespace SkillEditorDemo.Model
             t = MathF.Max(0, MathF.Min(1, t));
             Vector2 closestPoint = lineStart + t * lineDir;
             return Vector2.DistanceSquared(circleCenter, closestPoint) <= radius * radius;
+        }
+
+        /// <summary>
+        /// Check if an angle is within the range [startAngle, endAngle], handling 360-degree wraparound
+        /// </summary>
+        private bool IsAngleInRange(float angle, float startAngle, float endAngle)
+        {
+            if (startAngle <= endAngle)
+            {
+                // Normal case: no wraparound
+                return angle >= startAngle && angle <= endAngle;
+            }
+            else
+            {
+                // Wraparound case: range crosses 0 degrees
+                return angle >= startAngle || angle <= endAngle;
+            }
+        }
+
+        /// <summary>
+        /// Check if a circle intersects with a circular arc (the curved edge of a sector)
+        /// This is the key method to fix arc collision detection!
+        /// </summary>
+        private bool IsCircleIntersectingArc(Vector2 circleCenter, float circleRadius, Vector2 arcCenter, float arcRadius, float startAngle, float endAngle)
+        {
+            // Find the closest point on the arc to the circle center
+            Vector2 toCircle = circleCenter - arcCenter;
+            float distanceToArcCenter = toCircle.Length();
+
+            if (distanceToArcCenter < 0.0001f)
+            {
+                // Circle center is at arc center
+                return true;
+            }
+
+            // Calculate the angle of the closest point on the circle from arc center
+            float angleToCircle = MathF.Atan2(toCircle.X, toCircle.Y) * 180f / MathF.PI;
+            angleToCircle = (angleToCircle + 360f) % 360f;
+
+            Vector2 closestPointOnArc;
+            
+            if (IsAngleInRange(angleToCircle, startAngle, endAngle))
+            {
+                // The closest point is on the arc itself
+                closestPointOnArc = arcCenter + Vector2.Normalize(toCircle) * arcRadius;
+            }
+            else
+            {
+                // The closest point is one of the arc endpoints
+                Vector2 startPoint = arcCenter + arcRadius * new Angle(startAngle).GetVector();
+                Vector2 endPoint = arcCenter + arcRadius * new Angle(endAngle).GetVector();
+                
+                float distToStart = Vector2.DistanceSquared(circleCenter, startPoint);
+                float distToEnd = Vector2.DistanceSquared(circleCenter, endPoint);
+                
+                closestPointOnArc = distToStart < distToEnd ? startPoint : endPoint;
+            }
+
+            // Check if the circle intersects with the closest point on the arc
+            return Vector2.DistanceSquared(circleCenter, closestPointOnArc) <= circleRadius * circleRadius;
         }
 
     }
@@ -303,6 +368,41 @@ namespace SkillEditorDemo.Model
         public AABB oldAABB { get; set; }
         public bool Dirty { get; set; }
         public int Entity { get; set; }
+
+        public bool IsColliderTo(in TransformCmp transform, in IAABB other, in TransformCmp otherTransform)
+        {
+            if (other is Circle circle)
+            {
+                return circle.IsColliderTo(otherTransform, this, transform);
+            }
+            if (other is Rectangle rectangle)
+            {
+                return IsColliderTo(transform, rectangle, otherTransform);
+            }
+            if (other is Sector sector)
+            {
+                return IsColliderTo(transform, sector, otherTransform);
+            }
+            return false;
+        }
+
+        public bool IsColliderTo(in TransformCmp transform, in Rectangle other, in TransformCmp otherTransform)
+        {
+            // For sector-rectangle collision, we can approximate by checking:
+            // 1. Rectangle corners against sector
+            // 2. Sector arc and edges against rectangle
+            
+            // TODO: Implement proper sector-rectangle collision if needed
+            // For now, return false as this is complex and may not be needed
+            return false;
+        }
+
+        public bool IsColliderTo(in TransformCmp transform, in Sector other, in TransformCmp otherTransform)
+        {
+            // Sector-sector collision is complex
+            // TODO: Implement if needed
+            return false;
+        }
     }
 
     public interface IAABB
