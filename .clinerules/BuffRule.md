@@ -8,6 +8,11 @@ depends: [NodeRule.md]
 
 ## 专属方法
 - addbuffasset(fileName): 创建一个新的BuffAsset文件,后缀为.ja
+
+## 工具使用指南
+- 使用ListNodes(null, "BuffAsset")获取适用于Buff资源的节点类型
+- 使用GetNodePrompt(typeName)查询具体节点的详细结构
+
 ## Buff特殊规范
  - 一个完整的Buff必须由BuffNode作为根节点构成
  - Buff的效果部分主要由TrigNode控制,由TrigNode决定Buff的触发时机,TrigNode可以为空,Buff可作为一个没有实际效果的占位Buff配合其他Buff使用

@@ -74,7 +74,9 @@ priority: 1
 ## MCPTool工具详解
 
 ### 信息查询工具
-- **ListNodes(baseType)**：获取可用节点类型列表
+- **ListNodes(baseType, assetType)**：获取可用节点类型列表
+  - baseType: null时获取所有Node，否则获取继承自baseType的Node
+  - assetType: null时获取所有Node，否则根据资源类型过滤合法的节点类型（如"SkillAsset"、"BuffAsset"）
 - **GetNodePrompt(typeName)**：获取节点详细结构和用法
 - **GetAssetTreeView(path)**：查看文件树状结构
 
@@ -102,7 +104,7 @@ priority: 1
 ## 操作策略
 
 ### 信息获取（执行前必需）
-1. 使用ListNodes了解可用节点类型
+1. 使用ListNodes了解可用节点类型，指定合适的assetType参数进行过滤
 2. 使用GetNodePrompt查询节点详细信息  
 3. 重点关注[Node]后缀、FuncValue、TimeValue类型
 

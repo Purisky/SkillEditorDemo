@@ -8,3 +8,7 @@ depends: [NodeRule.md]
 
 ## 专属方法
 - addskillasset(fileName): 创建一个新的SkillAsset文件
+
+## 工具使用指南
+- 使用ListNodes(null, "SkillAsset")获取适用于Skill资源的节点类型
+- 使用GetNodePrompt(typeName)查询具体节点的详细结构

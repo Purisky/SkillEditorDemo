@@ -13,6 +13,7 @@ priority: 2
 **必要操作：**
 - 执行 `ListNodes()` 获取所有节点类型
 - 执行 `ListNodes("基类名")` 获取特定类型节点
+- 执行 `ListNodes(null, "assetType")` 获取特定资源类型的节点（如"skill"、"buff"）
 - 执行 `GetNodePrompt(节点类型)` 深入了解节点能力
 - 重点关注枚举类型的所有选项
 

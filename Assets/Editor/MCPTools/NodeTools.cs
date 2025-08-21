@@ -41,9 +41,9 @@ namespace SkillEditorDemo
             return ToolUtil.RemoveNode(path, nodePath, true);
         }
         [Tool("获取可用的Node信息")]
-        public static string ListNodes([Desc("null时获取所有Node,否则获取继承自baseType的Node")] string baseType)
+        public static string ListNodes([Desc("null时获取所有Node,否则获取继承自baseType的Node")] string baseType,[Desc("null/未找到 时获取所有Node,否则对类型进行过滤,筛选在assetType中合法的节点类型")]string assetType)
         {
-            return string.Join("\n", ToolUtil.GetNodesByName(baseType).Select(n => n.HeadInfo()));
+            return string.Join("\n", ToolUtil.GetNodesByName(baseType, assetType).Select(n => n.HeadInfo()));
         }
         [Tool("获取Node的结构与用法")]
         public static string GetNodePrompt(string typeName)
