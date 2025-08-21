@@ -13,6 +13,8 @@ using TreeNode.Utility;
 using UnityEditor.VersionControl;
 using UnityEngine;
 using UnityEngine.UIElements;
+using static TreeNode.Runtime.TypeCacheSystem;
+
 
 namespace SkillEditorDemo
 {
@@ -140,56 +142,104 @@ namespace SkillEditorDemo
             }
         }
 
-        /// <summary>
-        /// Validates JSON property against a type and checks for nested node issues
-        /// </summary>
-        private static void ValidateJsonProperty(Type type, JProperty jp, string nodePath)
+        ///// <summary>
+        ///// Validates JSON property against a type and checks for nested node issues
+        ///// </summary>
+        //private static void ValidateJsonProperty(Type type, JProperty jp, string nodePath)
+        //{
+        //    TypeCacheSystem.TypeReflectionInfo typeReflectionInfo = TypeCacheSystem.GetTypeInfo(type);
+
+
+
+
+        //    MemberInfo[] members = type.GetMember(jp.Name);
+        //    if (members.Length == 0)
+        //    {
+        //        string promptText = "";
+        //        if (Prompts.TryGetValue(type.Name, out var prompt) && prompt is NodePrompt nodePrompt)
+        //        {
+        //            promptText = "\n" + nodePrompt.ListDetail();
+        //        }
+        //        throw new FieldAccessException (@$"节点操作失败,{type.Name}中不应存在{jp.Name}字段,严格按照以下信息操作数据:{promptText}");
+        //    }
+
+        //    Type valueType = members[0].GetValueType();
+        //    object value = jp.Value.Value<object>();
+        //    if (valueType.Inherited(typeof(JsonNode)) ||
+        //        (valueType.Inherited(typeof(IList)) && value is IList list &&
+        //         list.Count > 0 && valueType.GetGenericArguments()[0].Inherited(typeof(JsonNode))))
+        //    {
+        //        throw new InvalidOperationException($"节点操作失败,禁止嵌套添加节点: {jp.Name},使用AddNode({nodePath}.{jp.Name})添加该节点:{valueType.TypeName()}");
+        //    }
+
+
+
+        //    if (valueType == typeof(FuncValue))
+        //    {
+        //        if (jp.Value.Type != JTokenType.Object)
+        //        {
+        //            throw new FormatException($"节点操作失败,解析错误(FuncValue): {jp}");
+        //        }
+        //        if (jp.Value["Node"] != null && jp.Value["Node"].Type != JTokenType.Null)
+        //        {
+        //            throw new InvalidOperationException($"节点操作失败,禁止嵌套添加节点: {jp.Name},使用AddNode({nodePath}.{jp.Name}.Node)添加该节点: FuncNode");
+        //        }
+        //    }
+        //    if (valueType == typeof(Model.TimeValue))
+        //    {
+        //        if (jp.Value.Type != JTokenType.Object)
+        //        {
+        //            throw new FormatException($"节点操作失败,解析错误(TimeValue): {jp}");
+        //        }
+        //        if (jp.Value["Value"] is JToken valueJToken && valueJToken["Node"] != null && valueJToken["Node"].Type != JTokenType.Null)
+        //        {
+        //            throw new InvalidOperationException($"节点操作失败,禁止嵌套添加节点: {jp.Name},使用AddNode({nodePath}.{jp.Name}.Value.Node)添加该节点: FuncNode");
+        //        }
+        //    }
+        //}
+        private static void SetNonNodeValue(JsonNode jsonNode,TypeReflectionInfo typeReflectionInfo, JProperty jp, string nodePath)
         {
-            MemberInfo[] members = type.GetMember(jp.Name);
-            if (members.Length == 0)
+            UnifiedMemberInfo memberInfo = typeReflectionInfo.GetMember(jp.Name) ?? throw new FieldAccessException(@$"节点操作失败,{typeReflectionInfo.Type.Name}中不应存在{jp.Name}字段");
+            if (memberInfo.Category == MemberCategory.JsonNode)
             {
-                string promptText = "";
-                if (Prompts.TryGetValue(type.Name, out var prompt) && prompt is NodePrompt nodePrompt)
-                {
-                    promptText = "\n" + nodePrompt.ListDetail();
-                }
-                throw new FieldAccessException (@$"节点操作失败,{type.Name}中不应存在{jp.Name}字段,严格按照以下信息操作数据:{promptText}");
+                throw new InvalidOperationException($"{jp.Name}:操作失败,禁止嵌套添加节点,使用AddNode(...,{nodePath}.{jp.Name},{memberInfo.ValueType.Name})添加该节点");
             }
-
-            Type valueType = members[0].GetValueType();
-            object value = jp.Value.Value<object>();
-            if (valueType.Inherited(typeof(JsonNode)) ||
-                (valueType.Inherited(typeof(IList)) && value is IList list &&
-                 list.Count > 0 && valueType.GetGenericArguments()[0].Inherited(typeof(JsonNode))))
-            {
-                throw new InvalidOperationException($"节点操作失败,禁止嵌套添加节点: {jp.Name},使用AddNode({nodePath}.{jp.Name})添加该节点:{valueType.TypeName()}");
-            }
-
-
-
+            Type valueType = memberInfo.ValueType;
             if (valueType == typeof(FuncValue))
             {
                 if (jp.Value.Type != JTokenType.Object)
                 {
-                    throw new FormatException($"节点操作失败,解析错误(FuncValue): {jp}");
+                    throw new FormatException($"{jp.Name}:操作失败,解析错误(FuncValue): {jp}");
                 }
                 if (jp.Value["Node"] != null && jp.Value["Node"].Type != JTokenType.Null)
                 {
-                    throw new InvalidOperationException($"节点操作失败,禁止嵌套添加节点: {jp.Name},使用AddNode({nodePath}.{jp.Name}.Node)添加该节点: FuncNode");
+                    throw new InvalidOperationException($"{jp.Name}:操作失败,禁止嵌套添加节点,使用AddNode(...,{nodePath}.{jp.Name}.Node,FuncNode)添加该节点");
                 }
             }
             if (valueType == typeof(Model.TimeValue))
             {
                 if (jp.Value.Type != JTokenType.Object)
                 {
-                    throw new FormatException($"节点操作失败,解析错误(TimeValue): {jp}");
+                    throw new FormatException($"{jp.Name}:操作失败,解析错误(TimeValue): {jp}");
                 }
                 if (jp.Value["Value"] is JToken valueJToken && valueJToken["Node"] != null && valueJToken["Node"].Type != JTokenType.Null)
                 {
-                    throw new InvalidOperationException($"节点操作失败,禁止嵌套添加节点: {jp.Name},使用AddNode({nodePath}.{jp.Name}.Value.Node)添加该节点: FuncNode");
+                    throw new InvalidOperationException($"{jp.Name}:操作失败,禁止嵌套添加节点,使用AddNode({nodePath}.{jp.Name}.Value.Node)添加该节点: FuncNode");
                 }
             }
+            try
+            {
+                object obj = jp.Value.ToObject(valueType);
+                memberInfo.Setter(jsonNode, obj);
+            }
+            catch (Exception e)
+            {
+                throw e;
+            }
         }
+
+
+
 
         /// <summary>
         /// Saves changes and returns success message
@@ -215,31 +265,21 @@ namespace SkillEditorDemo
             {
                 pAPath = pAPath.GetParent();
             }
+
             if (!pAPath.IsEmpty)
             {
                 ValidatePath(window, pAPath);
+                int index_ = 0;
+                object obj = window.GraphView.Asset.Data.Nodes.GetValueInternal<object>(ref pAPath, ref index_);
+                PathExpansionResult result = FuzzyPathResolver.TryExpandPath(pAPath, obj, type);
+                if (result.IsSuccess)
+                {
+                    Debug.Log($"FuzzyPathResolver: {pAPath} expanded to {result.ExpandedPath}");
+                    pAPath = result.ExpandedPath;
+                }
                 port = window.GraphView.GetPort(pAPath);
                 if (port == null) 
                 {
-                    int index_ = 0;
-                    object obj = window.GraphView.Asset.Data.Nodes.GetValueInternal<object>(ref pAPath, ref index_);
-                    if (type.Inherited(typeof(NumNode)))
-                    {
-                        if (obj is FuncValue funcValue)
-                        {
-                            pAPath = pAPath.Append(nameof(FuncValue.Node));
-                        }
-                        else if (obj is Model.TimeValue timeValue)
-                        {
-                            pAPath = pAPath.Append(nameof(Model.TimeValue.Value)).Append(nameof(FuncValue.Node));
-                        }
-                    }
-
-                    else
-                    {
-                        throw new ArgumentException($"路径({pAPath})不是节点或者节点的集合");
-                    }
-
                     throw new ArgumentException($"{pAPath}:路径类型不是节点或者节点的集合"); 
                 }
                 if (!port.portType.IsAssignableFrom(type))
@@ -248,47 +288,41 @@ namespace SkillEditorDemo
                 }
             }
 
-            JsonNode jsonNode = null;
-            if (string.IsNullOrEmpty(json))
-            {
-                jsonNode = (JsonNode)Activator.CreateInstance(type);
-            }
-            else
-            {
-                foreach (JProperty jp in JObject.Parse(json).Properties())
-                {
-                    ValidateJsonProperty(type, jp, nodePath);
-                }
-
-                jsonNode = (JsonNode)Json.Get(type, json);
-            }
-            int index = 0;
-            PAPath path = pAPath;
-            if (!path.IsEmpty)
-            {
-                window.GraphView.Asset.Data.Nodes.ValidatePath(ref path, ref index);
-                if (path.Depth - 1 > index)
-                {
-                    throw new ArgumentException($"设置节点失败:路径不合法({nodePath})非法路径({path.GetSubPath(index)})");
-                }
-            }
+            JsonNode jsonNode = (JsonNode)Activator.CreateInstance(type);
             
-            if (!window.GraphView.SetNodeByPath(jsonNode, nodePath))
+            string jsonError = "";
+            if (!string.IsNullOrEmpty(json))
+            {
+                JObject job = JObject.Parse(json);
+                TypeReflectionInfo typeReflectionInfo = TypeCacheSystem.GetTypeInfo(type);
+                List<Exception> exceptions = new();
+                foreach (JProperty jp in job.Properties())
+                {
+                    try
+                    {
+                        SetNonNodeValue(jsonNode, typeReflectionInfo, jp, nodePath);
+                    }
+                    catch (Exception e)
+                    {
+                        exceptions.Add(e);
+                    }
+                }
+                if (exceptions.Count > 0)
+                {
+                    jsonError =$"\n{string.Join("\n", exceptions.Select(e => e.Message))}" ;
+                }
+            }
+            if (!window.GraphView.SetNodeByPath(jsonNode, pAPath))
             {
                 throw new InvalidOperationException($"设置节点失败:目标路径({nodePath})无法添加({type.Name})");
             }
-
-
-
-
-            // ✅ 使用新的连接支持方法 - 修复工具节点连接缺失问题
-            window.GraphView.AddViewNodeWithConnection(jsonNode, path);
+            window.GraphView.AddViewNodeWithConnection(jsonNode, pAPath);
             window.GraphView.FormatNodes();
             if (port is NumPort numPort)
             {
                 numPort.DisplayPopupText();
             }
-            return SaveChanges(window);
+            return $"{SaveChanges(window)}{jsonError}";
         }
 
         public static Dictionary<string, BasePrompt> Prompts = InitPrompts();
@@ -380,53 +414,89 @@ namespace SkillEditorDemo
 
         public static string ModifyNode(string path, string nodePath, string json)
         {
-            TreeNodeGraphWindow window = GetWindow( path);
+            TreeNodeGraphWindow window = GetWindow(path);
             ValidatePath(window, nodePath);
 
-
-            object obj = window.GraphView.Asset.Data.GetValue<object>(nodePath);
-            if (obj == null) 
-            { 
-                throw new ArgumentException("object not found at path"); 
-            }
+            PAPath pAPath = nodePath;
+            int index_ = 0;
+            object obj = window.GraphView.Asset.Data.Nodes.GetValueInternal<object>(ref pAPath, ref index_) ?? throw new ArgumentException($"object not found at {path}");
             if (obj is not JsonNode existNode)
             {
-                if (obj is FuncValue)
+                PathExpansionResult result = FuzzyPathResolver.TryExpandPath(pAPath, obj);
+                existNode = null;
+                if (result.IsSuccess)
                 {
-                    throw new InvalidOperationException($"目标:{nodePath} 是FuncValue类型,请使用AddNode({nodePath}.Node)添加节点");
+                    Debug.Log($"FuzzyPathResolver: {pAPath} expanded to {result.ExpandedPath}");
+                    pAPath = result.ExpandedPath;
+                    existNode = window.GraphView.Asset.Data.GetValue<JsonNode>(pAPath);
                 }
-                else
+            }
+            if (existNode == null)
+            {
+                throw new ArgumentException($"node not found at {path}");
+            }
+            string error = "";
+            List<string> successlist = new(); ;
+            if (!string.IsNullOrEmpty(json))
+            {
+                JObject job = null;
+                try
                 {
-                    throw new InvalidOperationException($"目标:{nodePath} 不是继承自JsonNode的节点类型");
+                    job = JObject.Parse(json);
+                }
+                catch (Exception)
+                {
+                    throw new Newtonsoft.Json.JsonSerializationException(json);
+                }
+                TypeReflectionInfo typeReflectionInfo = TypeCacheSystem.GetTypeInfo(existNode.GetType());
+                List<Exception> exceptions = new();
+                foreach (JProperty jp in job.Properties())
+                {
+                    try
+                    {
+                        SetNonNodeValue(existNode, typeReflectionInfo, jp, nodePath);
+                        successlist.Add(jp.Name);
+                    }
+                    catch (Exception e)
+                    {
+                        exceptions.Add(e);
+                    }
+                }
+                if (exceptions.Count > 0)
+                {
+                    error = $"\n{string.Join("\n", exceptions.Select(e => e.Message))}";
                 }
             }
-
-            Type type = existNode.GetType();
-            bool success = false;
-            foreach (JProperty jp in JObject.Parse(json).Properties())
+            if (successlist.Count > 0)
             {
-                ValidateJsonProperty(type, jp, nodePath);
-
-                success |= existNode.SetValue(type, jp.Name, jp.Value);
+                return $"{SaveChanges(window, true)}:成功设置以下字段[{string.Join(',', successlist)}]{error}";
             }
-
-            if (success)
-            {
-                return SaveChanges(window, true);
+            else
+            { 
+              throw new ArgumentException($"没有成功修改任何字段,请检查json格式是否正确或者字段是否存在于节点({existNode.GetType().Name})中{error}");
             }
-
-            throw new InvalidOperationException("Failed to modify node");
         }
 
         public static string RemoveNode(string path, string nodePath, bool recursive = true)
         {
             TreeNodeGraphWindow window = GetWindow(path);
-            JsonNode existNode = window.GraphView.Asset.Data.GetValue<JsonNode>(nodePath);
+            PAPath pAPath = nodePath;
+            int index_ = 0;
+            object obj = window.GraphView.Asset.Data.Nodes.GetValueInternal<object>(ref pAPath, ref index_);
+            if (obj is not JsonNode existNode)
+            {
+                PathExpansionResult result = FuzzyPathResolver.TryExpandPath(pAPath, obj);
+                if (result.IsSuccess)
+                {
+                    Debug.Log($"FuzzyPathResolver: {pAPath} expanded to {result.ExpandedPath}");
+                    pAPath = result.ExpandedPath;
+                }
+                existNode = window.GraphView.Asset.Data.GetValue<JsonNode>(pAPath);
+            }
             if (existNode == null) 
             { 
                 throw new ArgumentException("node not found at path"); 
             }
-
             ViewNode viewNode = window.GraphView.NodeDic[existNode];
             PropertyAccessor.RemoveValue(window.GraphView.Asset.Data.Nodes, nodePath);
             if (!recursive)
@@ -465,6 +535,16 @@ namespace SkillEditorDemo
             }
             if (!path.EndsWith(".ja") && !path.EndsWith(".tpl"))
             {
+                int index = path.LastIndexOf('.');
+                if (index > 0)
+                {
+                    path = path[..index];
+                }
+                //模糊
+
+
+
+
                 string error = $"不支持后缀不为.ja或者.tpl的文件";
                 Debug.LogError(error);
                 throw new NotSupportedException(error);
