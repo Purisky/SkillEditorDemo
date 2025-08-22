@@ -59,9 +59,9 @@ namespace SkillEditorDemo.Model
         HitDmg,
         [LabelInfo("造成伤害")]
         Dmg,
-        [LabelInfo("护盾受到伤害")]
+        [LabelInfo("造成护盾伤害")]
         SPDmg,
-        [LabelInfo("生命受到伤害")]
+        [LabelInfo("造成生命伤害")]
         HPDmg,
         [LabelInfo("消耗魔力")]
         ManaCost,
