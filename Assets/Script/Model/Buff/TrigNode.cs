@@ -121,8 +121,8 @@ namespace SkillEditorDemo.Model
                 }
             }
             // 冷却时间
-                string cdText = CD.GetText();
-            if (CD.Value.Node!=null|| CD.Value.Value!=0)
+            string cdText = CD.GetText();
+            if (CD.Value!=null&&(CD.Value.Node!=null|| CD.Value.Value!=0))
             {
                 lines.Add($"{childIndentStr}冷却时间: {cdText}");
             }

@@ -532,12 +532,6 @@ namespace SkillEditorDemo
             return window.GraphView.GetAllNodePaths();
         }
 
-        public static string GetAssetTreeView(string path)
-        {
-            TreeNodeGraphWindow window = GetWindow(path);
-            return window.GraphView.GetTreeView();
-        }
-
         public static void FileCheck(ref string path)
         {
             string error = null;

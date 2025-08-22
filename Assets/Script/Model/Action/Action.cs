@@ -456,7 +456,7 @@ namespace SkillEditorDemo.Model
         public override bool Handle(int trigCount, TrigInfo info, CombatCache cache)
         {
             throw new NotImplementedException(nameof(AddRandomBuffs));
-            return true;
+            //return true;
         }
         public override string GetInfo()
         {

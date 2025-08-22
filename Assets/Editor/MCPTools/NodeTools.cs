@@ -72,15 +72,10 @@ namespace SkillEditorDemo
             }
             return sb.ToString();
         }
-        [Tool("在所有节点构造结束后用于检查当前资源中是否有不应存在的空值或者其他数值越界行为,不应频繁调用,返回Success表示没有问题")]
+        [Tool("获取Asset文件的树状视图并验证所有节点,显示节点结构和验证状态(✔︎/⚠️/✘),在节点构造完成后调用")]
         public static string ValidateAsset([Desc("文件路径"), ParamDropdown(nameof(GetValidPath))] string path)
         {
             return ToolUtil.ValidateAsset(path);
-        }
-        [Tool("获取Asset文件中所有节点的树状视图")]
-        public static string GetAssetTreeView([Desc("文件路径"), ParamDropdown(nameof(GetValidPath))] string path)
-        {
-            return ToolUtil.GetAssetTreeView(path);
         }
 
         public static List<string> GetValidPath(MethodInfo methodInfo, Dictionary<string, object> Args)

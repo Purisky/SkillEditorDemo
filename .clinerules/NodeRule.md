@@ -79,7 +79,6 @@ priority: 1
   - assetType: null时获取所有Node，否则根据资源类型过滤合法的节点类型（如"SkillAsset"、"BuffAsset"）
 - **GetNodePrompts(typeNames)**：批量获取节点详细结构和用法
   - typeNames: 字符串数组，包含要查询的节点类型名称
-- **GetAssetTreeView(path)**：查看文件树状结构
 
 ### 节点操作工具
 - **AddNode(path, nodePath, typeName, json)**：添加新节点
@@ -88,7 +87,10 @@ priority: 1
   - TimeValue节点：`路径.字段名.Value.Node`
 - **ModifyNode(path, nodePath, json)**：修改现有节点（必须指向完整JsonNode）
 - **RemoveNode(path, nodePath)**：删除节点（递归删除）
-- **ValidateAsset(path)**：最终验证（构造完成后调用）
+- **ValidateAsset(path)**：获取资源文件的树状视图并验证所有节点
+  - **双重功能**：既显示完整的节点树状结构，又进行验证检查
+  - **显示格式**：每个节点显示基本信息和验证状态（✔︎正常 / ⚠️警告 / ✘错误）
+  - **使用时机**：节点构造完成后调用，用于最终验证和结构查看
   - **返回数据处理与警告规则**：
     - **警告甄别原则**：出现警告时需仔细甄别该配置是否符合实际设计意图
     - **处理策略**：
@@ -137,7 +139,7 @@ priority: 1
 1. **需求理解**：需求分解和功能分析
 2. **规划步骤**：节点选择、层级关系、参数配置、调用顺序
 3. **执行报告**：每步操作结果和错误信息
-4. **最终结构概述**：使用GetAssetTreeView确认的树状结构
+4. **最终结构概述**：使用ValidateAsset确认的树状结构和验证结果
 
 ## 纠错机制
 
