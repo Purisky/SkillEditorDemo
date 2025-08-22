@@ -5,9 +5,11 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text;
 using TreeNode;
 using TreeNode.Editor;
 using TreeNode.Runtime;
+using TreeNode.Runtime.Property.Extensions;
 using TreeNode.Utility;
 using UnityEngine;
 using UnityEngine.UIElements;
@@ -45,17 +47,31 @@ namespace SkillEditorDemo
         {
             return string.Join("\n", ToolUtil.GetNodesByName(baseType, assetType).Select(n => n.HeadInfo()));
         }
-        [Tool("获取Node的结构与用法")]
-        public static string GetNodePrompt(string typeName)
+        [Tool("批量获取Node的结构与用法")]
+        public static string GetNodePrompts(string[] typeNames)
         {
-            if (ToolUtil.Prompts.TryGetValue(typeName, out var prompt) && prompt is NodePrompt nodePrompt)
+            HashSet<Type> handledTypes = new();
+            StringBuilder sb = new();
+            for (int i = 0; i < typeNames.Length; i++)
             {
-                return nodePrompt.ListDetail();
+                string typeName = typeNames[i];
+                if (ToolUtil.Prompts.TryGetValue(typeName, out var prompt) && prompt is NodePrompt nodePrompt)
+                {
+                    sb.AppendLine(nodePrompt.ListDetail(handledTypes));
+                }
+                else
+                {
+                    sb.AppendLine($"Node {typeName} not found");
+                }
             }
-            else
+            foreach (var item in handledTypes)
             {
-                return $"Node {typeName} not found";
+                if (ToolUtil.Prompts.TryGetValue(item.Name, out var prompt))
+                {
+                    sb.AppendLine($"{prompt}");
+                }
             }
+            return sb.ToString();
         }
         [Tool("在所有节点构造结束后用于检查当前资源中是否有不应存在的空值或者其他数值越界行为,不应频繁调用,返回Success表示没有问题")]
         public static string ValidateAsset([Desc("文件路径"), ParamDropdown(nameof(GetValidPath))] string path)

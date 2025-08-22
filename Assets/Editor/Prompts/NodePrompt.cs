@@ -86,21 +86,38 @@ namespace SkillEditorDemo
             for (int i = 0; i < Fields.Count; i++)
             {
                 Type typeWithoutList = Fields[i].TypeWithoutList;
-                if (!typeWithoutList.Inherited(typeof(JsonNode)))
+                if (!typeWithoutList.Inherited(typeof(JsonNode))&&!typeWithoutList.IsPrimitive&& typeWithoutList!= typeof(string))
                 {
                     handledTypes.Add(typeWithoutList);
                 }
             }
             foreach (var type in handledTypes)
             {
-                if (type.IsPrimitive || type == typeof(string)) { continue; }
                 if (ToolUtil.Prompts.TryGetValue(type.Name, out var prompt))
                 { 
                     result += $"\n{prompt}";
                 }
             }
-            
             return result;
         }
+
+        public string ListDetail(HashSet<Type> handledTypes)
+        {
+            string result = ToString();
+            if (Abstract)
+            {
+                result += $"\n**注意:该Node为抽象类,不能直接使用,使用ListNodes({TypeName})获取可用的Node**";
+            }
+            for (int i = 0; i < Fields.Count; i++)
+            {
+                Type typeWithoutList = Fields[i].TypeWithoutList;
+                if (!typeWithoutList.Inherited(typeof(JsonNode)) && !typeWithoutList.IsPrimitive && typeWithoutList != typeof(string))
+                {
+                    handledTypes.Add(typeWithoutList);
+                }
+            }
+            return result;
+        }
+
     }
 }

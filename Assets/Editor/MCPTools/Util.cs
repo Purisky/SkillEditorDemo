@@ -203,32 +203,32 @@ namespace SkillEditorDemo
         //}
         private static void SetNonNodeValue(JsonNode jsonNode, TypeReflectionInfo typeReflectionInfo, JProperty jp, string nodePath)
         {
-            UnifiedMemberInfo memberInfo = typeReflectionInfo.GetMember(jp.Name) ?? throw new FieldAccessException(@$"节点操作失败,{typeReflectionInfo.Type.Name}中不应存在{jp.Name}字段");
+            UnifiedMemberInfo memberInfo = typeReflectionInfo.GetMember(jp.Name) ?? throw new FieldAccessException(@$"字段操作失败,{typeReflectionInfo.Type.Name}中不应存在{jp.Name}字段");
             if (memberInfo.Category == MemberCategory.JsonNode)
             {
-                throw new InvalidOperationException($"{jp.Name}:操作失败,禁止嵌套添加节点,使用AddNode(...,{nodePath}.{jp.Name},{memberInfo.ValueType.Name})添加该节点");
+                throw new InvalidOperationException($"{jp.Name}:字段操作失败,禁止嵌套添加节点,使用AddNode(...,{nodePath}.{jp.Name},{memberInfo.ValueType.Name})添加该节点");
             }
             Type valueType = memberInfo.ValueType;
             if (valueType == typeof(FuncValue))
             {
                 if (jp.Value.Type != JTokenType.Object)
                 {
-                    throw new FormatException($"{jp.Name}:操作失败,解析错误(FuncValue): {jp}");
+                    throw new FormatException($"{jp.Name}:字段操作失败,解析错误(FuncValue): {jp}");
                 }
                 if (jp.Value["Node"] != null && jp.Value["Node"].Type != JTokenType.Null)
                 {
-                    throw new InvalidOperationException($"{jp.Name}:操作失败,禁止嵌套添加节点,使用AddNode(...,{nodePath}.{jp.Name}.Node,FuncNode)添加该节点");
+                    throw new InvalidOperationException($"{jp.Name}:字段操作失败,禁止嵌套添加节点,使用AddNode(...,{nodePath}.{jp.Name}.Node,FuncNode)添加该节点");
                 }
             }
             if (valueType == typeof(Model.TimeValue))
             {
                 if (jp.Value.Type != JTokenType.Object)
                 {
-                    throw new FormatException($"{jp.Name}:操作失败,解析错误(TimeValue): {jp}");
+                    throw new FormatException($"{jp.Name}:字段操作失败,解析错误(TimeValue): {jp}");
                 }
                 if (jp.Value["Value"] is JToken valueJToken && valueJToken["Node"] != null && valueJToken["Node"].Type != JTokenType.Null)
                 {
-                    throw new InvalidOperationException($"{jp.Name}:操作失败,禁止嵌套添加节点,使用AddNode({nodePath}.{jp.Name}.Value.Node)添加该节点: FuncNode");
+                    throw new InvalidOperationException($"{jp.Name}:字段操作失败,禁止嵌套添加节点,使用AddNode({nodePath}.{jp.Name}.Value.Node)添加该节点: FuncNode");
                 }
             }
             try
@@ -314,6 +314,11 @@ namespace SkillEditorDemo
                 if (exceptions.Count > 0)
                 {
                     jsonError = $"\n{string.Join("\n", exceptions.Select(e => e.Message))}";
+                    if (Prompts.TryGetValue(type.Name, out var prompt) && prompt is NodePrompt nodePrompt)
+                    {
+                        jsonError+= "\n" + nodePrompt.ListDetail();
+                    }
+
                 }
             }
             if (!window.GraphView.SetNodeByPath(jsonNode, pAPath))
@@ -469,6 +474,10 @@ namespace SkillEditorDemo
                 if (exceptions.Count > 0)
                 {
                     error = $"\n{string.Join("\n", exceptions.Select(e => e.Message))}";
+                    if (Prompts.TryGetValue(existNode.GetType().Name, out var prompt) && prompt is NodePrompt nodePrompt)
+                    {
+                        error += "\n" + nodePrompt.ListDetail();
+                    }
                 }
             }
             if (successlist.Count > 0)

@@ -11,7 +11,7 @@ depends: [NodeRule.md]
 
 ## 工具使用指南
 - 使用ListNodes(null, "BuffAsset")获取适用于Buff资源的节点类型
-- 使用GetNodePrompt(typeName)查询具体节点的详细结构
+- 使用GetNodePrompts(typeNames)批量查询具体节点的详细结构
 
 ## Buff特殊规范
  - 一个完整的Buff必须由BuffNode作为根节点构成

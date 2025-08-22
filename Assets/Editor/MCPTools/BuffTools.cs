@@ -24,6 +24,7 @@ namespace SkillEditorDemo.MCP
             if (success)
             {
                 JsonAssetHandler.OpenJsonAsset($"{Application.dataPath}/{BuffPath}/{fileName}.ja");
+                return;
             }
             throw new System.Exception($"创建BuffAsset失败，文件已存在:{Application.dataPath}/{BuffPath}/{fileName}.ja");
         }

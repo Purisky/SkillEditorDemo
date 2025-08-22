@@ -77,12 +77,13 @@ priority: 1
 - **ListNodes(baseType, assetType)**：获取可用节点类型列表
   - baseType: null时获取所有Node，否则获取继承自baseType的Node
   - assetType: null时获取所有Node，否则根据资源类型过滤合法的节点类型（如"SkillAsset"、"BuffAsset"）
-- **GetNodePrompt(typeName)**：获取节点详细结构和用法
+- **GetNodePrompts(typeNames)**：批量获取节点详细结构和用法
+  - typeNames: 字符串数组，包含要查询的节点类型名称
 - **GetAssetTreeView(path)**：查看文件树状结构
 
 ### 节点操作工具
 - **AddNode(path, nodePath, typeName, json)**：添加新节点
-  - 空路径=根节点，添加后为`[0]`
+  - 空路径=根节点，添加后为`[index]`
   - FuncValue节点：`路径.字段名.Node`
   - TimeValue节点：`路径.字段名.Value.Node`
 - **ModifyNode(path, nodePath, json)**：修改现有节点（必须指向完整JsonNode）
@@ -105,7 +106,7 @@ priority: 1
 
 ### 信息获取（执行前必需）
 1. 使用ListNodes了解可用节点类型，指定合适的assetType参数进行过滤
-2. 使用GetNodePrompt查询节点详细信息  
+2. 使用GetNodePrompts批量查询节点详细信息  
 3. 重点关注[Node]后缀、FuncValue、TimeValue类型
 
 ### 错误处理
@@ -120,7 +121,7 @@ priority: 1
 **核心原则：组合优先，严格边界判断**
 
 #### 标准流程
-1. **深度系统调研**：使用ListNodes和GetNodePrompt充分了解系统能力
+1. **深度系统调研**：使用ListNodes和GetNodePrompts充分了解系统能力
 2. **组合方案分析**：优先穷尽所有节点组合可能性  
 3. **边界确认**：只有在确认无法组合实现时才标记为边界问题
 
