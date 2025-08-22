@@ -1,8 +1,9 @@
-using SkillEditorDemo.Utility;
+﻿using SkillEditorDemo.Utility;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Numerics;
+using TreeNode.Utility;
 
 namespace SkillEditorDemo.Model
 {

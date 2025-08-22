@@ -13,17 +13,17 @@ namespace SkillEditorDemo.View
         void Start()
         {
             Inst = this;
-            Utility.Debug.Init(Debug.Log, Debug.LogError, (start, end, color, time) =>
-            {
-                Debug.DrawLine(new(start.X, 0, start.Y), new(end.X, 0, end.Y), new Color(color.R / 256f, color.G / 256f, color.B / 256f), time);
-            });
+            TreeNode.Utility.Debug.Init(Debug.Log, Debug.LogError, (start, end, color, time) =>
+             {
+                 Debug.DrawLine(new(start.X, 0, start.Y), new(end.X, 0, end.Y), new Color(color.R / 256f, color.G / 256f, color.B / 256f), time);
+             });
             DataMgr.Inst.Init();
             MainUI = UIDocument.rootVisualElement.Q<MainUI>();
 
 
 
             //获取所有VisualUnitSpawner组件并调用SpawnUnitAndDestroy方法
-            VisualUnitSpawner[] visualUnitSpawners =FindObjectsByType<VisualUnitSpawner>( FindObjectsSortMode.None);
+            VisualUnitSpawner[] visualUnitSpawners = FindObjectsByType<VisualUnitSpawner>(FindObjectsSortMode.None);
             for (int i = 0; i < visualUnitSpawners.Length; i++)
             {
                 visualUnitSpawners[i].SpawnUnitAndDestroy();

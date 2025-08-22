@@ -1,11 +1,10 @@
-using Leopotam.EcsLite;
+﻿using Leopotam.EcsLite;
 using SkillEditorDemo.Model;
 using SkillEditorDemo.Utility;
 using System;
 using TreeNode.Utility;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Debug = SkillEditorDemo.Utility.Debug;
 namespace SkillEditorDemo.View
 {
     public class InputSystem : IEcsInitSystem, IEcsRunSystem

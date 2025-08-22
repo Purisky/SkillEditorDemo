@@ -1,11 +1,11 @@
-using SkillEditorDemo.Model;
+﻿using SkillEditorDemo.Model;
 using SkillEditorDemo.Utility;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using TreeNode.Utility;
 using UnityEngine;
-using Debug = SkillEditorDemo.Utility.Debug;
+using Debug = TreeNode.Utility.Debug;
 
 namespace SkillEditorDemo.View
 {

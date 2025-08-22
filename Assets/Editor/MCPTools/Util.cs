@@ -14,6 +14,7 @@ using UnityEditor.VersionControl;
 using UnityEngine;
 using UnityEngine.UIElements;
 using static TreeNode.Runtime.TypeCacheSystem;
+using Debug = TreeNode.Utility.Debug;
 
 
 namespace SkillEditorDemo
@@ -136,6 +137,7 @@ namespace SkillEditorDemo
         {
             int index = 0;
             window.GraphView.Asset.Data.Nodes.ValidatePath(ref nodePath, ref index);
+            //Debug.Log(index);
             if (index < nodePath.Depth - 1)
             {
                 int index_ = 0;
