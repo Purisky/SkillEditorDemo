@@ -75,3 +75,6 @@ Assets/Editor/Test.cs.meta
 *.Plan.md
 *.Plan.md.meta
 Assets/Editor/Test/*
+.vscode/*
+Assets/*/Test/*
+NodesPlanCache.md
