@@ -145,62 +145,6 @@ namespace SkillEditorDemo
                 throw new ArgumentException($"路径无效: 在'{nodePath.GetSubPath(0, index)}'(类型:{endObject?.GetType().TypeName()})下找不到'{nodePath.GetSubPath(index)}'");
             }
         }
-
-        ///// <summary>
-        ///// Validates JSON property against a type and checks for nested node issues
-        ///// </summary>
-        //private static void ValidateJsonProperty(Type type, JProperty jp, string nodePath)
-        //{
-        //    TypeCacheSystem.TypeReflectionInfo typeReflectionInfo = TypeCacheSystem.GetTypeInfo(type);
-
-
-
-
-        //    MemberInfo[] members = type.GetMember(jp.Name);
-        //    if (members.Length == 0)
-        //    {
-        //        string promptText = "";
-        //        if (Prompts.TryGetValue(type.Name, out var prompt) && prompt is NodePrompt nodePrompt)
-        //        {
-        //            promptText = "\n" + nodePrompt.ListDetail();
-        //        }
-        //        throw new FieldAccessException (@$"节点操作失败,{type.Name}中不应存在{jp.Name}字段,严格按照以下信息操作数据:{promptText}");
-        //    }
-
-        //    Type valueType = members[0].GetValueType();
-        //    object value = jp.Value.Value<object>();
-        //    if (valueType.Inherited(typeof(JsonNode)) ||
-        //        (valueType.Inherited(typeof(IList)) && value is IList list &&
-        //         list.Count > 0 && valueType.GetGenericArguments()[0].Inherited(typeof(JsonNode))))
-        //    {
-        //        throw new InvalidOperationException($"节点操作失败,禁止嵌套添加节点: {jp.Name},使用AddNode({nodePath}.{jp.Name})添加该节点:{valueType.TypeName()}");
-        //    }
-
-
-
-        //    if (valueType == typeof(FuncValue))
-        //    {
-        //        if (jp.Value.Type != JTokenType.Object)
-        //        {
-        //            throw new FormatException($"节点操作失败,解析错误(FuncValue): {jp}");
-        //        }
-        //        if (jp.Value["Node"] != null && jp.Value["Node"].Type != JTokenType.Null)
-        //        {
-        //            throw new InvalidOperationException($"节点操作失败,禁止嵌套添加节点: {jp.Name},使用AddNode({nodePath}.{jp.Name}.Node)添加该节点: FuncNode");
-        //        }
-        //    }
-        //    if (valueType == typeof(Model.TimeValue))
-        //    {
-        //        if (jp.Value.Type != JTokenType.Object)
-        //        {
-        //            throw new FormatException($"节点操作失败,解析错误(TimeValue): {jp}");
-        //        }
-        //        if (jp.Value["Value"] is JToken valueJToken && valueJToken["Node"] != null && valueJToken["Node"].Type != JTokenType.Null)
-        //        {
-        //            throw new InvalidOperationException($"节点操作失败,禁止嵌套添加节点: {jp.Name},使用AddNode({nodePath}.{jp.Name}.Value.Node)添加该节点: FuncNode");
-        //        }
-        //    }
-        //}
         private static void SetNonNodeValue(JsonNode jsonNode, TypeReflectionInfo typeReflectionInfo, JProperty jp, string nodePath)
         {
             UnifiedMemberInfo memberInfo = typeReflectionInfo.GetMember(jp.Name) ?? throw new FieldAccessException(@$"字段操作失败,{typeReflectionInfo.Type.Name}中不应存在{jp.Name}字段");
@@ -573,6 +517,26 @@ namespace SkillEditorDemo
                     Debug.LogError(error);
                     throw new NotSupportedException(error);
                 }
+            }
+            if(!File.Exists($"Assets/{path}"))
+            {
+                DirectoryInfo dir = new(Path.GetDirectoryName($"Assets/"));
+                FileInfo[] fileInfos =   dir.GetFiles($"*{path}", SearchOption.AllDirectories);
+                if (fileInfos.Length == 0)
+                {
+                    error = $"文件({path})不存在,请检查路径是否正确";
+                    Debug.LogError(error);
+                    throw new FileNotFoundException(error, $"Assets/{path}");
+                }
+                int preindex = dir.FullName.Length + 1;
+                if (fileInfos.Length == 1)
+                {
+                    path = fileInfos[0].FullName[preindex..];
+                    return;
+                }
+                error = $"文件({path})存在多个同名文件,请指定完整路径:\n{string.Join('\n', fileInfos.Select(f=>f.FullName[preindex..]))}";
+                Debug.LogError(error);
+                throw new Exception(error);
             }
         }
     }
