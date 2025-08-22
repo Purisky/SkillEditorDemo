@@ -457,13 +457,13 @@ namespace SkillEditorDemo
                 {
                     throw new Newtonsoft.Json.JsonSerializationException(json);
                 }
-                TypeReflectionInfo typeReflectionInfo = TypeCacheSystem.GetTypeInfo(existNode.GetType());
+                TypeReflectionInfo typeReflectionInfo = GetTypeInfo(existNode.GetType());
                 List<Exception> exceptions = new();
                 foreach (JProperty jp in job.Properties())
                 {
                     try
                     {
-                        SetNonNodeValue(existNode, typeReflectionInfo, jp, nodePath);
+                        SetNonNodeValue(existNode, typeReflectionInfo, jp, pAPath);
                         successlist.Add(jp.Name);
                     }
                     catch (Exception e)
@@ -494,8 +494,8 @@ namespace SkillEditorDemo
         {
             TreeNodeGraphWindow window = GetWindow(path);
             PAPath pAPath = nodePath;
-            int index_ = 0;
-            object obj = window.GraphView.Asset.Data.Nodes.GetValueInternal<object>(ref pAPath, ref index_);
+            int index = 0;
+            object obj = window.GraphView.Asset.Data.Nodes.GetValueInternal<object>(ref pAPath, ref index);
             if (obj is not JsonNode existNode)
             {
                 PathExpansionResult result = FuzzyPathResolver.TryExpandPath(pAPath, obj);
@@ -511,7 +511,8 @@ namespace SkillEditorDemo
                 throw new ArgumentException("node not found at path");
             }
             ViewNode viewNode = window.GraphView.NodeDic[existNode];
-            PropertyAccessor.RemoveValue(window.GraphView.Asset.Data.Nodes, nodePath);
+            index = 0;
+            window.GraphView.Asset.Data.Nodes.RemoveValueInternal(ref pAPath,ref index);
             if (!recursive)
             {
                 window.GraphView.Asset.Data.Nodes.AddRange(viewNode.GetChildNodes().Select(n => n.Data));
