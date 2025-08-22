@@ -28,7 +28,7 @@ namespace SkillEditorDemo
                 try
                 {
                     TreeNodeGraphWindow window = GetWindow(path);
-                    Type assetType =  window.JsonAsset.Data.GetType();
+                    Type assetType = window.JsonAsset.Data.GetType();
                     string text = string.Join("\n\t", GetNodes(null).Where(n => IsValidForAssetType(n.Type, assetType)).Select(n => n.HeadInfo()));
                     throw new ArgumentException(
                         $"需要添加的类型({typeName})不存在\n" +
@@ -42,10 +42,12 @@ namespace SkillEditorDemo
                     $"以下是所有可用的Node信息:\n{text}");
                 }
             }
-            if (type.IsAbstract) { 
-                
+            if (type.IsAbstract)
+            {
+
                 string text = string.Join("\n\t", GetNodes(type).Select(n => n.HeadInfo()));
-                throw new ArgumentException($"无法添加抽象类型({typeName}),请使用具体的子类:\n{text}"); }
+                throw new ArgumentException($"无法添加抽象类型({typeName}),请使用具体的子类:\n{text}");
+            }
             return AddNode(path, nodePath, type, json);
         }
 
@@ -72,7 +74,7 @@ namespace SkillEditorDemo
             {
                 // 使用完整类名作为key
                 assetTypes.Add(type.Name, type);
-                
+
                 // 如果类名以Asset结尾，也添加去掉Asset后缀的小写形式作为别名
                 if (type.Name.EndsWith("Asset"))
                 {
@@ -92,7 +94,7 @@ namespace SkillEditorDemo
         public static Type GetValidAssetType(string assetTypeName)
         {
             ValidAssetTypes ??= InitAssetTypes();
-            
+
             if (string.IsNullOrEmpty(assetTypeName))
             {
                 return null;
@@ -137,7 +139,7 @@ namespace SkillEditorDemo
             if (index < nodePath.Depth - 1)
             {
                 int index_ = 0;
-                object endObject = window.GraphView.Asset.Data.Nodes.GetValueInternal<object>(ref nodePath,ref index_);
+                object endObject = window.GraphView.Asset.Data.Nodes.GetValueInternal<object>(ref nodePath, ref index_);
                 throw new ArgumentException($"路径无效: 在'{nodePath.GetSubPath(0, index)}'(类型:{endObject?.GetType().TypeName()})下找不到'{nodePath.GetSubPath(index)}'");
             }
         }
@@ -197,7 +199,7 @@ namespace SkillEditorDemo
         //        }
         //    }
         //}
-        private static void SetNonNodeValue(JsonNode jsonNode,TypeReflectionInfo typeReflectionInfo, JProperty jp, string nodePath)
+        private static void SetNonNodeValue(JsonNode jsonNode, TypeReflectionInfo typeReflectionInfo, JProperty jp, string nodePath)
         {
             UnifiedMemberInfo memberInfo = typeReflectionInfo.GetMember(jp.Name) ?? throw new FieldAccessException(@$"节点操作失败,{typeReflectionInfo.Type.Name}中不应存在{jp.Name}字段");
             if (memberInfo.Category == MemberCategory.JsonNode)
@@ -278,9 +280,9 @@ namespace SkillEditorDemo
                     pAPath = result.ExpandedPath;
                 }
                 port = window.GraphView.GetPort(pAPath);
-                if (port == null) 
+                if (port == null)
                 {
-                    throw new ArgumentException($"{pAPath}:路径类型不是节点或者节点的集合"); 
+                    throw new ArgumentException($"{pAPath}:路径类型不是节点或者节点的集合");
                 }
                 if (!port.portType.IsAssignableFrom(type))
                 {
@@ -289,7 +291,7 @@ namespace SkillEditorDemo
             }
 
             JsonNode jsonNode = (JsonNode)Activator.CreateInstance(type);
-            
+
             string jsonError = "";
             if (!string.IsNullOrEmpty(json))
             {
@@ -309,7 +311,7 @@ namespace SkillEditorDemo
                 }
                 if (exceptions.Count > 0)
                 {
-                    jsonError =$"\n{string.Join("\n", exceptions.Select(e => e.Message))}" ;
+                    jsonError = $"\n{string.Join("\n", exceptions.Select(e => e.Message))}";
                 }
             }
             if (!window.GraphView.SetNodeByPath(jsonNode, pAPath))
@@ -342,9 +344,9 @@ namespace SkillEditorDemo
         public static List<NodePrompt> GetNodesByName(string typeName, string assetType)
         {
             List<NodePrompt> baseNodes;
-            if (string.IsNullOrEmpty(typeName) || typeName.ToLower() == "null") 
-            { 
-                baseNodes = GetNodes(null); 
+            if (string.IsNullOrEmpty(typeName) || typeName.ToLower() == "null")
+            {
+                baseNodes = GetNodes(null);
             }
             else
             {
@@ -472,8 +474,8 @@ namespace SkillEditorDemo
                 return $"{SaveChanges(window, true)}:成功设置以下字段[{string.Join(',', successlist)}]{error}";
             }
             else
-            { 
-              throw new ArgumentException($"没有成功修改任何字段,请检查json格式是否正确或者字段是否存在于节点({existNode.GetType().Name})中{error}");
+            {
+                throw new ArgumentException($"没有成功修改任何字段,请检查json格式是否正确或者字段是否存在于节点({existNode.GetType().Name})中{error}");
             }
         }
 
@@ -493,9 +495,9 @@ namespace SkillEditorDemo
                 }
                 existNode = window.GraphView.Asset.Data.GetValue<JsonNode>(pAPath);
             }
-            if (existNode == null) 
-            { 
-                throw new ArgumentException("node not found at path"); 
+            if (existNode == null)
+            {
+                throw new ArgumentException("node not found at path");
             }
             ViewNode viewNode = window.GraphView.NodeDic[existNode];
             PropertyAccessor.RemoveValue(window.GraphView.Asset.Data.Nodes, nodePath);
@@ -527,9 +529,11 @@ namespace SkillEditorDemo
 
         public static void FileCheck(ref string path)
         {
+            string error = null;
+            if (path.StartsWith("Assets/")) { path = path[7..]; }
             if (string.IsNullOrEmpty(path))
             {
-                string error = "File path is null or empty";
+                error = "File path is null or empty";
                 Debug.LogError(error);
                 throw new ArgumentException(error);
             }
@@ -540,20 +544,29 @@ namespace SkillEditorDemo
                 {
                     path = path[..index];
                 }
-                //模糊
-
-
-
-
-                string error = $"不支持后缀不为.ja或者.tpl的文件";
-                Debug.LogError(error);
-                throw new NotSupportedException(error);
-            }
-            if (path.StartsWith("Assets/")) { path = path[7..]; }
-            if (!File.Exists($"Assets/{path}"))
-            {
-                string error = $"文件不存在: {path}";
-                throw new FileNotFoundException(error);
+                //模糊获取文件
+                bool jaExist = File.Exists($"Assets/{path}.ja");
+                bool tplExist = File.Exists($"Assets/{path}.tpl");
+                if (jaExist && tplExist)
+                {
+                    error = $"文件({path})存在多个后缀(.ja和.tpl),请指定后缀";
+                    Debug.LogError(error);
+                    throw new ArgumentException(error);
+                }
+                else if (jaExist)
+                {
+                    path += ".ja";
+                }
+                else if (tplExist)
+                {
+                    path += ".tpl";
+                }
+                else
+                {
+                    error = $"不支持后缀不为.ja或者.tpl的文件";
+                    Debug.LogError(error);
+                    throw new NotSupportedException(error);
+                }
             }
         }
     }
