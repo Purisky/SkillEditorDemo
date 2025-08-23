@@ -57,11 +57,11 @@ namespace SkillEditorDemo.Model
         SPBreak,
         [LabelInfo("碰撞造成伤害(后)"), NoSeq]
         HitDmg,
-        [LabelInfo("造成伤害"), Prompt("由伤害触发时,注意对伤害类型进行过滤,以免造成循环触发")]
+        [LabelInfo("造成伤害"), Prompt("由伤害触发新伤害时,注意对伤害类型进行过滤,以免造成循环触发")]
         Dmg,
-        [LabelInfo("造成护盾伤害"), Prompt("由伤害触发时,注意对伤害类型进行过滤,以免造成循环触发")]
+        [LabelInfo("造成护盾伤害"), Prompt("由伤害触发新伤害时,注意对伤害类型进行过滤,以免造成循环触发")]
         SPDmg,
-        [LabelInfo("造成生命伤害"), Prompt("由伤害触发时,注意对伤害类型进行过滤,以免造成循环触发")]
+        [LabelInfo("造成生命伤害"), Prompt("由伤害触发新伤害时,注意对伤害类型进行过滤,以免造成循环触发")]
         HPDmg,
         [LabelInfo("消耗魔力")]
         ManaCost,
