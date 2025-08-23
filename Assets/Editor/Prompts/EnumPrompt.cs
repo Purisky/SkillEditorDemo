@@ -43,22 +43,21 @@ namespace SkillEditorDemo
     public class EnumField
     {
         public string Name;
+        public string Info;
         public string Description;
+
         public EnumField(FieldInfo info)
         {
             Name = info.Name;
+            LabelInfoAttribute labelInfoAttribute = info.GetCustomAttribute<LabelInfoAttribute>();
+            if (labelInfoAttribute != null)
+            {
+                Info = labelInfoAttribute.Text;
+            }
             PromptAttribute promptAttribute = info.GetCustomAttribute<PromptAttribute>();
             if (promptAttribute != null)
             {
                 Description = promptAttribute.Desc;
-            }
-            else
-            { 
-                LabelInfoAttribute labelInfoAttribute = info.GetCustomAttribute<LabelInfoAttribute>();
-                if (labelInfoAttribute != null)
-                {
-                    Description = labelInfoAttribute.Text;
-                }
             }
         }
 
@@ -66,9 +65,9 @@ namespace SkillEditorDemo
         {
             if (Description != null)
             {
-                return $"{Name}:{Description}";
+                return $"{Name}({Info}):{Description}";
             }
-            return Name;
+            return $"{Name}({Info})";
         }
     }
 
