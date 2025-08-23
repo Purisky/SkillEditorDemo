@@ -1,0 +1,144 @@
+{
+  "Data": {
+    "$type": "SkillEditorDemo.Model.BuffAsset, Model",
+    "Nodes": [
+      {
+        "$type": "SkillEditorDemo.Model.BuffNode, Model",
+        "MaxLevel": 1,
+        "MaxDegree": {
+          "Value": 1.0
+        },
+        "Time": {
+          "Value": {
+            "Value": 5.0
+          }
+        },
+        "Triggers": [
+          {
+            "Passive": true,
+            "TrigType": "Dmg",
+            "TriggerSequence": "Aft",
+            "Actions": [
+              {
+                "$type": "SkillEditorDemo.Model.BuffRuntimeData, Model",
+                "ValueModType": "Add",
+                "Value": {
+                  "Node": {
+                    "$type": "SkillEditorDemo.Model.CombatCacheGetter, Model",
+                    "Position": {
+                      "x": 990
+                    }
+                  }
+                },
+                "Position": {
+                  "x": 760
+                }
+              }
+            ],
+            "RemoveOnTrig": {},
+            "Position": {
+              "x": 430
+            }
+          },
+          {
+            "Passive": true,
+            "TrigType": "RemoveOrTimeOut",
+            "Actions": [
+              {
+                "$type": "SkillEditorDemo.Model.Damage, Model",
+                "UnitNode": {
+                  "$type": "SkillEditorDemo.Model.GetBuffUnit, Model",
+                  "Position": {
+                    "x": 990,
+                    "y": 126
+                  }
+                },
+                "DmgType": "Physic",
+                "Direct": true,
+                "Value": {
+                  "Node": {
+                    "$type": "SkillEditorDemo.Model.BinaryCal, Model",
+                    "Left": {
+                      "Node": {
+                        "$type": "SkillEditorDemo.Model.BuffValueGetter, Model",
+                        "Position": {
+                          "x": 1160,
+                          "y": 200
+                        }
+                      }
+                    },
+                    "CalculateType": "Mul",
+                    "Right": {
+                      "Value": 0.2
+                    },
+                    "Position": {
+                      "x": 990,
+                      "y": 200
+                    }
+                  }
+                },
+                "Position": {
+                  "x": 760,
+                  "y": 126
+                }
+              }
+            ],
+            "RemoveOnTrig": {},
+            "Position": {
+              "x": 430,
+              "y": 126
+            }
+          }
+        ],
+        "ID": "DamageReflectDebuff",
+        "Name": "负面效果/伤害反弹"
+      },
+      {
+        "$type": "SkillEditorDemo.Model.BuffNode, Model",
+        "CompeteType": "Eternal",
+        "MaxLevel": 1,
+        "MaxDegree": {
+          "Value": 1.0
+        },
+        "Triggers": [
+          {
+            "TrigType": "Dmg",
+            "Actions": [
+              {
+                "$type": "SkillEditorDemo.Model.AddBuff, Model",
+                "UnitNode": {
+                  "$type": "SkillEditorDemo.Model.TriggerUnit, Model",
+                  "Position": {
+                    "x": 990,
+                    "y": 320
+                  }
+                },
+                "ID": "DamageReflectDebuff",
+                "Level": {
+                  "Value": 1.0
+                },
+                "Degree": {
+                  "Value": 1.0
+                },
+                "Param0": {},
+                "Position": {
+                  "x": 760,
+                  "y": 320
+                }
+              }
+            ],
+            "RemoveOnTrig": {},
+            "Position": {
+              "x": 430,
+              "y": 320
+            }
+          }
+        ],
+        "Position": {
+          "y": 320
+        },
+        "ID": "DamageReflectDebuff_"
+      }
+    ]
+  }
+}

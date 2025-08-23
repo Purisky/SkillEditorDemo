@@ -201,7 +201,12 @@ namespace SkillEditorDemo.Model
             EcsPackedEntity sourceId = buff.SourceID;
             if (buff.BuffData.CompeteType != CompeteType.Indie)
             {
-                UniqBuffs[buff.BuffData.ID].Add(sourceId, buff.Index);
+                if (!UniqBuffs.TryGetValue(buff.BuffData.ID, out Dictionary<EcsPackedEntity, int> byId))
+                {
+                    byId = new();
+                    UniqBuffs.Add(buff.BuffData.ID, byId);
+                }
+                byId[sourceId] = buff.Index;
             }
             foreach (BuffTrig trig in buff.Trigs)
             {

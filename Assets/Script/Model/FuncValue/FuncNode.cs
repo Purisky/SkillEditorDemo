@@ -54,7 +54,7 @@ namespace SkillEditorDemo.Model
 
         public readonly int GetTick(TrigInfo info, CombatCache cache)
         {
-            float value = Value.GetResult(info, cache);
+            float value = Value?.GetResult(info, cache)??0;
             return Type== TimeType.GameTick ? (int)value : (int)(value * Time.GameTickPerSec);
         }
 

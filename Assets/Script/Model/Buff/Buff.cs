@@ -42,7 +42,7 @@ namespace SkillEditorDemo.Model
             BuffNode data = IData< BuffNode>.Get(Id);
             List<BuffTrig> trigs = new();
             List<BuffTrig>[] lifecycles = new List<BuffTrig>[4];
-
+            Lifecycle = new();
             for (int i = 0; i < data.Triggers.Count; i++)
             {
                 BuffTrig buffTrig = new (data.Triggers[i], this);

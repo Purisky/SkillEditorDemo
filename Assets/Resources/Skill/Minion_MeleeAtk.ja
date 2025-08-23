@@ -29,7 +29,7 @@
                   "Value": 120.0
                 },
                 "Position": {
-                  "x": 879
+                  "x": 880
                 }
               },
               "Actions": [
@@ -38,8 +38,8 @@
                   "UnitNode": {
                     "$type": "SkillEditorDemo.Model.TriggerUnit, Model",
                     "Position": {
-                      "x": 1109,
-                      "y": 103
+                      "x": 1110,
+                      "y": 102
                     }
                   },
                   "DmgType": "Physic",
@@ -52,26 +52,48 @@
                       "UnitNode": {
                         "$type": "SkillEditorDemo.Model.SourceUnit, Model",
                         "Position": {
-                          "x": 1279,
-                          "y": 158
+                          "x": 1280,
+                          "y": 156
                         }
                       },
                       "Type": "Atk",
                       "Position": {
-                        "x": 1109,
-                        "y": 158
+                        "x": 1110,
+                        "y": 156
                       }
                     }
                   },
                   "Position": {
-                    "x": 879,
-                    "y": 103
+                    "x": 880,
+                    "y": 102
+                  }
+                },
+                {
+                  "$type": "SkillEditorDemo.Model.AddBuff, Model",
+                  "UnitNode": {
+                    "$type": "SkillEditorDemo.Model.TriggerUnit, Model",
+                    "Position": {
+                      "x": 1110,
+                      "y": 230
+                    }
+                  },
+                  "ID": "DamageReflectDebuff",
+                  "Level": {
+                    "Value": 1.0
+                  },
+                  "Degree": {
+                    "Value": 1.0
+                  },
+                  "Param0": {},
+                  "Position": {
+                    "x": 880,
+                    "y": 230
                   }
                 }
               ],
               "DisplayPath": "Sector",
               "Position": {
-                "x": 639
+                "x": 640
               }
             },
             "Origin": {
@@ -79,13 +101,13 @@
               "UnitNode": {
                 "$type": "SkillEditorDemo.Model.SourceUnit, Model",
                 "Position": {
-                  "x": 879,
-                  "y": 229
+                  "x": 880,
+                  "y": 376
                 }
               },
               "Position": {
-                "x": 639,
-                "y": 229
+                "x": 640,
+                "y": 376
               }
             },
             "Count": {
