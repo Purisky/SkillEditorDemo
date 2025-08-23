@@ -275,7 +275,112 @@ namespace SkillEditorDemo
             {
                 numPort.DisplayPopupText();
             }
-            return $"{SaveChanges(window)}{jsonError}";
+            return $"{SaveChanges(window)}{jsonError}\n当前状态:\n{window.GraphView.Validate(false)}";
+        }
+        public static string ModifyNode(string path, string nodePath, string json)
+        {
+            TreeNodeGraphWindow window = GetWindow(path);
+            ValidatePath(window, nodePath);
+
+            PAPath pAPath = nodePath;
+            int index = 0;
+            object obj = window.GraphView.Asset.Data.Nodes.GetValueInternal<object>(ref pAPath, ref index);
+            if (obj == null)
+            {
+                var remainingPath = index + 1 < pAPath.Parts.Length ? $" -> {pAPath.GetSubPath(index + 1)}" : "";
+                throw new ArgumentException($"路径对象为空：{pAPath.GetSubPath(0, index)} -> {pAPath.Parts[index]}(null){remainingPath}");
+            }
+
+            if (obj is not JsonNode existNode)
+            {
+                PathExpansionResult result = FuzzyPathResolver.TryExpandPath(pAPath, obj);
+                existNode = null;
+                if (result.IsSuccess)
+                {
+                    Debug.Log($"FuzzyPathResolver: {pAPath} expanded to {result.ExpandedPath}");
+                    pAPath = result.ExpandedPath;
+                    existNode = window.GraphView.Asset.Data.GetValue<JsonNode>(pAPath);
+                }
+            }
+            if (existNode == null)
+            {
+                throw new ArgumentException($"{pAPath}:找不可供编辑节点");
+            }
+            string error = "";
+            List<string> successlist = new(); ;
+            if (!string.IsNullOrEmpty(json))
+            {
+                JObject job = null;
+                try
+                {
+                    job = JObject.Parse(json);
+                }
+                catch (Exception)
+                {
+                    throw new Newtonsoft.Json.JsonSerializationException(json);
+                }
+                TypeReflectionInfo typeReflectionInfo = GetTypeInfo(existNode.GetType());
+                List<Exception> exceptions = new();
+                foreach (JProperty jp in job.Properties())
+                {
+                    try
+                    {
+                        SetNonNodeValue(existNode, typeReflectionInfo, jp, pAPath);
+                        successlist.Add(jp.Name);
+                    }
+                    catch (Exception e)
+                    {
+                        exceptions.Add(e);
+                    }
+                }
+                if (exceptions.Count > 0)
+                {
+                    error = $"\n{string.Join("\n", exceptions.Select(e => e.Message))}";
+                    if (Prompts.TryGetValue(existNode.GetType().Name, out var prompt) && prompt is NodePrompt nodePrompt)
+                    {
+                        error += "\n" + nodePrompt.ListDetail();
+                    }
+                }
+            }
+            if (successlist.Count > 0)
+            {
+                return $"{SaveChanges(window, true)}:成功设置以下字段[{string.Join(',', successlist)}]{error}\n当前状态:\n{window.GraphView.Validate(false)}";
+            }
+            else
+            {
+                throw new ArgumentException($"没有成功修改任何字段,请检查json格式是否正确或者字段是否存在于节点({existNode.GetType().Name})中{error}");
+            }
+        }
+
+        public static string RemoveNode(string path, string nodePath, bool recursive = true)
+        {
+            TreeNodeGraphWindow window = GetWindow(path);
+            PAPath pAPath = nodePath;
+            int index = 0;
+            object obj = window.GraphView.Asset.Data.Nodes.GetValueInternal<object>(ref pAPath, ref index);
+            if (obj is not JsonNode existNode)
+            {
+                PathExpansionResult result = FuzzyPathResolver.TryExpandPath(pAPath, obj);
+                if (result.IsSuccess)
+                {
+                    Debug.Log($"FuzzyPathResolver: {pAPath} expanded to {result.ExpandedPath}");
+                    pAPath = result.ExpandedPath;
+                }
+                existNode = window.GraphView.Asset.Data.GetValue<JsonNode>(pAPath);
+            }
+            if (existNode == null)
+            {
+                throw new ArgumentException("node not found at path");
+            }
+            ViewNode viewNode = window.GraphView.NodeDic[existNode];
+            index = 0;
+            window.GraphView.Asset.Data.Nodes.RemoveValueInternal(ref pAPath, ref index);
+            if (!recursive)
+            {
+                window.GraphView.Asset.Data.Nodes.AddRange(viewNode.GetChildNodes().Select(n => n.Data));
+            }
+            window.GraphView.FormatNodes();
+            return $"{SaveChanges(window, true)}\n当前状态:\n{window.GraphView.Validate(false)}";
         }
 
         public static Dictionary<string, BasePrompt> Prompts = InitPrompts();
@@ -365,105 +470,6 @@ namespace SkillEditorDemo
             return window;
         }
 
-        public static string ModifyNode(string path, string nodePath, string json)
-        {
-            TreeNodeGraphWindow window = GetWindow(path);
-            ValidatePath(window, nodePath);
-
-            PAPath pAPath = nodePath;
-            int index_ = 0;
-            object obj = window.GraphView.Asset.Data.Nodes.GetValueInternal<object>(ref pAPath, ref index_) ?? throw new ArgumentException($"object not found at {path}");
-            if (obj is not JsonNode existNode)
-            {
-                PathExpansionResult result = FuzzyPathResolver.TryExpandPath(pAPath, obj);
-                existNode = null;
-                if (result.IsSuccess)
-                {
-                    Debug.Log($"FuzzyPathResolver: {pAPath} expanded to {result.ExpandedPath}");
-                    pAPath = result.ExpandedPath;
-                    existNode = window.GraphView.Asset.Data.GetValue<JsonNode>(pAPath);
-                }
-            }
-            if (existNode == null)
-            {
-                throw new ArgumentException($"node not found at {path}");
-            }
-            string error = "";
-            List<string> successlist = new(); ;
-            if (!string.IsNullOrEmpty(json))
-            {
-                JObject job = null;
-                try
-                {
-                    job = JObject.Parse(json);
-                }
-                catch (Exception)
-                {
-                    throw new Newtonsoft.Json.JsonSerializationException(json);
-                }
-                TypeReflectionInfo typeReflectionInfo = GetTypeInfo(existNode.GetType());
-                List<Exception> exceptions = new();
-                foreach (JProperty jp in job.Properties())
-                {
-                    try
-                    {
-                        SetNonNodeValue(existNode, typeReflectionInfo, jp, pAPath);
-                        successlist.Add(jp.Name);
-                    }
-                    catch (Exception e)
-                    {
-                        exceptions.Add(e);
-                    }
-                }
-                if (exceptions.Count > 0)
-                {
-                    error = $"\n{string.Join("\n", exceptions.Select(e => e.Message))}";
-                    if (Prompts.TryGetValue(existNode.GetType().Name, out var prompt) && prompt is NodePrompt nodePrompt)
-                    {
-                        error += "\n" + nodePrompt.ListDetail();
-                    }
-                }
-            }
-            if (successlist.Count > 0)
-            {
-                return $"{SaveChanges(window, true)}:成功设置以下字段[{string.Join(',', successlist)}]{error}";
-            }
-            else
-            {
-                throw new ArgumentException($"没有成功修改任何字段,请检查json格式是否正确或者字段是否存在于节点({existNode.GetType().Name})中{error}");
-            }
-        }
-
-        public static string RemoveNode(string path, string nodePath, bool recursive = true)
-        {
-            TreeNodeGraphWindow window = GetWindow(path);
-            PAPath pAPath = nodePath;
-            int index = 0;
-            object obj = window.GraphView.Asset.Data.Nodes.GetValueInternal<object>(ref pAPath, ref index);
-            if (obj is not JsonNode existNode)
-            {
-                PathExpansionResult result = FuzzyPathResolver.TryExpandPath(pAPath, obj);
-                if (result.IsSuccess)
-                {
-                    Debug.Log($"FuzzyPathResolver: {pAPath} expanded to {result.ExpandedPath}");
-                    pAPath = result.ExpandedPath;
-                }
-                existNode = window.GraphView.Asset.Data.GetValue<JsonNode>(pAPath);
-            }
-            if (existNode == null)
-            {
-                throw new ArgumentException("node not found at path");
-            }
-            ViewNode viewNode = window.GraphView.NodeDic[existNode];
-            index = 0;
-            window.GraphView.Asset.Data.Nodes.RemoveValueInternal(ref pAPath,ref index);
-            if (!recursive)
-            {
-                window.GraphView.Asset.Data.Nodes.AddRange(viewNode.GetChildNodes().Select(n => n.Data));
-            }
-            window.GraphView.FormatNodes();
-            return SaveChanges(window, true);
-        }
 
         public static string ValidateAsset(string path)
         {

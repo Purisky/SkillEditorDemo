@@ -1,4 +1,4 @@
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using SkillEditorDemo.Utility;
 using TreeNode.Runtime;
 using TreeNode.Utility;
@@ -17,16 +17,6 @@ namespace SkillEditorDemo.Model
 常数和节点是互斥的存在,节点会优先被计算,当涉及到数值计算时需使用ListNodes(FuncNode)获取数值节点信息")]
     public partial class FuncValue : NumValue<FuncNode>
     {
-        [JsonIgnore] FuncNode FuncNode {
-            get {
-                if (funcNode == null) {
-                    if (Node == null) { funcNode = new ConstValue() { Value = Value };  }
-                    else { funcNode = (FuncNode)Node; }
-                }
-                return funcNode;
-            }
-        }
-        [JsonIgnore] FuncNode funcNode;
         /// <summary>
         /// 在正式项目中,需要在初始化时对该函数进行预编译,将嵌套调用转化为单次调用以获得性能提升
         /// </summary>
@@ -35,7 +25,10 @@ namespace SkillEditorDemo.Model
         /// <returns></returns>
         public float GetResult(TrigInfo info, CombatCache cache)
         {
-            return FuncNode.GetResult(info, cache);
+            if (Node == null) {
+                return Value;
+            }
+            return ((FuncNode)Node).GetResult(info, cache);
         }
         public float GetResult(TrigInfo info) => GetResult(info, CombatCache._);
         public float GetResult(CombatCache cache) => GetResult(TrigInfo.Empty, cache);
@@ -45,23 +38,7 @@ namespace SkillEditorDemo.Model
 
         public override string ToString()
         {
-            return FuncNode.GetText();
-        }
-    }
-
-    /// <summary>
-    /// 这个类是FuncNode的一个特殊实现,用于表示一个常数值,仅在运行时使用
-    /// </summary>
-    public partial class ConstValue : FuncNode
-    {
-        public float Value;
-        public override string GetText(int indent = 0)
-        {
-            return $"{Value}";
-        }
-        public override float GetResult(TrigInfo info, CombatCache cache)
-        {
-            return Value;
+            return Node?.GetText()??Value.ToString();
         }
     }
     [Prompt(@"时间类数值的主要类型,-1在大部分情况下被视为永久")]
