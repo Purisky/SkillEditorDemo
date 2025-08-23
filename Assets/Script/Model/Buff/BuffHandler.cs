@@ -136,6 +136,8 @@ namespace SkillEditorDemo.Model
                         BuffCreatorID = creatorId,
                     };
                     buff = new Buff(buffDataID, level, degree, trigInfo, createParams);
+                    Unit from = Unit.Get(sourceId);
+                    Debug.Log($"{from?.ToString() ?? "未知目标"} 对 {Unit} 添加Buff(lv.{level} {buffDataID}|{degree}层|{createParams[0]})");
                     AddBuff(buff);
                 }
             }
@@ -277,7 +279,7 @@ namespace SkillEditorDemo.Model
             {
                 if (trig.TrigNode.TrigType > TrigType.ByTime_4)//过滤初始化
                 {
-                    TrigDic[trig.TrigNode.TrigType].Remove(trig);
+                    TrigDic[trig.TrigNode.CombinedTrigType].Remove(trig);
                 }
             }
             buff.Dispose();

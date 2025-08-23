@@ -55,13 +55,13 @@ namespace SkillEditorDemo.Model
         SPAdd,
         [LabelInfo("护盾破裂"), NoSeq]
         SPBreak,
-        [LabelInfo("命中造成伤害"), NoSeq]
+        [LabelInfo("碰撞造成伤害(后)"), NoSeq]
         HitDmg,
-        [LabelInfo("造成伤害")]
+        [LabelInfo("造成伤害"), Prompt("由伤害触发时,注意对伤害类型进行过滤,以免造成循环触发")]
         Dmg,
-        [LabelInfo("造成护盾伤害")]
+        [LabelInfo("造成护盾伤害"), Prompt("由伤害触发时,注意对伤害类型进行过滤,以免造成循环触发")]
         SPDmg,
-        [LabelInfo("造成生命伤害")]
+        [LabelInfo("造成生命伤害"), Prompt("由伤害触发时,注意对伤害类型进行过滤,以免造成循环触发")]
         HPDmg,
         [LabelInfo("消耗魔力")]
         ManaCost,
@@ -80,6 +80,17 @@ namespace SkillEditorDemo.Model
         public static TrigType Remove_ed(this TrigType trig) => trig & (~STrigType.ed);
         public static bool ised(this TrigType trig) => (trig & STrigType.ed) == STrigType.ed;
         public static TrigType Inverse_ed(this TrigType trig) => trig.ised() ? trig.Remove_ed() : trig.ed();
+
+
+        public static string CombinedText(this TrigType trig)
+        {
+            string ed = trig.ised()?" ed":"";
+            string seq = (trig & STrigType.Aft) == STrigType.Aft ? "aft " : "on ";
+            var baseTrig = trig.Remove_ed();
+            baseTrig&= ~STrigType.Aft;
+            return $"{seq}{baseTrig}{ed}";
+        }
+
     }
 
     /// <summary>

@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using SkillEditorDemo.Utility;
+using System.Linq;
 using TreeNode.Runtime;
 using TreeNode.Utility;
 
@@ -86,7 +87,36 @@ namespace SkillEditorDemo.Model
 
         public override float GetResult(TrigInfo info, CombatCache cache)
         {
-            throw new System.NotImplementedException();
+            Buff buff = Buff.Get(info.BuffID);
+            if (buff == null) return 0;
+            switch (Type)
+            {
+                case BuffValueType.RuntimeData:
+                    return buff.RuntimeData;
+                case BuffValueType.Level:
+                    return buff.CurrentLevel;
+                case BuffValueType.MaxLevel:
+                    return buff.BuffData.MaxLevel;
+                case BuffValueType.Degree:
+                    return buff.CurrentDegree;
+                case BuffValueType.MaxDegree:
+                    return buff.BuffData.MaxDegree.GetResult(info,cache);
+                case BuffValueType.TotalTime:
+                    return buff.TotalTick / (float)Time.GameTickPerSec;
+                case BuffValueType.RestTime:
+                    int rest = buff.FreshTick + buff.TotalTick - Time.Tick;
+                    return rest > 0 ? rest / (float)Time.GameTickPerSec : 0;
+                case BuffValueType.ExistTime:
+                    return (Time.Tick - buff.FreshTick) / (float)Time.GameTickPerSec;
+                case BuffValueType.TotalTriggerCount:
+                    return buff.Trigs.Sum(n=>n.CurrentTrigCount);
+                case BuffValueType.Param0:
+                    return buff.CreateParam.Length > 0 ? buff.CreateParam[0] : 0;
+                default:
+                    
+                    return 0;
+            }
+
         }
     }
     [NodeInfo(typeof(FuncNode), "战斗数值缓存", 120, "取值/战斗数值缓存")]

@@ -54,7 +54,6 @@
                   }
                 },
                 "DmgType": "Physic",
-                "Direct": true,
                 "Value": {
                   "Node": {
                     "$type": "SkillEditorDemo.Model.BinaryCal, Model",

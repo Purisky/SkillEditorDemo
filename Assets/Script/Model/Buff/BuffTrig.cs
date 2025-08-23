@@ -71,7 +71,7 @@ namespace SkillEditorDemo.Model
         bool internalTrig(int trigCount, TrigInfo info, CombatCache cache)
         {
             bool trigContinue = true;
-            Debug.Log($"{new string('\t', 5 - trigCount)}{Buff.CarrierUnit}.{Buff}.{TrigNode.CombinedTrigType} 触发");
+            Debug.Log($"{new string('\t', 5 - trigCount)}{Buff.CarrierUnit}.{Buff}.{TrigNode.CombinedTrigType.CombinedText()} 触发");
             for (int i = 0; i < Actions.Count; i++)
             {
                 trigContinue &= Actions[i].Handle(trigCount, info, cache);
