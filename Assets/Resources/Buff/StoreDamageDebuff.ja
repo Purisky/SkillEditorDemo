@@ -4,6 +4,7 @@
     "Nodes": [
       {
         "$type": "SkillEditorDemo.Model.BuffNode, Model",
+        "CompeteType": "ReplaceRefresh",
         "MaxLevel": 1,
         "MaxDegree": {
           "Value": 1.0
@@ -15,6 +16,12 @@
         },
         "Triggers": [
           {
+            "Condition": {
+              "$type": "SkillEditorDemo.Model.DmgCheck, Model",
+              "Position": {
+                "x": 760
+              }
+            },
             "Passive": true,
             "TrigType": "Dmg",
             "TriggerSequence": "Aft",
@@ -26,15 +33,20 @@
                   "Node": {
                     "$type": "SkillEditorDemo.Model.CombatCacheGetter, Model",
                     "Position": {
-                      "x": 990
+                      "x": 990,
+                      "y": 88
                     }
                   }
                 },
                 "Position": {
-                  "x": 760
+                  "x": 760,
+                  "y": 88
                 }
               }
             ],
+            "CD": {
+              "Value": {}
+            },
             "RemoveOnTrig": {},
             "Position": {
               "x": 430
@@ -50,10 +62,11 @@
                   "$type": "SkillEditorDemo.Model.GetBuffUnit, Model",
                   "Position": {
                     "x": 990,
-                    "y": 126
+                    "y": 166
                   }
                 },
                 "DmgType": "Physic",
+                "Direct": true,
                 "Value": {
                   "Node": {
                     "$type": "SkillEditorDemo.Model.BinaryCal, Model",
@@ -62,7 +75,7 @@
                         "$type": "SkillEditorDemo.Model.BuffValueGetter, Model",
                         "Position": {
                           "x": 1160,
-                          "y": 200
+                          "y": 240
                         }
                       }
                     },
@@ -72,25 +85,28 @@
                     },
                     "Position": {
                       "x": 990,
-                      "y": 200
+                      "y": 240
                     }
                   }
                 },
                 "Position": {
                   "x": 760,
-                  "y": 126
+                  "y": 166
                 }
               }
             ],
+            "CD": {
+              "Value": {}
+            },
             "RemoveOnTrig": {},
             "Position": {
               "x": 430,
-              "y": 126
+              "y": 166
             }
           }
         ],
-        "ID": "DamageReflectDebuff",
-        "Name": "负面效果/伤害反弹"
+        "ID": "StoreDamageDebuff",
+        "Name": "负面效果/伤害存储"
       }
     ]
   }
