@@ -91,7 +91,6 @@ namespace SkillEditorDemo.Model
                 switch (buffData.CompeteType)
                 {
                     case CompeteType.None:
-                    case CompeteType.Eternal:
                         return !IsBuffExist(buffData.ID, buffData.CompeteInSource ? sourceID : EcsPackedEntity.Empty);
                 }
             }
