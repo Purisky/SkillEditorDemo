@@ -28,6 +28,11 @@ namespace Leopotam.EcsLite
         public static bool operator ==(in EcsPackedEntity a, in EcsPackedEntity b) => a.Id == b.Id && a.Gen == b.Gen;
         public static bool operator !=(in EcsPackedEntity a, in EcsPackedEntity b) => a.Id != b.Id || a.Gen != b.Gen;
         public override bool Equals(object obj) => obj is EcsPackedEntity other && Id == other.Id && Gen == other.Gen;
+
+        public override string ToString()
+        {
+            return $"[{Id}:{Gen}]";
+        }
     }
 
     public struct EcsPackedEntityWithWorld

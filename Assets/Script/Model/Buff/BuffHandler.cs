@@ -163,10 +163,12 @@ namespace SkillEditorDemo.Model
         {
             BuffNode node = IData<BuffNode>.Get(buffID);
             bool uniq = node.CompeteType != CompeteType.Indie;
+            bool source = node.CompeteInSource;
             List<int> buffs = new ();
             foreach (Buff buff in Buffs)
             {
-                if (buff.ID == buffID && (sourceId == EcsPackedEntity.Empty || sourceId == buff.SourceID))
+                bool exist = buff.ID == buffID && (sourceId == EcsPackedEntity.Empty || sourceId == buff.SourceID);
+                if (exist)
                 {
                     buffs.Add(buff.Index);
                     if (uniq)
@@ -209,6 +211,7 @@ namespace SkillEditorDemo.Model
                 }
                 byId[sourceId] = buff.Index;
             }
+            Buffs.Add(buff);
             foreach (BuffTrig trig in buff.Trigs)
             {
                 internalAddBuffTrig(trig);
