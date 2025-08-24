@@ -391,7 +391,7 @@ namespace SkillEditorDemo.Model
             {
                 info.CurrentID = units[i].Entity;
                 CombatCache clone = cache.Clone();
-                Debug.Log($"{from?.ToString() ?? "未知目标"} 尝试对 {units[i]} 添加Buff(lv.{level} {ID}|{degree}层|{param0})");
+                //Debug.Log($"{from?.ToString() ?? "未知目标"} 尝试对 {units[i]} 添加Buff(lv.{level} {ID}|{degree}层|{param0})");
                 units[i].BuffHandler.AddBuff(ID, info.SourceID, info.SourceID, level, degree, param0);
             }
             return true;

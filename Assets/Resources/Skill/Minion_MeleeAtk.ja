@@ -67,6 +67,28 @@
                     "x": 880,
                     "y": 102
                   }
+                },
+                {
+                  "$type": "SkillEditorDemo.Model.AddBuff, Model",
+                  "UnitNode": {
+                    "$type": "SkillEditorDemo.Model.TriggerUnit, Model",
+                    "Position": {
+                      "x": 1110,
+                      "y": 230
+                    }
+                  },
+                  "ID": "StoreDamageDebuff",
+                  "Level": {
+                    "Value": 1.0
+                  },
+                  "Degree": {
+                    "Value": 1.0
+                  },
+                  "Param0": {},
+                  "Position": {
+                    "x": 880,
+                    "y": 230
+                  }
                 }
               ],
               "DisplayPath": "Sector",
@@ -80,12 +102,12 @@
                 "$type": "SkillEditorDemo.Model.SourceUnit, Model",
                 "Position": {
                   "x": 880,
-                  "y": 221
+                  "y": 376
                 }
               },
               "Position": {
                 "x": 640,
-                "y": 221
+                "y": 376
               }
             },
             "Count": {
