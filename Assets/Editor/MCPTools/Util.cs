@@ -265,10 +265,7 @@ namespace SkillEditorDemo
 
                 }
             }
-            if (!window.GraphView.SetNodeByPath(jsonNode, pAPath))
-            {
-                throw new InvalidOperationException($"设置节点失败:目标路径({nodePath})无法添加({type.Name})");
-            }
+            // 直接使用AddViewNodeWithConnection，它内部会调用SetNodeByPath
             window.GraphView.AddViewNodeWithConnection(jsonNode, pAPath);
             window.GraphView.FormatNodes();
             if (port is NumPort numPort)
@@ -304,7 +301,7 @@ namespace SkillEditorDemo
             }
             if (existNode == null)
             {
-                throw new ArgumentException($"{pAPath}:找不可供编辑节点");
+                throw new ArgumentException($"{nodePath}:不是可供编辑节点");
             }
             string error = "";
             List<string> successlist = new(); ;

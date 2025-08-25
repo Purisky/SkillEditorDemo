@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using TreeNode.Utility;
 
 namespace SkillEditorDemo.Model
@@ -9,7 +9,7 @@ namespace SkillEditorDemo.Model
     using SC = StatClass;
     using ST = StatType;
 
-
+    [Prompt("数值=(基础值+基础叠加)*叠乘系数+最终叠加")]
     public enum StatModType
     {
         [LabelInfo("基础叠加")]
