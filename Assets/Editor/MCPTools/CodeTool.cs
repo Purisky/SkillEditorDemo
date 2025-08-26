@@ -1,149 +1,332 @@
 ﻿using MCP4Unity;
 using SkillEditorDemo.Model;
 using System.Linq;
+using System.Threading.Tasks;
 using TreeNode.Editor;
 using UnityEngine;
 using UnityEditor;
+using UnityEditor.Compilation;
 
 namespace SkillEditorDemo.MCP
 {
     public class CodeTools
     {
-        [Tool("强制Unity重新编译程序集")]
+        [Tool("重新编译程序集")]
         public static string RecompileAssemblies()
+        {
+            CompilationPipeline.RequestScriptCompilation();
+            return GetUnityConsoleLog();
+        }
+        [Tool("读取Unity控制台日志")]
+        public static string GetUnityConsoleLog()
         {
             try
             {
-                var log = new System.Text.StringBuilder();
-                log.AppendLine("=== 开始强制重新编译程序集 ===");
-                log.AppendLine($"时间: {System.DateTime.Now:yyyy-MM-dd HH:mm:ss}");
+                var result = new System.Text.StringBuilder();
                 
-                // 触发脚本重新编译（不重新导入资源）
-                log.AppendLine("正在触发脚本重新编译...");
-                UnityEditor.Compilation.CompilationPipeline.RequestScriptCompilation();
-                
-                // 等待编译开始
-                log.AppendLine("等待编译开始...");
-                
-                // 检查编译状态
-                if (EditorApplication.isCompiling)
+                // 方法1: 通过LogEntries API获取日志
+                var logInfo = GetLogEntriesInfo();
+                if (!string.IsNullOrEmpty(logInfo))
                 {
-                    log.AppendLine("⚠️ Unity正在编译中，请等待编译完成后再尝试调用测试方法");
-                }
-                else
-                {
-                    log.AppendLine("✅ 编译请求已发送，程序集将在短时间内重新加载");
-                    log.AppendLine("💡 如果编译状态显示为未编译，编译可能已经在后台完成");
+                    result.AppendLine(logInfo);
                 }
                 
-                log.AppendLine("=== 重新编译操作完成 ===");
-                log.AppendLine();
-                log.AppendLine("💡 提示：");
-                log.AppendLine("• 此操作仅重新编译代码，不会重新导入资源或场景");
-                log.AppendLine("• 如果仍然无法调用测试方法，请尝试：");
-                log.AppendLine("  1. 等待几秒钟让Unity完成编译操作");
-                log.AppendLine("  2. 检查Console面板是否有编译错误");
-                log.AppendLine("  3. 如果问题持续存在，可以手动修改并保存任意脚本文件触发编译");
-                
-                return log.ToString();
+                return result.ToString();
             }
             catch (System.Exception ex)
             {
-                return $"重新编译过程中发生错误: {ex.Message}\n堆栈跟踪: {ex.StackTrace}";
+                return $"❌ 获取日志失败: {ex.Message}";
             }
         }
-
-        [Tool("检查程序集加载状态")]
-        public static string CheckAssemblyStatus()
+        
+        private static string GetLogEntriesInfo()
         {
             try
             {
-                var log = new System.Text.StringBuilder();
-                log.AppendLine("=== 程序集加载状态检查 ===");
-                log.AppendLine($"检查时间: {System.DateTime.Now:yyyy-MM-dd HH:mm:ss}");
-                log.AppendLine();
+                var result = new System.Text.StringBuilder();
+                var logEntriesType = typeof(EditorWindow).Assembly.GetType("UnityEditor.LogEntries");
+                if (logEntriesType == null)
+                {
+                    return "❌ 无法访问Unity日志系统";
+                }
+
+                // 保存原始控制台标志设置
+                int originalFlags = 0;
+                bool flagsChanged = false;
+                System.Reflection.MethodInfo getConsoleFlagsMethod = null;
+                System.Reflection.MethodInfo setConsoleFlag = null;
+                try
+                {
+                    // 使用 get_consoleFlags() 函数获取当前控制台标志
+                    getConsoleFlagsMethod = logEntriesType.GetMethod("get_consoleFlags", 
+                        System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
+                    
+                    if (getConsoleFlagsMethod != null)
+                    {
+                        var currentFlags = getConsoleFlagsMethod.Invoke(null, null);
+                        originalFlags = (int)currentFlags;
+                    }
+                    
+                    setConsoleFlag = logEntriesType.GetMethod("SetConsoleFlag", 
+                        System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
+                    
+                    if (setConsoleFlag != null)
+                    {
+                        setConsoleFlag.Invoke(null, new object[] { 0x287, true });
+                        flagsChanged = true;
+                    }
+                }
+                catch 
+                {
+                }
+
+                var getCountMethod = logEntriesType.GetMethod("GetCount", 
+                    System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
+                var getEntryInternalMethod = logEntriesType.GetMethod("GetEntryInternal", 
+                    System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
                 
-                // 检查编译状态
-                log.AppendLine($"Unity编译状态: {(EditorApplication.isCompiling ? "正在编译" : "编译完成")}");
-                log.AppendLine($"Unity播放模式: {(EditorApplication.isPlaying ? "播放中" : "停止")}");
-                log.AppendLine();
+                if (getCountMethod == null || getEntryInternalMethod == null)
+                {
+                    return "❌ 无法访问日志方法";
+                }
+
+                int logCount = (int)getCountMethod.Invoke(null, null);
+                if (logCount == 0)
+                {
+                    return "📭 控制台暂无日志";
+                }
+
+                result.AppendLine($"📊 总计 {logCount} 条日志\n");
+
+                var logEntryType = typeof(EditorWindow).Assembly.GetType("UnityEditor.LogEntry");
+                if (logEntryType == null)
+                {
+                    return "❌ 无法访问日志条目类型";
+                }
+
+                // 显示最近的10条日志
+                int startIndex = System.Math.Max(0, logCount - 10);
+                int displayCount = logCount - startIndex;
                 
-                // 获取程序集信息
-                var assemblies = System.AppDomain.CurrentDomain.GetAssemblies();
-                log.AppendLine($"当前加载的程序集数量: {assemblies.Length}");
-                log.AppendLine();
+                // // 首先输出LogEntry的所有字段信息，帮助调试
+                // if (logCount > 0)
+                // {
+                //     try
+                //     {
+                //         var logEntry = System.Activator.CreateInstance(logEntryType);
+                //         var parameters = new object[] { logCount - 1, logEntry };
+                //         bool success = (bool)getEntryInternalMethod.Invoke(null, parameters);
+                        
+                //         if (success && logEntry != null)
+                //         {
+                //             result.AppendLine("🔍 LogEntry字段信息调试:");
+                //             var allFields = logEntryType.GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+                //             foreach (var field in allFields)
+                //             {
+                //                 try
+                //                 {
+                //                     var value = field.GetValue(logEntry);
+                //                     string valueStr = value?.ToString() ?? "null";
+                //                     if (field.Name == "mode" && value != null)
+                //                     {
+                //                         int modeInt = (int)value;
+                //                         valueStr = $"{value} (0x{modeInt:X})";
+                //                     }
+                //                     result.AppendLine($"  {field.Name} ({field.FieldType.Name}): {valueStr}");
+                //                 }
+                //                 catch (System.Exception ex)
+                //                 {
+                //                     result.AppendLine($"  {field.Name}: 无法读取 ({ex.Message})");
+                //                 }
+                //             }
+                //             result.AppendLine();
+                //         }
+                //     }
+                //     catch (System.Exception ex)
+                //     {
+                //         result.AppendLine($"🔍 无法获取字段调试信息: {ex.Message}\n");
+                //     }
+                // }
                 
-                // 查找测试相关的类型
-                log.AppendLine("查找测试相关的类型:");
-                int testClassCount = 0;
-                int testMethodCount = 0;
-                
-                foreach (var assembly in assemblies)
+                for (int i = startIndex; i < logCount; i++)
                 {
                     try
                     {
-                        var types = assembly.GetTypes()
-                            .Where(t => t.Namespace?.Contains("SkillEditorDemo") == true || 
-                                       t.Name.Contains("Test") || 
-                                       t.Name.Contains("Performance"))
-                            .ToArray();
-                            
-                        foreach (var type in types)
+                        var logEntry = System.Activator.CreateInstance(logEntryType);
+                        var parameters = new object[] { i, logEntry };
+                        
+                        bool success = (bool)getEntryInternalMethod.Invoke(null, parameters);
+                        if (!success || logEntry == null) continue;
+
+                        // 获取日志信息
+                        string message = GetLogMessage(logEntry, logEntryType);
+                        string logType = GetLogTypeDetailed(logEntry, logEntryType);
+                        string location = GetLogLocation(logEntry, logEntryType);
+                        
+                        // 格式化输出
+                        if (!string.IsNullOrEmpty(message))
                         {
-                            var methods = type.GetMethods(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Static)
-                                .Where(m => m.GetParameters().Length == 0 && 
-                                           m.ReturnType == typeof(string) &&
-                                           (m.Name.StartsWith("Test") || m.Name.StartsWith("Profile")))
-                                .ToArray();
-                                
-                            if (methods.Length > 0)
-                            {
-                                testClassCount++;
-                                testMethodCount += methods.Length;
-                                log.AppendLine($"  类: {type.FullName}");
-                                foreach (var method in methods)
-                                {
-                                    log.AppendLine($"    方法: {method.Name}");
-                                }
-                            }
+                            result.AppendLine($"{logType}{location}: {message}");
                         }
                     }
-                    catch (System.Exception ex)
+                    catch
                     {
-                        // 跳过无法访问的程序集
-                        log.AppendLine($"  无法访问程序集: {assembly.GetName().Name} ({ex.Message})");
+                        // 跳过无法读取的条目
+                        continue;
+                    }
+                }
+
+                result.AppendLine($"\n显示了最近 {displayCount} 条日志");
+                
+                // 获取日志后恢复原始控制台标志设置
+                if (flagsChanged && setConsoleFlag != null && getConsoleFlagsMethod != null)
+                {
+                    try
+                    {
+                        // 恢复原始标志设置
+                        bool logEnabled = (originalFlags & 0x80) != 0;
+                        bool warningEnabled = (originalFlags & 0x100) != 0;
+                        bool errorEnabled = (originalFlags & 0x200) != 0;
+                        
+                        setConsoleFlag.Invoke(null, new object[] { 0x80, logEnabled });
+                        setConsoleFlag.Invoke(null, new object[] { 0x100, warningEnabled });
+                        setConsoleFlag.Invoke(null, new object[] { 0x200, errorEnabled });
+                        
+                    }
+                    catch 
+                    {
                     }
                 }
                 
-                log.AppendLine();
-                log.AppendLine($"📊 统计结果:");
-                log.AppendLine($"  测试类数量: {testClassCount}");
-                log.AppendLine($"  测试方法数量: {testMethodCount}");
-                
-                if (testMethodCount == 0)
-                {
-                    log.AppendLine();
-                    log.AppendLine("⚠️ 未找到任何测试方法，可能的原因：");
-                    log.AppendLine("1. 脚本尚未编译完成");
-                    log.AppendLine("2. 测试方法不符合规范（必须是public static string方法，无参数）");
-                    log.AppendLine("3. 类名或命名空间不正确");
-                }
-                else
-                {
-                    log.AppendLine();
-                    log.AppendLine("✅ 程序集状态正常，可以尝试调用测试方法");
-                }
-                
-                log.AppendLine();
-                log.AppendLine("=== 检查完成 ===");
-                return log.ToString();
+                return result.ToString();
             }
             catch (System.Exception ex)
             {
-                return $"检查程序集状态时发生错误: {ex.Message}\n堆栈跟踪: {ex.StackTrace}";
+                return $"❌ LogEntries访问失败: {ex.Message}";
+            }
+        }
+    
+
+        private static string GetLogMessage(object logEntry, System.Type logEntryType)
+        {
+            // 尝试多种可能的消息字段名
+            string[] messageFields = { "condition", "message", "text", "content" };
+            
+            foreach (var fieldName in messageFields)
+            {
+                var field = logEntryType.GetField(fieldName, 
+                    System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                if (field != null)
+                {
+                    string value = field.GetValue(logEntry)?.ToString();
+                    if (!string.IsNullOrEmpty(value))
+                        return value;
+                }
+            }
+            return "[无法获取消息内容]";
+        }
+
+        private static string GetLogTypeDetailed(object logEntry, System.Type logEntryType)
+        {
+            try
+            {
+                var modeField = logEntryType.GetField("mode", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+                if (modeField == null) 
+                {
+                    // 尝试其他可能的字段名
+                    modeField = logEntryType.GetField("type", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance) ??
+                               logEntryType.GetField("logType", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+                }
+                
+                if (modeField == null) return "❓ [未知类型-无mode字段]";
+
+                int mode = (int)modeField.GetValue(logEntry);
+                
+                // 尝试多种解析方式
+                int logType = -1;
+                // 方式1: 直接取低4位 (原始LogType值)
+                int directType = mode & 0xF;
+                
+                
+                string typeIcon = logType switch
+                {
+                    0 => "❌",    // Error
+                    1 => "⚡",    // Assert
+                    2 => "⚠️",    // Warning
+                    3 => "🟢",    // Log
+                    4 => "💥",    // Exception
+                    _ => "❓"     // 未知
+                };
+                
+                string typeName = logType switch
+                {
+                    0 => "错误",
+                    1 => "断言", 
+                    2 => "警告",
+                    3 => "信息",
+                    4 => "异常",
+                    _ => $"未知({logType})"
+                };
+                
+                // 返回详细信息用于调试
+                return $"{typeIcon} [{typeName}]";
+            }
+            catch (System.Exception ex)
+            {
+                return $"❓ [类型解析失败: {ex.Message}]";
             }
         }
 
+        private static string GetLogType(object logEntry, System.Type logEntryType)
+        {
+            // 尝试多种可能的类型字段名
+            string[] modeFields = { "mode", "type", "logType", "entryType" };
+            
+            foreach (var fieldName in modeFields)
+            {
+                var field = logEntryType.GetField(fieldName, 
+                    System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                if (field != null)
+                {
+                    var value = field.GetValue(logEntry);
+                    if (value != null)
+                    {
+                        int mode = System.Convert.ToInt32(value);
+                        return mode switch
+                        {
+                            1 => "❌",      // Error
+                            2 => "⚠️",      // Warning  
+                            4 => "⚠️",      // Assert
+                            8 => "🔴",      // Exception
+                            16 => "ℹ️",     // Log
+                            _ => "🔍"       // Other
+                        };
+                    }
+                }
+            }
+            return "ℹ️";
+        }
+
+        private static string GetLogLocation(object logEntry, System.Type logEntryType)
+        {
+            var fileField = logEntryType.GetField("file", 
+                System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+            var lineField = logEntryType.GetField("line", 
+                System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+
+            string file = fileField?.GetValue(logEntry)?.ToString() ?? "";
+            int line = lineField != null ? (int)(lineField.GetValue(logEntry) ?? 0) : 0;
+
+            if (!string.IsNullOrEmpty(file) && line > 0)
+            {
+                return $" [{System.IO.Path.GetFileName(file)}:{line}]";
+            }
+            else if (!string.IsNullOrEmpty(file))
+            {
+                return $" [{System.IO.Path.GetFileName(file)}]";
+            }
+            return "";
+        }
         [Tool("运行无参静态函数")]
         public static string RunCode(string methodFullName)
         {
@@ -232,3 +415,4 @@ namespace SkillEditorDemo.MCP
         }
     }
 }
+
