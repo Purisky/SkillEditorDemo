@@ -3,7 +3,7 @@
 ## 项目概述
 基于Unity的可视化技能编辑器Demo，支持通过节点图的方式设计和编辑技能、Buff等游戏逻辑。该项目集成了TreeNode节点编辑器系统和MCP4Unity工具服务，为游戏开发者提供了一个强大的可视化逻辑编辑解决方案。
 
-<iframe src="//player.bilibili.com/player.html?isOutside=true&aid=115105492631965&bvid=BV1nEh1zdEGm&cid=31998741810&p=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true"></iframe>
+[BB就能做策划](https://player.bilibili.com/player.html?isOutside=true&aid=115105492631965&bvid=BV1nEh1zdEGm&cid=31998741810&p=1)
 
 ## 核心特性
 
